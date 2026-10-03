@@ -1,0 +1,10 @@
+# Old prototype, kept only on this computer for reference.
+# It contains the old phone number and ~175 made-up products,
+# so it must never be pushed to GitHub. Delete the folder when done.
+legacy/
+
+# Editor / OS clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
