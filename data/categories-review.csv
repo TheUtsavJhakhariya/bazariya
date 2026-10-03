@@ -1,0 +1,602 @@
+﻿id,name,category,matched_word,also_matched
+1,Electric Hot Water Bag,Health & Massagers,hot water bag,Lights & Electronics (electric); Bags & Storage (bag)
+2,2 Ltr Transparent Motivational Bottles,Kitchen,bottle,
+3,150 piece Art Set,Kids & Toys,art set,
+4,Magic Towel,Home & Wall Decor,(none - fallback),
+5,Watermelon Cutter,Kitchen,cutter,
+6,Slingshot - Gullel,Kids & Toys,slingshot,
+7,Microfiber Cleaning Cloth,Cleaning,cleaning,
+8,Portable Plastic Sealing Machine,Kitchen,sealing machine,
+9,3D Cartoon Lunch Bag,Kids & Toys,cartoon,Bags & Storage (bag)
+10,Ivy Grip Tape Double Sided Tape,Home & Wall Decor,tape,
+11,Derma Darma Roller (0.5 mm),Bathroom & Personal Care,derma,
+12,Silicone Hand Gloves,Cleaning,hand gloves,
+13,"Soap Paper, Paper Soap",Bathroom & Personal Care,soap,
+14,Jumping Bouncer Toy,Kids & Toys,toy,
+16,2 in 1 Tile Cleaning Brush (White),Cleaning,brush,
+18,Wash Bag 3 Pcs Set Blue Color,Bags & Storage,bag,
+19,Garlic Press,Kitchen,garlic,
+20,Panda Night Lamp,Lights & Electronics,lamp,
+21,Rectangle Digital Alarm Clock,Lights & Electronics,clock,
+22,Self Defence Stick Rod Foldable,Home & Wall Decor,(none - fallback),
+23,Double Dacker Plastic Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+24,Kitchen Mat 30*300 CM,Kitchen,kitchen,Home & Wall Decor (mat)
+25,4 in 1 Data Cable,Lights & Electronics,cable,
+26,Gas Shaver Ring,Bathroom & Personal Care,shaver,
+27,Sugar Control Clip,Health & Massagers,sugar control,
+28,Mic With Bluetooth Speaker,Lights & Electronics,speaker,
+29,Portable Gas Stove,Kitchen,stove,
+31,Laptop Stand Metal,Lights & Electronics,laptop,
+32,Car Cleaning Duster,Car,car,Cleaning (cleaning)
+33,Nice Glass Water Bottle (400ML),Kitchen,bottle,
+34,Wash Bag 3 Pcs Set [Pink],Bags & Storage,bag,
+35,Mini Vibration Massager,Health & Massagers,massager,
+36,Professional Micro Steam Iron,Lights & Electronics,steam iron,
+37,Body Sensor Light,Lights & Electronics,light,
+38,Male/Female Wall Sticker Hooks,Home & Wall Decor,sticker,
+39,Dancing Cactus Toy,Kids & Toys,toy,
+40,46 in 1 Screw Driver Set,Home & Wall Decor,(none - fallback),
+41,Steel Bottle Brush,Cleaning,brush,Kitchen (bottle)
+42,Waterproof Kitchen Apron with Pocket,Kitchen,kitchen,
+44,LED 3W Torch Light 7 mode torch light,Lights & Electronics,light,
+45,450 ML Dori Chopper,Kitchen,chopper,
+46,Bike Goggle Mask Rainbow,Car,bike,Health & Massagers (mask)
+47,2 in 1 Window Cleaner Brush Mesh,Cleaning,brush,
+49,Nova 6130 Hair Dryer,Bathroom & Personal Care,hair,
+50,Sink Hair Catching Drain 160 CM,Bathroom & Personal Care,hair,Cleaning (drain); Kitchen (sink)
+51,TV Cover (blue/pink),Bags & Storage,cover,
+52,48V Electric Car Pressure Washer Gun,Car,car,Lights & Electronics (electric)
+53,Stainless Steel Folding Cup,Kitchen,cup,
+54,2 in 1 Lofa Body Brush Loofah Brush,Bathroom & Personal Care,loofah,Cleaning (brush)
+56,Silicone Rubber Shoe Cover,Bags & Storage,cover,
+57,Star Master Lamp,Lights & Electronics,lamp,
+58,Foldable Travel Bag,Bags & Storage,bag,
+59,Baby Nail Trimmer / Baby Nail Cutter,Kids & Toys,baby,Bathroom & Personal Care (trimmer); Kitchen (cutter)
+60,Ice Bag for Pain Relief (9 inch),Health & Massagers,ice bag,Bags & Storage (bag)
+61,Steel Electric Coffee Grinder Mini Mixer,Lights & Electronics,electric,Kitchen (coffee)
+63,Golden tikdi White brick Available,Home & Wall Decor,(none - fallback),
+65,Square Tulip Lamp,Lights & Electronics,lamp,
+66,Hair Wax Stick,Bathroom & Personal Care,hair,
+67,Pill Box / Pill Box,Health & Massagers,pill box,Bags & Storage (box)
+68,Cartoon Water Bottle With Straw,Kids & Toys,cartoon,Kitchen (bottle)
+69,Automatic Door Closer,Home & Wall Decor,(none - fallback),
+70,6 Pcs Silicone Lead Set,Home & Wall Decor,(none - fallback),
+71,Car Dust Removal Mini Brush,Car,car,Cleaning (brush)
+72,Vintage T9 Trimmer,Bathroom & Personal Care,trimmer,
+73,Makeup Remover Wipes,Bathroom & Personal Care,makeup,Cleaning (wipes)
+74,Mini Folding Mop,Cleaning,mop,
+75,"Pro Wax, Warmer Hot Wax",Bathroom & Personal Care,wax,
+77,Waterproof Leak Filler Spray,Home & Wall Decor,(none - fallback),
+78,Shoe Repairing Glue,Home & Wall Decor,(none - fallback),
+79,Tennis Trainer Rebound Ball,Home & Wall Decor,(none - fallback),
+80,Sunmini UVLED Nail dryer Lamp,Bathroom & Personal Care,nail,Lights & Electronics (lamp)
+81,Twin Bell Silver Clock,Lights & Electronics,clock,
+82,Tiles Gap Filler Agent Tube (180 ml),Home & Wall Decor,(none - fallback),
+83,3D Galaxy Crystal Ball Light,Lights & Electronics,light,
+84,Scrubbing Pad - Wire Dish Cloth,Cleaning,scrubbing,
+85,Eyebrow - Silique,Bathroom & Personal Care,eyebrow,
+86,Portable Turbine Washer,Home & Wall Decor,(none - fallback),
+87,2 in 1 Veg Cutter,Kitchen,cutter,
+88,Deep Frying Pot with Basket 1200 ML,Kitchen,pot,Bags & Storage (basket)
+90,Duck Oil Dispenser Bottle,Kitchen,oil dispenser,
+91,Sensor Led Light With Plug Type,Lights & Electronics,light,
+92,Waterproof Tape For Gap Sealing,Home & Wall Decor,tape,
+93,Multifunctional Shoes Scrubbing Brush,Cleaning,brush,
+94,Beauty Crystal Ball,Home & Wall Decor,(none - fallback),
+95,Nova 2 in 1 Hair Straightener,Bathroom & Personal Care,hair,
+96,China Waterproof Glue,Home & Wall Decor,(none - fallback),
+97,Derma Suction,Bathroom & Personal Care,derma,
+98,Toe Straightener,Bathroom & Personal Care,straightener,
+99,3 In 1 Car Vacuum Cleaner,Car,car,Cleaning (cleaner)
+100,Round loofah scrubbing brush,Bathroom & Personal Care,loofah,Cleaning (brush)
+101,Kitchen Multi Cleaning Powder,Cleaning,cleaning,Kitchen (kitchen)
+102,Wood Seasoning Beewax Spray,Kitchen,seasoning,
+103,Sneaker Cleaner Premium,Cleaning,cleaner,
+104,Transparent Waterproof Water Glue,Home & Wall Decor,(none - fallback),
+106,3 in 1 Car Polish Spray,Car,car,
+107,Stain Remover,Cleaning,stain,
+108,Soap Holder / Soap Dish Holder,Bathroom & Personal Care,soap,
+110,Magic water book kids drawing book,Kids & Toys,kids,
+111,Mini Foldable Washing Machine,Cleaning,washing machine,
+112,Thermal Label Roll (400 Label),Home & Wall Decor,(none - fallback),
+113,Double side grip tape (2 mm),Home & Wall Decor,tape,
+115,Silicone Full Heel Socks,Health & Massagers,socks,
+116,New Washing Machine Pads,Cleaning,washing machine,
+117,360 Degree Triangle Mop,Cleaning,mop,
+118,Let's slim arm sleeve,Health & Massagers,arm sleeve,
+119,Velvet hot water bag,Health & Massagers,hot water bag,Bags & Storage (bag)
+120,Baby play water mat,Kids & Toys,baby,Home & Wall Decor (mat)
+121,Silicone Ice Roller,Health & Massagers,ice roller,
+122,N95 Mask,Health & Massagers,mask,
+123,Nose Clip,Health & Massagers,nose clip,
+124,36 Pcs Cloth Tape Clothing Tape,Home & Wall Decor,tape,
+125,Sweat Pads (10 Pads),Health & Massagers,sweat pad,
+126,Gel Hot Bag,Bags & Storage,bag,
+127,Ear Pick / Ear Cleaner for Kids,Kids & Toys,kids,Cleaning (cleaner)
+128,Earpick Cleaner Set (6 Pcs Set),Cleaning,cleaner,
+130,Toothpaste holder With Toothpaste Dispenser,Bathroom & Personal Care,toothpaste,Kitchen (dispenser)
+131,100 LED Solar Light,Lights & Electronics,light,
+132,2 Blade Vegetable Cutter,Kitchen,cutter,
+134,Gold Energy Massage Roller,Health & Massagers,massage,
+135,Spa Gel Socks,Health & Massagers,socks,
+136,Flawless Hair Remover,Bathroom & Personal Care,hair,
+137,3D Reflection Diyas Set Of 12 Pieces,Home & Wall Decor,diya,
+139,Stone With Roller,Home & Wall Decor,(none - fallback),
+140,Green Knee Patches,Health & Massagers,knee,
+141,Arch Support Socks,Health & Massagers,socks,
+142,Hair Wrape Towel,Bathroom & Personal Care,hair,
+143,Baby tooth brush Kids U shape Tooth,Kids & Toys,kids,Cleaning (brush)
+144,Silicone Body Bath Belt,Bathroom & Personal Care,bath,
+145,Wall Mounted Penguin,Home & Wall Decor,(none - fallback),
+146,Cartoon Wall Mounted,Kids & Toys,cartoon,
+148,Cartoon Toothbrush Holder,Kids & Toys,cartoon,Bathroom & Personal Care (toothbrush)
+149,Mini Soap Paper / Dabbi,Bathroom & Personal Care,soap,
+150,Jawline Exercise,Health & Massagers,jawline,
+151,Ice Eye Mask,Health & Massagers,eye mask,
+152,"Nova Mini Hair Dryer, 1000W",Bathroom & Personal Care,hair,
+153,26 ltr foldable bag,Bags & Storage,bag,
+154,Blanket Storage Bags,Bags & Storage,bag,
+156,Vacuum Storage Bag,Bags & Storage,bag,
+157,Spray Water Bottle,Kitchen,bottle,
+159,2 in 1 Mesh Cleaning Brush,Cleaning,brush,
+160,Alluminum Foil Tape,Home & Wall Decor,foil,
+161,"Heal Socks, half heel socks",Health & Massagers,socks,
+162,Toothpaste Squeezer,Bathroom & Personal Care,toothpaste,
+164,Hot Water Rubber,Health & Massagers,hot water rubber,
+165,Electronic Massage Pillow,Health & Massagers,massage,
+166,3 Pc Wire Brush Set,Cleaning,brush,
+168,Color Pen 48 Pcs Markers,Kids & Toys,color pen,
+169,Vegetable Peeler,Kitchen,peeler,
+170,Toothpick Cleaner,Cleaning,cleaner,
+171,Hair Line Powder Black,Bathroom & Personal Care,hair,
+174,Window Screen Repair Kit Tap,Home & Wall Decor,(none - fallback),
+175,Silicone Full Heel Socks With Strap,Health & Massagers,socks,
+176,Cotton Half Heel Socks,Health & Massagers,socks,
+177,Insole,Health & Massagers,insole,
+178,Kinoki Detox Foot Pad,Health & Massagers,detox,
+179,Baby Knee Pad,Health & Massagers,knee,Kids & Toys (baby)
+180,3D Steel 3d Massager,Health & Massagers,massager,
+181,2 In 1 USB Jari Flawless,Home & Wall Decor,(none - fallback),
+182,Mini Pocket Fashion Shaver,Bathroom & Personal Care,shaver,
+183,Crystal hair remover,Bathroom & Personal Care,hair,
+184,Head Massager,Health & Massagers,massager,
+185,Silicone Bath Brush,Bathroom & Personal Care,bath,Cleaning (brush)
+187,Bath Sponge,Bathroom & Personal Care,bath,Cleaning (sponge)
+188,Baby Shower/Bath Cap,Kids & Toys,baby,Bathroom & Personal Care (bath)
+189,Alovera Ice Cool Eye Mask,Health & Massagers,eye mask,
+194,Water Ripple Night Light,Lights & Electronics,light,
+195,Foot Scrubber USB,Bathroom & Personal Care,foot scrubber,Cleaning (scrubber)
+196,Canvas Storage Baskets,Bags & Storage,storage,
+197,Saree box,Bags & Storage,box,
+198,Saree Cover Bag (big size),Bags & Storage,bag,
+199,Collapsible Storage Bag - Quilt Storage Bag 180L,Bags & Storage,bag,
+200,Bag / Purse Lunch Bag,Bags & Storage,bag,
+201,Pop it toy,Kids & Toys,toy,
+202,PU Mini Jewellery Box,Bags & Storage,box,
+203,Storage Bag 66 Litre,Bags & Storage,bag,
+205,1L Motivation Water Bottle,Kitchen,bottle,
+206,Motivational Water Bottle 3 Pcs Set,Kitchen,bottle,
+207,Water Steel Bottle (1 Litre),Kitchen,bottle,
+208,Penguin shape water bottle,Kitchen,bottle,
+209,Temperature Bottle Only Black,Kitchen,bottle,
+210,Car Cleaning Tablet,Car,car,Cleaning (cleaning)
+211,Car Blind Spot Mirror (Pack of 2),Car,car,
+212,Green Spray Water Gun,Home & Wall Decor,(none - fallback),
+213,High Pressure Water Gun Nozzle,Home & Wall Decor,(none - fallback),
+214,Vacuum Flask Set with 2 Cups,Kitchen,flask,
+215,Car Washing/Cleaning Sponge,Car,car,Cleaning (cleaning)
+216,Microfiber car cleaning towel,Car,car,Cleaning (cleaning)
+218,Car Dustbin Mini,Car,car,
+219,Fuel transfer pipe pump 2 meter,Car,fuel,
+220,Memory Foam Car Headrest Pillow,Car,car,
+221,Egg Shiter,Kitchen,egg,
+222,48 Tools In One with 360,Home & Wall Decor,(none - fallback),
+223,3 in 1 Garden Sprinklers,Home & Wall Decor,(none - fallback),
+225,Metal Repairing Casting Glue AB Tube,Home & Wall Decor,(none - fallback),
+226,Mobile Holder / Stand (Pack of 4),Lights & Electronics,mobile,
+227,Pyramid Mobile Holder,Lights & Electronics,mobile,
+228,Door Stopper (42 inch),Home & Wall Decor,door stopper,
+229,Silicone Door Stopper (Multicolour),Home & Wall Decor,door stopper,
+230,Flower Hook Wall Hook Sticker Adhesive,Home & Wall Decor,sticker,
+231,Screw Wall Hook,Home & Wall Decor,hook,
+232,Thumb Wall Hook,Home & Wall Decor,hook,
+233,6 Pcs Self Adhesive Hook,Home & Wall Decor,hook,
+234,Tile reform Tube 280 ml,Home & Wall Decor,(none - fallback),
+235,Cloth Stain Remover,Cleaning,stain,
+236,Sink and Drain Cleaner Powder (100 GM),Cleaning,cleaner,Kitchen (sink)
+237,Sink and Drain Cleaner DRAINGUN Powder (50 GM),Cleaning,cleaner,Kitchen (sink)
+238,Clothing Rope (5 Meter),Cleaning,clothing rope,
+239,12 Pc Travel Clothes Line,Cleaning,clothes line,
+240,Washing Machine Anti-Vibration Pad,Cleaning,washing machine,
+242,Washing Machine Cleaning Tablet,Cleaning,cleaning,
+243,Anti-winding Laundry Washing Ball,Cleaning,laundry,
+244,Toilet Cleaning Tablet (Pack of 10),Bathroom & Personal Care,toilet,Cleaning (cleaning)
+245,Book cover (30pcs Sheets),Bags & Storage,cover,
+246,Shoe Cover Bag (1 Pcs),Bags & Storage,bag,
+248,Shoes wipes (Pack of 80 wipes),Cleaning,wipes,
+249,Shoe Cleaner Cream,Cleaning,cleaner,
+250,Astronaut Galaxy Light Projector,Lights & Electronics,light,
+251,Leather Repair Cream Liquid Shoe Polish,Home & Wall Decor,(none - fallback),
+252,20 LED Solar Light,Lights & Electronics,light,
+253,Solar Interaction Wall Lamp,Lights & Electronics,lamp,
+254,Rechargeable LED Cob Keychain Light,Lights & Electronics,light,
+255,Eco Friendly Mosquito Killer,Cleaning,mosquito,
+256,Black Marble (60-200 CM),Home & Wall Decor,marble,
+257,White Marble (60-200 CM),Home & Wall Decor,marble,
+258,Blue Golden Marble Foil 60Cm X 200Cm,Home & Wall Decor,marble,
+260,White Golden Marble (60CM X 200CM),Home & Wall Decor,marble,
+261,Dark blue golden foil Marble,Home & Wall Decor,marble,
+262,Black Golden Marble Foil Sticker,Home & Wall Decor,marble,
+263,Sky Blue Golden Marble Foil,Home & Wall Decor,marble,
+265,Golden Marble Foil Sticker,Home & Wall Decor,marble,
+266,Dot Design Foil Sticker Foil Wallpaper,Home & Wall Decor,foil,
+267,Brown Marble Foil Paper,Home & Wall Decor,marble,
+268,Green Marble Foil Paper (60*200) CM,Home & Wall Decor,marble,
+269,Pink Marble Foil Paper (60*200 CM),Home & Wall Decor,marble,
+270,Mini Bottle Shape Portable Juicer,Kitchen,bottle,
+271,Rice Bowl With Handle,Kitchen,bowl,
+272,2 in 1 Liquid Soap Dispenser,Bathroom & Personal Care,soap,Kitchen (dispenser)
+274,Soap Pump Dispenser,Bathroom & Personal Care,soap,Kitchen (dispenser)
+275,Oven Mitt Gloves (Multicolour),Kitchen,oven mitt,
+276,Kitchen Weight Scale (SF 400) 10 KG,Kitchen,kitchen,
+277,Camera Coffee Mug,Lights & Electronics,camera,Kitchen (mug)
+278,Bottle Cleaning Brush,Cleaning,brush,Kitchen (bottle)
+279,Gap Cleaning Brush,Cleaning,brush,
+280,5 Layer Water Filter Faucet With Lock Clip,Kitchen,faucet,
+281,Water Faucet,Kitchen,faucet,
+282,Ice Tray / Ice Cube Tray,Kitchen,ice tray,
+283,Ice Candy,Kitchen,candy,
+284,5 in 1 Keyboard Cleaning Brush,Cleaning,brush,
+285,Microfiber Fan Cleaning Mop,Cleaning,mop,Lights & Electronics (fan)
+287,Rechargeable Electric Gas Lighter,Lights & Electronics,lighter,
+288,Gas Lighter Gun,Lights & Electronics,lighter,
+289,Telly Counter,Home & Wall Decor,(none - fallback),
+290,Window Cleaning Brush,Cleaning,brush,
+291,Window Cleaning Brush,Cleaning,brush,
+292,2 in 1 Glass Cleaner Brush,Cleaning,brush,Kitchen (glass)
+294,Star Shape Sink Filter,Kitchen,sink,
+295,Silicon Foldable Funnel,Kitchen,funnel,
+296,Cake Turn Table,Kitchen,cake,
+298,Flexible Mirror Sheets (30 x 45 CM),Home & Wall Decor,(none - fallback),
+299,A/C Cover Free Size,Bags & Storage,cover,
+301,Winter Cap,Home & Wall Decor,(none - fallback),
+302,Capsule Umbrella,Umbrellas & Rain,umbrella,
+303,Bottle Umbrella,Umbrellas & Rain,umbrella,Kitchen (bottle)
+304,Pocket Rain Card Coat,Umbrellas & Rain,rain card,
+305,Starlink Game (Corona),Kids & Toys,game,
+308,Baby Pillow,Kids & Toys,baby,
+309,Pop It Toy,Kids & Toys,toy,
+310,Original Sank Magic Book,Kids & Toys,magic book,
+312,Magic water book for kids,Kids & Toys,kids,
+313,Apple Fruit Basket,Bags & Storage,basket,
+315,Aluminum Silver Foil Sticker Karkari,Home & Wall Decor,foil,
+316,Aluminum Golden Foil Sticker Karkari,Home & Wall Decor,foil,
+317,Car Foam Cleaner,Car,car,Cleaning (cleaner)
+318,Orange Kitchen Cleaner Spray,Cleaning,cleaner,Kitchen (kitchen)
+319,3D Cartoon Lunch Box Bag,Kids & Toys,cartoon,Kitchen (lunch box); Bags & Storage (bag)
+320,Kitchen cleaning form Spray,Cleaning,cleaning,Kitchen (kitchen)
+322,Newborn Baby Bed Godari,Kids & Toys,baby,
+323,"3 in 1 Baby Bed, Sleeping Bag",Kids & Toys,baby,Bags & Storage (bag)
+324,Baby Safety Helmet,Kids & Toys,baby,
+325,Folding Bucket-12L Mop,Cleaning,mop,
+326,Bag Rain Cover,Umbrellas & Rain,rain cover,Bags & Storage (bag)
+328,Manicure Set Nail Clippers,Bathroom & Personal Care,nail,
+329,Rainbow Umbrella 75 CM,Umbrellas & Rain,umbrella,
+330,C - Handle Umbrella,Umbrellas & Rain,umbrella,
+331,3 in 1 Knife Sharpener,Kitchen,knife,
+332,Electric Nima Coffee Grinder,Lights & Electronics,electric,Kitchen (coffee)
+333,Step light Stair Deck Solar Light,Lights & Electronics,light,
+335,3 In 1 Brush Bottle Cleaner,Cleaning,brush,Kitchen (bottle)
+336,Shortcut Keyboard Mat,Home & Wall Decor,mat,
+338,Magic Umbrella,Umbrellas & Rain,umbrella,
+339,Banana Umbrella,Umbrellas & Rain,umbrella,
+340,Ball Raincoat,Umbrellas & Rain,raincoat,
+341,Waterproof Crack Seal Agent Brush,Cleaning,brush,
+342,Self Cleaning Hair Brush Comb,Bathroom & Personal Care,hair,Cleaning (brush)
+343,Frosty Water Bottle (pack of 6),Kitchen,bottle,
+344,All Color Stain Remover,Cleaning,stain,
+345,46 in 1 Color Set,Kids & Toys,color set,
+346,Silicon Toilet Brush,Bathroom & Personal Care,toilet,Cleaning (brush)
+347,3 in 1 Tiles Cleaning Brush,Cleaning,brush,
+349,Flour Sifter/Atta chhani,Kitchen,atta,
+350,5 Layer Water Filter Faucet,Kitchen,faucet,
+351,Silicon Roti Mat,Home & Wall Decor,mat,
+352,USB Garlic Chopper,Kitchen,garlic,
+353,Sink faucet Stand,Kitchen,sink,
+354,Oil Spray Bottle,Kitchen,bottle,
+355,Apple Shape Paper Soap,Bathroom & Personal Care,soap,
+356,Floor Mop,Cleaning,mop,
+358,Car Protection Foot Tape,Car,car,Home & Wall Decor (tape)
+360,2 in 1 tile cleaning brush,Cleaning,brush,
+361,Atta Maker Bread Mixing,Kitchen,atta,
+362,Car Dust Cleaner Soft Hair Brush,Car,car,Bathroom & Personal Care (hair); Cleaning (brush)
+365,Duck Oil Dispenser Bottle,Kitchen,oil dispenser,
+366,Drain sticker hair catcher,Bathroom & Personal Care,hair,Cleaning (drain); Home & Wall Decor (sticker)
+369,Budhha Trimmer Metal Body,Bathroom & Personal Care,trimmer,
+370,Automatic 7 color changing clock,Lights & Electronics,clock,
+371,Anti Slip Glow Tap,Home & Wall Decor,(none - fallback),
+372,Donut Shaped Double Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+373,Froggy Plastic Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+374,Car Fast Tag Cover,Car,car,Bags & Storage (cover)
+376,2 In 1 Momos Maker,Kitchen,momos,
+377,RZ 608 Facial Garment,Bathroom & Personal Care,facial,
+379,Hair Dryer Choaba,Bathroom & Personal Care,hair,
+380,Leather Cosmetic Bag,Bags & Storage,bag,
+381,Wash Bag 3 Pcs Set Blue,Bags & Storage,bag,
+382,Single Saree Cover Bag,Bags & Storage,bag,
+383,Microfiber Magic Bath Robe Towel,Bathroom & Personal Care,bath,
+384,Wooden Lint Remover Roller,Cleaning,lint remover,
+385,Nova Lint Remover,Cleaning,lint remover,
+386,Scalp Massager,Health & Massagers,massager,Bathroom & Personal Care (scalp)
+387,Crystal Coating Glue For Car,Car,car,
+388,Rangoli Design Set 4 Inch,Home & Wall Decor,rangoli,
+389,"5 In 1 Face, Facial Massager",Health & Massagers,massager,Bathroom & Personal Care (face)
+390,Mini Spray Bottle Perfume Bottle,Kitchen,bottle,
+391,Unisex Portable Manual Hand Powered Nose Hair Trimmer,Bathroom & Personal Care,hair,
+393,6 Blade 2 USB Juicer Fruit Juicer,Kitchen,juicer,
+394,Nose & ear hair trimmer,Bathroom & Personal Care,hair,
+395,Washing Machine Cleaner,Cleaning,cleaner,
+396,Wall Paint Roller,Home & Wall Decor,(none - fallback),
+397,Chair Leg Cover (Pack of 16),Bags & Storage,cover,
+399,6 In 1 Derma Suction,Bathroom & Personal Care,derma,
+400,Hydrophobic Trim Coating (50ML),Home & Wall Decor,(none - fallback),
+401,"Leather Polish, Cleaner and Conditioner",Cleaning,cleaner,
+402,6 Jar Spice Rack,Kitchen,spice,Bags & Storage (rack)
+403,Strong Vibrating Dual Head Vibrator Massager,Health & Massagers,massager,
+405,Laptop Bag,Lights & Electronics,laptop,Bags & Storage (bag)
+407,4Pc Furniture Roller,Home & Wall Decor,(none - fallback),
+408,Golden Brass Nozzle,Home & Wall Decor,(none - fallback),
+409,Washing Machine Cover,Cleaning,washing machine,Bags & Storage (cover)
+410,Waterproof Fridge Cover,Kitchen,fridge,Bags & Storage (cover)
+411,Nail Free Sealant Glue Metal Glue,Bathroom & Personal Care,nail,
+412,Child Safety Lock With Keys (2 Keys),Kids & Toys,child,
+413,Electric Arc Dual Lighter Rechargeable,Lights & Electronics,lighter,
+414,Grommet Tool Set With Box,Bags & Storage,box,
+415,Water Absorbent Bathroom Mat,Home & Wall Decor,mat,
+417,Square Shape Non Slip Home Bath mat,Bathroom & Personal Care,bath,Home & Wall Decor (mat)
+418,Bedsheet Liftar / Bedsheet Lifter,Home & Wall Decor,(none - fallback),
+419,Motion Sickness Belt,Health & Massagers,motion sickness,
+420,Automatic water Dispenser,Kitchen,dispenser,
+421,360 Degree Movable Faucet,Kitchen,faucet,
+422,Soap Dispenser bottle,Bathroom & Personal Care,soap,Kitchen (dispenser)
+423,Kids Barbie Lunch Box,Kids & Toys,kids,Kitchen (lunch box); Bags & Storage (box)
+424,Tokyo Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+426,Masala Box (360° Revolving),Kitchen,masala,Bags & Storage (box)
+427,Stainless Steel Solid 1Pc Soup Container,Kitchen,container,
+428,Hair Oil applicator,Bathroom & Personal Care,hair,
+429,Transparent Water Bottle 3Pcs Set - 3 in 1,Kitchen,bottle,
+430,Twist Mop,Cleaning,mop,
+431,Winter Face Mask - Windproof Face Mask,Health & Massagers,mask,Bathroom & Personal Care (face)
+432,2 In 1 Winter Cap With Scaf,Home & Wall Decor,(none - fallback),
+433,80 Pcs Kitchen Cleaning Wipes,Cleaning,cleaning,Kitchen (kitchen)
+434,Travel Data Cable Set,Lights & Electronics,cable,
+435,Mini Massage Gun,Health & Massagers,massage,
+436,Velding Rod Set Of 3,Home & Wall Decor,(none - fallback),
+438,USB Cross Backpack Bag,Bags & Storage,bag,
+439,Silicone Moisturizing Gel Socks,Health & Massagers,socks,
+440,Multifunction Vacuum Cleaner,Cleaning,cleaner,
+441,Door Shield Tape - Bottom Tape Brown,Home & Wall Decor,tape,
+442,Silicone Toilet Brush With Sticker - Holder Stand,Bathroom & Personal Care,toilet,Cleaning (brush); Home & Wall Decor (sticker)
+447,Automotive Oil Film Cleaning Brush,Cleaning,brush,
+448,Electric Kettle,Lights & Electronics,kettle,
+449,Magic gel kitchen Cleaner,Cleaning,cleaner,Kitchen (kitchen)
+450,Travel Portable Soap Box With Dish,Bathroom & Personal Care,soap,Bags & Storage (box)
+451,Multi Purpose 8 Hook Wooden Hangers,Bags & Storage,hanger,Home & Wall Decor (hook)
+452,Transparent Travel Soap Case,Bathroom & Personal Care,soap,
+453,Metal tape dispenser,Kitchen,dispenser,Home & Wall Decor (tape)
+454,Light Wood Humidifier - Wooden Humidifier,Lights & Electronics,light,
+455,Big Jewelry Leather Box,Bags & Storage,box,
+456,Portable Cordless Heating Pad,Health & Massagers,heating pad,
+457,Voltage Tester Pen,Lights & Electronics,voltage tester,
+458,Electric Water Heater,Lights & Electronics,electric,
+459,Air Sofa Chair,Home & Wall Decor,(none - fallback),
+460,Transparent Faceshield Mask,Health & Massagers,mask,
+461,Magic Stick,Home & Wall Decor,(none - fallback),
+463,Zipper Repair Kit,Home & Wall Decor,(none - fallback),
+464,Black Alarm Clock,Lights & Electronics,clock,
+465,Hair Line Powder [Black],Bathroom & Personal Care,hair,
+466,Dish Drying Mat Kitchen Mat (30*40),Kitchen,kitchen,Home & Wall Decor (mat)
+467,26 LTR Storage Box With Lid,Bags & Storage,storage,
+468,Happy Baby Balloons,Kids & Toys,baby,
+470,Derma Stemp,Bathroom & Personal Care,derma,
+471,Facial Massager Gun,Health & Massagers,massager,Bathroom & Personal Care (facial)
+472,Wooden Coin Piggy Bank,Kids & Toys,piggy bank,
+473,3 in 1 Anti Wrinkles Face Neck Eyes Massager,Health & Massagers,massager,Bathroom & Personal Care (face)
+474,3 In 1 Liquid Soap Dispenser,Bathroom & Personal Care,soap,Kitchen (dispenser)
+475,Geometric Ruler - 360 D,Kids & Toys,geometric ruler,
+476,6 Grid fridge Storage Organizer,Kitchen,fridge,Bags & Storage (storage)
+477,Plant Watering Pipe (12 PCS),Home & Wall Decor,(none - fallback),
+478,Seasoning Jar With Lid Retractable Spoon,Kitchen,jar,
+479,Trolley Bag,Bags & Storage,bag,
+480,Flexible Silicone Polished Faucet Extension,Kitchen,faucet,
+481,Universal Car Back Seat Headrest Hook,Car,car,Home & Wall Decor (hook)
+483,Diamond Hook Sticker,Home & Wall Decor,sticker,
+484,Teddy Bear Toothbrush Holder,Kids & Toys,teddy,Bathroom & Personal Care (toothbrush)
+485,Car Travel Dining Tray,Car,car,
+486,Women Shower Cap,Bathroom & Personal Care,shower,
+487,AC cover 2 Ton,Bags & Storage,cover,
+488,Car Seat Back Organizer,Car,car,Bags & Storage (organizer)
+490,Car Push to Start Button Cover,Car,car,Bags & Storage (cover)
+491,Multi-Function Rotating Crevice Cleaning Brush,Cleaning,brush,
+492,Spiral Hair Styling Pin,Bathroom & Personal Care,hair,
+493,Security Camera Dummy Camera,Lights & Electronics,camera,
+494,Picnic Mat 100*150 CM,Home & Wall Decor,mat,
+495,Bowl Holder Clip,Kitchen,bowl,
+496,Mini Car Dash Duster,Car,car,Cleaning (duster)
+497,Stainless Steel Insulated Water Bottle 500 ML,Kitchen,bottle,
+498,Car Sunset Umbrella,Car,car,Umbrellas & Rain (umbrella)
+499,Summer Scarf,Home & Wall Decor,(none - fallback),
+500,Green Mini Folding Fan,Lights & Electronics,fan,
+502,0.5 L Food Storage Bag Grain Sealed Bag,Bags & Storage,bag,
+503,1 L Food Storage Bag Grain Sealed Bag,Bags & Storage,bag,
+504,2 L Food Storage Bag Grain Sealed Bag,Bags & Storage,bag,
+505,Mobile Suction Case Pad,Lights & Electronics,mobile,
+506,Cookware Cleaner - Boom Wash,Cleaning,cleaner,
+507,Head Massager Scalp,Health & Massagers,massager,Bathroom & Personal Care (scalp)
+508,Magic mash,Home & Wall Decor,(none - fallback),
+510,New Acuplus Sugar Control Clip,Health & Massagers,sugar control,
+511,Wire Stripper,Home & Wall Decor,(none - fallback),
+512,Shape Sorting Cube,Kids & Toys,shape sorting,
+514,Tic Tac Toe Game for Kids plastic XOXO,Kids & Toys,kids,
+515,Diamond Water Bottle,Kitchen,bottle,
+516,Mini Vegetable Push Chopper (800 ML),Kitchen,chopper,
+518,Frosty Water Bottle (Pack Of 6),Kitchen,bottle,
+519,Honeycomb Ice Tray,Kitchen,ice tray,
+520,Storage rack 1 pcs,Bags & Storage,storage,
+521,Wood Cutter Knife - Prune Saw,Kitchen,cutter,
+522,Nail Gun,Bathroom & Personal Care,nail,
+523,Compass Box,Bags & Storage,box,
+524,Yummy Lunch Box With Bottle,Kitchen,lunch box,Bags & Storage (box)
+525,Wooden Domino Set,Kids & Toys,domino,
+526,Kids Spider Web Shooters,Kids & Toys,kids,
+527,Drinking Steel Straw,Kitchen,straw,
+530,Feel Fresh Containers Lunch Box Set of 2,Kitchen,lunch box,Bags & Storage (box)
+531,Let's slim arm sleeve Hvy Quality,Health & Massagers,arm sleeve,
+532,Magnetic phone holder,Lights & Electronics,phone,
+533,Mini Air Cooler,Lights & Electronics,cooler,
+534,Bus Water Cup / Bus Water Bottle,Kitchen,bottle,
+535,Toilet Active Oxygen Agent Cleaner Powder,Bathroom & Personal Care,toilet,Cleaning (cleaner)
+537,2 in 1 eyebrow epilator Blawless,Bathroom & Personal Care,eyebrow,
+538,Car Cleaning Wash Glove,Car,car,Cleaning (cleaning)
+539,Wire Dish Washing Gloves (1 Pcs),Cleaning,dish washing,
+540,Silicone Baby Corner Safety Protector (Set Of 4),Kids & Toys,baby,
+541,Hand Gripper,Health & Massagers,gripper,
+542,Foot Shower Scrubber,Bathroom & Personal Care,shower,Cleaning (scrubber)
+543,Twinkle Eyebrow Razor,Bathroom & Personal Care,razor,
+544,Drawing Paper Roll for Kids,Kids & Toys,kids,
+545,Candy Maker Multi colour,Kitchen,candy,
+546,24 In 1 Screwdriver Set,Home & Wall Decor,(none - fallback),
+547,Kawai water bottle,Kitchen,bottle,
+548,Car Curtain - 4 Pcs Set,Car,car,
+550,Double End Air Cooler Fan With Remote,Lights & Electronics,fan,
+551,Flawless Pedicure Tool,Bathroom & Personal Care,pedicure,
+552,Jump Skipping Rope,Health & Massagers,skipping rope,
+553,Car Protection tape White,Car,car,Home & Wall Decor (tape)
+554,Snapon smile,Home & Wall Decor,(none - fallback),
+555,Acuplus Sugar Control Ring,Health & Massagers,sugar control,
+556,Writing Tablet Kids / Kids Drawing Tablet,Kids & Toys,kids,
+559,500 ML Automatic Lid Bottle Oil Dispenser,Kitchen,oil dispenser,
+560,Mini Plastic Manual Hand Press Juicer,Kitchen,juicer,
+561,6 pcs Self Adhesive Hook Colorful,Home & Wall Decor,hook,
+562,208 Pcs Kids Art Set,Kids & Toys,kids,
+564,Dry Fruit Cutter,Kitchen,cutter,
+565,Mobile Phones Waterproof Pouch Cover,Lights & Electronics,mobile,Bags & Storage (cover)
+566,3 Compartment Steel Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+569,Car Jack Wrench,Car,car,
+570,2 Pcs Kitchen Floor Mat (4060CM & 40120CM),Kitchen,kitchen,Home & Wall Decor (mat)
+571,Travel Toothbrush Head Cover,Bathroom & Personal Care,toothbrush,Bags & Storage (cover)
+572,Aluminium Fruit Press Juicer,Kitchen,juicer,
+573,Portable Electronic Scale,Kitchen,scale,
+575,USB Rechargeable Mini Flawless Eyebrow Trimmer,Bathroom & Personal Care,trimmer,
+576,Super Cleaning Gel Car Glue,Car,car,Cleaning (cleaning)
+577,Yoghurt Filter Strainer,Kitchen,strainer,
+578,Breathing Teddy Bear,Kids & Toys,teddy,
+579,Ice Bag (6 Inch),Health & Massagers,ice bag,Bags & Storage (bag)
+580,Mini Wet Wipes,Cleaning,wipes,
+581,4 Pcs Curly Reusable Straws,Kitchen,straw,
+582,Water sprayer 2 ltr.,Home & Wall Decor,(none - fallback),
+583,Face Lift Up Belt,Bathroom & Personal Care,face,
+584,Magnetic Nasal Strips Nose Clip,Health & Massagers,nose clip,
+585,Portable Bicycle Pump,Car,bicycle,
+586,500ML Insulated Coffee Mug,Kitchen,mug,
+587,Night Light Projector,Lights & Electronics,light,
+588,Multi Design Absorbent Bath Mat,Bathroom & Personal Care,bath,Home & Wall Decor (mat)
+589,Silver clip,Home & Wall Decor,(none - fallback),
+590,Brown Leather Repair Patch,Home & Wall Decor,(none - fallback),
+591,Foldable Travel Bag Wheeled,Bags & Storage,bag,
+592,5 pcs stainless steel protect fresh storage box,Bags & Storage,storage,
+593,Kids Cooling Patches,Kids & Toys,kids,
+594,English Talking Flash Cards,Kids & Toys,flash cards,
+595,Auto Open Close Umbrella UV Black,Umbrellas & Rain,umbrella,
+596,Sewing Tool Kit Tailor Small,Home & Wall Decor,(none - fallback),
+598,QishiShaver,Home & Wall Decor,(none - fallback),
+600,"Lady Hair Comb, Hair Brush With Handle",Bathroom & Personal Care,hair,Cleaning (brush)
+601,300 ML Monaco Juicy Glass,Kitchen,glass,
+602,Vegetable Steamer Basket,Bags & Storage,basket,
+603,Alluminium tap 4 inch,Home & Wall Decor,(none - fallback),
+604,Chair leg cover brown 16 pcs,Bags & Storage,cover,
+605,Manual Nose Hair Trimmer,Bathroom & Personal Care,hair,
+606,Oil Filter Pot - Stainless Steel Oil Filter 1.5 Litre,Kitchen,pot,
+607,Cat Dancing Ball,Home & Wall Decor,(none - fallback),
+608,Heavy-Duty Gym Grips,Health & Massagers,gym grips,
+609,Bathroom Weight Scale,Kitchen,scale,
+610,Hair Straightner Comb Brush,Bathroom & Personal Care,hair,Cleaning (brush)
+611,Booster Cable 500AMP,Lights & Electronics,cable,
+612,Metal Mobile Stand 360 Rotating,Lights & Electronics,mobile,
+613,Golden Eye Mask,Health & Massagers,eye mask,
+614,Smart Scalp Massager,Health & Massagers,massager,Bathroom & Personal Care (scalp)
+615,Nose Strips Blackhead Remove (1 pcs),Health & Massagers,nose strip,
+616,Bird house,Home & Wall Decor,(none - fallback),
+617,HD Vision Goggles,Home & Wall Decor,(none - fallback),
+618,Car Scratch Removal,Car,car,
+619,Stainless Steel 1200ML Insulated Tumbler,Kitchen,tumbler,
+620,Silicone Long Handle Bath Brush,Bathroom & Personal Care,bath,Cleaning (brush)
+623,Knife Set (Black),Kitchen,knife,
+624,Kojic Acid Pads,Bathroom & Personal Care,kojic,
+625,2 In 1 Straw Filter Spoon,Kitchen,straw,
+626,Pistol water spray Gun,Home & Wall Decor,(none - fallback),
+627,Folding Shoulder Hand Bag,Bags & Storage,bag,
+628,7 Inch Quick Sand Art Painting,Kids & Toys,sand art,
+630,Golden Tape 1 Cm 50 meter,Home & Wall Decor,tape,
+631,Bed Smell Remover,Cleaning,smell remover,
+632,Sunshade Roller Blinds 40*125 Cm (Black),Home & Wall Decor,(none - fallback),
+634,Wall Hanging Laundry Basket,Cleaning,laundry,Bags & Storage (basket)
+635,Body Measuring Tape,Home & Wall Decor,tape,
+636,Hula Hoop,Health & Massagers,hula hoop,
+637,Cloud Rain Humidifier,Lights & Electronics,humidifier,
+638,Auto Open Close Umbrella - Automatic Umbrella UV Black,Umbrellas & Rain,umbrella,
+639,Mighty Lunch Box,Kitchen,lunch box,Bags & Storage (box)
+640,Fridge container Pack Of 6,Kitchen,fridge,
+641,"Dish Drying mat (Black, 40X60 CM)",Kitchen,dish drying,Home & Wall Decor (mat)
+642,Multifunctional Universal Shower,Bathroom & Personal Care,shower,
+643,Dot Umbrella,Umbrellas & Rain,umbrella,
+645,Satin Scrunchies - Rubber Band - Ponytail,Bathroom & Personal Care,scrunchies,
+646,Car Seatbelt Clip Buckle Extender,Car,car,
+647,4 in 1 Data Cable (Black),Lights & Electronics,cable,
+648,Miletry Umbrella Big Size 75cm,Umbrellas & Rain,umbrella,
+650,Spring Door Closer,Home & Wall Decor,(none - fallback),
+651,Multiple Holder,Home & Wall Decor,(none - fallback),
+652,Eva Raincoat,Umbrellas & Rain,raincoat,
+653,Cockroach Killer Gel Trap,Cleaning,cockroach,
+655,Triangle Chess Game,Kids & Toys,game,
+656,Ice Cream Bottle,Kitchen,bottle,
+657,Triangle Magnetic Glass Cleaner,Cleaning,cleaner,Kitchen (glass)
+658,1000 ML Waterproof Glue,Home & Wall Decor,(none - fallback),
+659,Kids Projector Torch,Kids & Toys,kids,Lights & Electronics (torch)
+660,Self Stirring Coffee Mug,Kitchen,mug,
+661,Self Adhesive Hook Colorful,Home & Wall Decor,hook,
+662,Chocolate Facial Wax Powder,Bathroom & Personal Care,wax,
+663,Car Magnetic Phone Holder,Car,car,Lights & Electronics (phone)
+664,6 Pcs Silicone Kitchen Spatula,Kitchen,kitchen,
+665,Toilet Freshener injection Gel,Bathroom & Personal Care,toilet,Cleaning (freshener)
+666,Glass Anti Fog Spray,Kitchen,glass,
+667,3 Step plastic cloth Dryer rack 3 Layer Cloth Dryer,Bags & Storage,rack,
+668,Baby Care Kit 10 Pcs,Kids & Toys,baby,
+670,Green Multipurpose Laser Light Disco Pointer Pen,Lights & Electronics,light,
+671,Labubu Doll,Kids & Toys,doll,
+672,H2O Colorful Humidifier,Lights & Electronics,humidifier,
+674,Double cylinder foot pump,Home & Wall Decor,(none - fallback),
+675,Rabbit Night Lamp,Lights & Electronics,lamp,
+676,Bed Sofa,Home & Wall Decor,(none - fallback),
+677,Car Touch Up Paint,Car,car,
+678,Plastic Cloth Hangers 20 pcs,Bags & Storage,hanger,
+679,Migraine Relief Cap,Health & Massagers,migraine,
+680,Kawaii Pencil Case,Kids & Toys,pencil,
+681,Compass with Night Light,Lights & Electronics,light,
+682,3 Times 7 Day Medicine Box,Bags & Storage,box,
+683,5 In 1 Magic Brush,Cleaning,brush,
+684,Bird Toothpick Dispenser,Kitchen,dispenser,
+685,Tissue Tablet,Home & Wall Decor,(none - fallback),
+686,Car Cleaning Wipes 80 Pcs,Car,car,Cleaning (cleaning)
+687,Heavy Mini Body Message Gun Hvy,Health & Massagers,message gun,
+688,Glass Oil Spray Bottle,Kitchen,bottle,
+690,Shoes Washing Bag,Bags & Storage,bag,
+691,4 in 1 Nail Cutter Set,Bathroom & Personal Care,nail,Kitchen (cutter)
+692,6 Slot Watch Box,Bags & Storage,box,
+693,Neck and Shoulder/Back Massager,Health & Massagers,massager,
+694,Wooden memory chess,Kids & Toys,chess,
+695,Dog hair trimmer,Bathroom & Personal Care,hair,
+696,3 In 1 Cat Steam Brush,Cleaning,brush,
+697,Bathroom Rack - Black Aluminum,Bags & Storage,rack,
+699,Car Duster Brush,Car,car,Cleaning (brush)
+700,Pull Reducer 4 Band,Health & Massagers,pull reducer,

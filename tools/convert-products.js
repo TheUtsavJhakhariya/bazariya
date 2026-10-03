@@ -46,15 +46,18 @@ const FALLBACK_CATEGORY = "Home & Wall Decor";
  * so "car" does not match "card" or "cart", and "fan" does not match "fancy".
  * Multi-word keywords ("hot water bag") match that exact phrase.
  */
+// Note: "usb" and a bare "rain" were tried and removed: they pulled
+// "USB Backpack Bag" into electronics and "Cloud Rain Humidifier" into Umbrellas.
+// Cleaning is checked before Lights so "Fan Cleaning Mop" stays a cleaning item.
 const RULES = [
-  { category: "Car", words: ["car", "bike", "vehicle", "headrest", "fuel", "tyre", "tire", "fast tag", "fastag"] },
-  { category: "Umbrellas & Rain", words: ["umbrella", "raincoat", "rain cover", "rain card", "rain"] },
-  { category: "Health & Massagers", words: ["massager", "massage", "hot water bag", "ice bag", "heating pad", "sugar control", "pill box", "pill", "knee", "eye mask", "nose strip", "migraine"] },
-  { category: "Kids & Toys", words: ["kids", "kid", "baby", "toy", "pop it", "art set", "drawing", "game", "chess", "domino", "slingshot", "doll", "balloon", "puzzle", "cartoon", "barbie"] },
-  { category: "Bathroom & Personal Care", words: ["soap", "toothbrush", "toothpaste", "loofah", "bath", "shower", "hair", "hair dryer", "straightener", "trimmer", "wax", "shaver", "razor", "eyebrow", "nail", "makeup", "face", "comb", "derma", "scalp"] },
-  { category: "Lights & Electronics", words: ["lamp", "light", "led", "torch", "solar", "clock", "cable", "charger", "speaker", "mic", "bluetooth", "usb", "projector", "fan", "cooler", "humidifier", "lighter", "kettle", "electric", "grinder"] },
-  { category: "Cleaning", words: ["mop", "brush", "cleaner", "cleaning", "scrubber", "sponge", "duster", "stain", "drain", "detergent", "glass cleaner", "broom", "wipes"] },
-  { category: "Kitchen", words: ["kitchen", "garlic", "chopper", "peeler", "cutter", "spatula", "apron", "tawa", "kadai", "kadhai", "pan", "pot", "oil dispenser", "dispenser", "lunch box", "tiffin", "bottle", "flask", "mug", "cup", "glass", "juicer", "ice tray", "masala", "strainer", "stove", "scale", "coffee", "tea", "spice", "fridge"] },
+  { category: "Car", words: ["car", "bike", "bicycle", "vehicle", "headrest", "fuel", "tyre", "tire", "fast tag", "fastag"] },
+  { category: "Umbrellas & Rain", words: ["umbrella", "raincoat", "rain cover", "rain card"] },
+  { category: "Health & Massagers", words: ["massager", "massage", "message gun", "hot water bag", "hot water rubber", "ice bag", "heating pad", "sugar control", "pill box", "pill", "knee", "eye mask", "nose strip", "nose clip", "nasal", "mask", "migraine", "socks", "insole", "detox", "sweat pad", "arm sleeve", "ice roller", "jawline", "motion sickness", "gripper", "gym grips", "skipping rope", "hula hoop", "pull reducer"] },
+  { category: "Kids & Toys", words: ["kids", "kid", "baby", "child", "toy", "pop it", "art set", "drawing", "game", "chess", "domino", "slingshot", "doll", "balloon", "puzzle", "cartoon", "barbie", "teddy", "color pen", "markers", "color set", "pencil", "flash cards", "piggy bank", "shape sorting", "sand art", "magic book", "geometric ruler"] },
+  { category: "Bathroom & Personal Care", words: ["soap", "toothbrush", "toothpaste", "loofah", "bath", "shower", "toilet", "hair", "hair dryer", "straightener", "trimmer", "wax", "shaver", "razor", "eyebrow", "nail", "makeup", "face", "facial", "comb", "derma", "scalp", "pedicure", "foot scrubber", "kojic", "scrunchies"] },
+  { category: "Cleaning", words: ["mop", "brush", "cleaner", "cleaning", "scrubber", "scrubbing", "sponge", "duster", "stain", "drain", "detergent", "glass cleaner", "broom", "wipes", "dish cloth", "dish washing", "hand gloves", "lint remover", "laundry", "washing machine", "clothes line", "clothing rope", "mosquito", "cockroach", "smell remover", "freshener"] },
+  { category: "Lights & Electronics", words: ["lamp", "light", "led", "torch", "solar", "clock", "cable", "charger", "speaker", "mic", "bluetooth", "projector", "fan", "cooler", "humidifier", "lighter", "kettle", "electric", "grinder", "steam iron", "camera", "voltage tester", "mobile", "phone", "laptop"] },
+  { category: "Kitchen", words: ["kitchen", "dish drying", "garlic", "chopper", "peeler", "cutter", "spatula", "apron", "tawa", "kadai", "kadhai", "pan", "pot", "oil dispenser", "dispenser", "lunch box", "tiffin", "bottle", "flask", "mug", "cup", "glass", "tumbler", "juicer", "ice tray", "masala", "strainer", "stove", "scale", "coffee", "tea", "spice", "fridge", "knife", "sharpener", "sink", "faucet", "funnel", "straw", "jar", "container", "bowl", "spoon", "oven mitt", "momos", "atta", "flour", "cake", "egg", "candy", "sealing machine", "seasoning", "soup"] },
   { category: "Bags & Storage", words: ["bag", "storage", "box", "basket", "organizer", "organiser", "rack", "hanger", "cover", "pouch", "trolley"] },
   { category: "Home & Wall Decor", words: ["marble", "foil", "wallpaper", "sticker", "hook", "diya", "rangoli", "door stopper", "tape", "frame", "decor", "mat"] },
 ];
