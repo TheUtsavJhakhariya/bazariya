@@ -89,9 +89,13 @@
   }
 
   // Format a rupee amount for display: 1599 -> "₹1,599" (Indian grouping).
-  function money(amount, config) {
+  // Paise are shown only if the amount has them (99.5 -> "₹99.50").
+  // round: true -> whole rupees (used for order totals).
+  function money(amount, config, round) {
     var symbol = (config && config.currencySymbol) || DEFAULTS.currencySymbol;
-    return symbol + Math.round(amount).toLocaleString("en-IN");
+    var paise = Math.round(amount * 100);
+    if (round || paise % 100 === 0) return symbol + Math.round(paise / 100).toLocaleString("en-IN");
+    return symbol + (paise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   BZ.config = { load: load, money: money };

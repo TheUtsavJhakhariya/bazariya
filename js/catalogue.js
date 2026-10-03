@@ -387,5 +387,6 @@
     showLoading: showLoading,
     showError: showError,
     findById: findById,
+    displayName: displayName,
   };
 })();

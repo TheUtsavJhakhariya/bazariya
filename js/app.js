@@ -56,12 +56,24 @@
     });
   }
 
+  // Cart, quantity popup and WhatsApp ordering need the products, so they
+  // start once the catalogue is loaded (only once, even after a Retry).
+  var orderingStarted = false;
+  function startOrdering(config) {
+    if (orderingStarted) return;
+    orderingStarted = true;
+    BZ.cart.init(config);
+    BZ.popup.init(config);
+    BZ.order.init(config);
+  }
+
   function loadProducts(config) {
     BZ.catalogue.showLoading();
     BZ.data.load(config)
       .then(function (data) {
         fillStatement(config, data.products.length);
         BZ.catalogue.setProducts(data.products, data.categories);
+        startOrdering(config);
       })
       .catch(function (err) {
         console.warn("Products could not be loaded:", err.message);
