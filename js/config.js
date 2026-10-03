@@ -38,6 +38,10 @@
     if (digits.length === 12 && digits.indexOf("91") === 0) {
       return "+91 " + digits.slice(2, 7) + " " + digits.slice(7);
     }
+    // USA / Canada: "1XXXXXXXXXX" -> "+1 XXX XXX XXXX"
+    if (digits.length === 11 && digits.charAt(0) === "1") {
+      return "+1 " + digits.slice(1, 4) + " " + digits.slice(4, 7) + " " + digits.slice(7);
+    }
     return "+" + digits;
   }
 
