@@ -9,32 +9,6 @@
   var BZ = (window.BZ = window.BZ || {});
   var t = function (k, v) { return BZ.i18n.t(k, v); };
 
-  // Put config values into the page (all with textContent / attributes).
-  function fillShopDetails(config) {
-    var freeText = t("freeDeliveryAbove", { amount: BZ.config.money(config.freeShippingAbove, config) });
-
-    document.querySelectorAll('[data-bz="free-delivery"]').forEach(function (n) { n.textContent = freeText; });
-    document.querySelectorAll('[data-bz="tagline"]').forEach(function (n) { n.textContent = config.tagline; });
-    document.querySelectorAll('[data-bz="shop-name"]').forEach(function (n) { n.textContent = config.shopName; });
-    document.querySelectorAll('[data-bz="year"]').forEach(function (n) { n.textContent = String(new Date().getFullYear()); });
-
-    // Contact links only when a valid number is set.
-    document.querySelectorAll('[data-bz="contact-item"]').forEach(function (n) { n.hidden = !config.canOrder; });
-    if (config.canOrder) {
-      document.querySelectorAll('[data-bz="whatsapp-link"]').forEach(function (a) {
-        a.href = "https://wa.me/" + config.whatsappDigits;
-        a.textContent = "WhatsApp " + config.whatsappDisplay;
-      });
-      document.querySelectorAll('[data-bz="phone-link"]').forEach(function (a) {
-        a.href = "tel:+" + config.whatsappDigits;
-        a.textContent = "Call " + config.whatsappDisplay;
-      });
-    }
-
-    // "Shop number is not set" banner
-    document.getElementById("config-banner").hidden = config.canOrder;
-  }
-
   // The sentence in the dark band, with the product count from the data.
   function fillStatement(config, productCount) {
     var p = document.querySelector('[data-bz="statement"]');
@@ -65,13 +39,21 @@
     BZ.cart.init(config);
     BZ.popup.init(config);
     BZ.order.init(config);
+    // Info pages link to "./#cart" to open the cart here.
+    if (location.hash === "#cart") {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* ignore */ }
+      BZ.cart.openDrawer(document.getElementById("cart-button"));
+    }
   }
+
+  var productCount = 0;
 
   function loadProducts(config) {
     BZ.catalogue.showLoading();
     BZ.data.load(config)
       .then(function (data) {
-        fillStatement(config, data.products.length);
+        productCount = data.products.length;
+        fillStatement(config, productCount);
         BZ.catalogue.setProducts(data.products, data.categories);
         startOrdering(config);
       })
@@ -87,8 +69,15 @@
     BZ.catalogue.showLoading();
     BZ.config.load().then(function (config) {
       BZ.state = { config: config };
-      fillShopDetails(config);
+      BZ.shell.fill(config);
       BZ.catalogue.init(config);
+      // Language picker; on every switch, redraw the text built in JS.
+      BZ.language.init(config, function () {
+        BZ.shell.fill(config);
+        if (productCount) fillStatement(config, productCount);
+        BZ.catalogue.refresh();
+        if (orderingStarted) BZ.cart.refresh();
+      });
       loadProducts(config);
     });
   }

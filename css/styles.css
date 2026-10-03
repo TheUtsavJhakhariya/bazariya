@@ -1210,3 +1210,296 @@ body.has-dialog { overflow: hidden; }
   .cart__content { padding: 0 var(--space-20) var(--space-20); }
   .cart__footer { padding: var(--space-24); }
 }
+
+/* =====================================================================
+   7. Info pages: About, Return policy, Terms (milestone M5)
+   Layout follows 04-terms.png; the same system is reused for all three.
+   ===================================================================== */
+
+a.cart-button { text-decoration: none; }
+
+.breadcrumb {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-edge) var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  text-transform: uppercase;
+}
+.breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; padding: 0; margin: 0; list-style: none; }
+.breadcrumb li + li::before { content: "/"; margin: 0 var(--space-8); color: var(--color-text-muted); }
+.breadcrumb a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
+
+.info-hero {
+  display: grid;
+  gap: var(--space-10);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--space-edge);
+}
+.info-hero__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-24);
+  min-height: 260px;
+  padding: var(--space-28) var(--space-20);
+  background: var(--color-band);
+  color: var(--color-text-on-band);
+  border-radius: var(--radius-xl);
+}
+.info-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 20vw, 150px);
+  font-weight: 400;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+.info-hero__sub {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 6.5vw, 36px);
+  line-height: 1.1;
+}
+.info-hero__sub em { display: block; font-style: italic; color: var(--color-text-on-band-secondary); }
+
+.info-contents {
+  padding: var(--space-20);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+}
+.info-contents__title {
+  margin-bottom: var(--space-8);
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.info-contents ol { padding: 0; margin: 0; list-style: none; border-top: var(--border-hairline); }
+.info-contents li { border-bottom: var(--border-hairline); }
+.info-contents a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  min-height: var(--tap-min);
+  padding: var(--space-6) 0;
+  text-decoration: none;
+}
+.info-contents a:hover span:first-child { text-decoration: underline; text-underline-offset: 3px; }
+.info-contents__num { font-family: var(--font-mono); color: var(--color-text-muted); }
+
+.info-sections {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-edge) 0;
+}
+.info-section {
+  display: grid;
+  gap: var(--space-8);
+  padding: var(--space-24) 0;
+  border-top: 1px solid var(--color-border-input);
+  scroll-margin-top: var(--space-16);
+}
+.info-section__num {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+.info-section__num span { margin-left: var(--space-8); }
+.info-section__body { display: flex; flex-direction: column; gap: var(--space-12); max-width: 70ch; }
+.info-section__body h2 {
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.info-section__body p,
+.info-section__body li { color: var(--color-text-secondary); font-size: var(--text-body-large); }
+.info-section__body strong { color: var(--color-text); font-weight: 600; }
+.info-section__body a { text-underline-offset: 3px; }
+.info-section__body ul,
+.info-section__body ol { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; }
+
+.check-list,
+.cross-list,
+.plain-list,
+.contact-list,
+.feature-list { padding: 0; list-style: none; }
+.check-list li,
+.cross-list li,
+.plain-list li { position: relative; padding-left: var(--space-28); }
+.check-list li::before,
+.cross-list li::before,
+.plain-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-round);
+  border: 1.7px solid var(--color-accent-ink);
+}
+.check-list li::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: calc(0.35em + 3px);
+  width: 5px;
+  height: 8px;
+  border: solid var(--color-accent-ink);
+  border-width: 0 1.7px 1.7px 0;
+  transform: rotate(45deg);
+}
+.cross-list li::before { border-color: var(--color-danger); }
+.cross-list li::after {
+  content: "×";
+  position: absolute;
+  left: 4px;
+  top: 0.05em;
+  color: var(--color-danger);
+  font-weight: 600;
+}
+.plain-list li::before { width: 8px; height: 8px; top: 0.6em; left: 4px; background: var(--color-accent-ink); border: 0; }
+.step-list { padding-left: var(--space-24); }
+.step-list li::marker { font-family: var(--font-mono); color: var(--color-text-muted); }
+.feature-list { display: grid; gap: var(--space-10); }
+.feature-list li {
+  padding: var(--space-16);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+}
+.feature-list strong { display: block; margin-bottom: var(--space-4); font-size: var(--text-title); }
+.contact-list a { display: inline-flex; align-items: center; min-height: var(--tap-min); }
+.info-note { font-style: italic; }
+
+.info-cta {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-48) var(--space-edge) var(--space-40);
+  text-align: center;
+}
+.info-cta__poster {
+  margin-bottom: var(--space-24);
+  font-family: var(--font-display);
+  font-size: clamp(64px, 19vw, 150px);
+  font-weight: 400;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+.info-cta__poster span { display: block; }
+.info-cta__button { width: 100%; max-width: 720px; }
+.info-cta__button[aria-disabled="true"] {
+  background: var(--color-disabled-bg);
+  border-color: var(--color-disabled-bg);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+/* Footer bottom row: copyright + quick language switch */
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+.lang-quick { display: flex; gap: var(--space-4); font-family: var(--font-mono); }
+.lang-quick button {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: var(--text-body);
+}
+.lang-quick button:hover { background: var(--color-bg); }
+.lang-quick button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-text-on-ink); }
+
+@media (min-width: 768px) {
+  .info-section { grid-template-columns: 180px 1fr; gap: var(--space-24); }
+  .info-section__num span { display: block; margin-left: 0; }
+  .info-hero__card { padding: var(--space-32); }
+  .info-contents { padding: var(--space-28); }
+  .feature-list { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1000px) {
+  .info-hero { grid-template-columns: 1.4fr 1fr; }
+}
+
+/* =====================================================================
+   8. Languages (milestone M6)
+   Hindi / Gujarati: Noto Sans is added to every font stack (it is only
+   downloaded when that language is picked) and lines get a bit taller,
+   as the styleguide asks (+0.15 line height for Indic text).
+   ===================================================================== */
+html[lang="hi"] {
+  --font-sans: "Geist", "Noto Sans Devanagari", system-ui, sans-serif;
+  --font-display: "Anton", "Noto Sans Devanagari", Impact, sans-serif;
+  --font-serif: "Instrument Serif", "Noto Sans Devanagari", Georgia, serif;
+  /* Monospace + Indic letters looks gappy, so labels use Noto here */
+  --font-mono: "Noto Sans Devanagari", "Geist Mono", ui-monospace, monospace;
+  --leading-body: 1.65;
+}
+html[lang="gu"] {
+  --font-sans: "Geist", "Noto Sans Gujarati", system-ui, sans-serif;
+  --font-display: "Anton", "Noto Sans Gujarati", Impact, sans-serif;
+  --font-serif: "Instrument Serif", "Noto Sans Gujarati", Georgia, serif;
+  --font-mono: "Noto Sans Gujarati", "Geist Mono", ui-monospace, monospace;
+  --leading-body: 1.65;
+}
+/* Tight display line-heights would clip Indic vowel marks */
+html[lang="hi"] .hero__tagline,
+html[lang="gu"] .hero__tagline,
+html[lang="hi"] .info-hero__title,
+html[lang="gu"] .info-hero__title,
+html[lang="hi"] .info-cta__poster,
+html[lang="gu"] .info-cta__poster,
+html[lang="hi"] .poster-title,
+html[lang="gu"] .poster-title { line-height: 1.15; }
+html[lang="hi"] .serif-heading,
+html[lang="gu"] .serif-heading,
+html[lang="hi"] .dialog__serif-title,
+html[lang="gu"] .dialog__serif-title,
+html[lang="hi"] .state__title,
+html[lang="gu"] .state__title { line-height: 1.3; font-size: 0.85em; }
+html[lang="hi"] .serif-heading,
+html[lang="gu"] .serif-heading { font-size: clamp(32px, 8vw, 40px); }
+html[lang="hi"] .trust-strip,
+html[lang="gu"] .trust-strip,
+html[lang="hi"] .mono-label,
+html[lang="gu"] .mono-label,
+html[lang="hi"] .breadcrumb,
+html[lang="gu"] .breadcrumb { letter-spacing: 0; }
+/* Long words in buttons wrap instead of overflowing */
+.button, .chip, .toast__title, .card__name { overflow-wrap: anywhere; }
+
+/* Language picker (Languages.png) */
+.lang-head { align-items: center; margin-bottom: var(--space-16); padding: var(--space-8) var(--space-4) 0 var(--space-8); }
+.lang-cards { display: grid; gap: var(--space-10); }
+.lang-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-height: 120px;
+  padding: var(--space-16) var(--space-20);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+}
+.lang-card:hover { background: var(--color-surface-pressed); }
+.lang-card--current { background: var(--color-band); color: var(--color-text-on-band); }
+.lang-card--current:hover { background: var(--color-band-raised); }
+.lang-card--current:focus-visible { outline-color: var(--color-focus-on-dark); outline-offset: -4px; }
+.lang-card__top { display: flex; justify-content: space-between; gap: var(--space-8); font-family: var(--font-mono); }
+.lang-card__current { color: var(--color-accent); text-transform: uppercase; }
+.lang-card__native { margin-top: auto; font-size: 40px; font-weight: 600; line-height: 1.2; }
+.lang-card__english { color: inherit; opacity: 0.85; }
+.lang-note { padding: var(--space-16) var(--space-8) var(--space-4); color: var(--color-text-secondary); }
+@media (min-width: 640px) {
+  .lang-cards { grid-template-columns: repeat(3, 1fr); }
+  .lang-card { min-height: 200px; }
+}

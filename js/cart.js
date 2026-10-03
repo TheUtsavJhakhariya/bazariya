@@ -400,6 +400,7 @@
     summary: summary,
     subscribe: subscribe,
     openDrawer: openDrawer,
+    refresh: function () { listeners.forEach(function (fn) { fn(); }); },
     NOTE_MAX: NOTE_MAX,
   };
 })();

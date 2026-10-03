@@ -46,6 +46,11 @@
     return p.name;
   }
 
+  // Category name in the chosen language (the data keeps the English name).
+  function categoryLabel(name) {
+    return BZ.i18n.has("cat_" + name) ? t("cat_" + name) : name;
+  }
+
   // ---------- searching and filtering ----------
 
   // Lowercase, trim, collapse spaces.
@@ -89,7 +94,7 @@
     var list = els.categoryList;
     list.textContent = "";
     var all = [{ name: "", label: t("all"), count: state.products.length }].concat(
-      state.categories.map(function (c) { return { name: c.name, label: c.name, count: c.count }; })
+      state.categories.map(function (c) { return { name: c.name, label: categoryLabel(c.name), count: c.count }; })
     );
     all.forEach(function (c) {
       var btn = el("button", {
@@ -214,7 +219,7 @@
   function showNoResults() {
     var q = normalizeQuery(state.query);
     var title = q
-      ? (state.category ? t("noMatchInCategory", { query: state.query.trim(), category: state.category }) : t("noMatchTitle", { query: state.query.trim() }))
+      ? (state.category ? t("noMatchInCategory", { query: state.query.trim(), category: categoryLabel(state.category) }) : t("noMatchTitle", { query: state.query.trim() }))
       : t("emptyCategory");
     var actions = el("div", { class: "state__actions" }, [
       q ? el("button", { type: "button", class: "button button--primary", "data-state-action": "clear-search", text: t("clearSearch") }) : null,
@@ -366,7 +371,11 @@
 
   function setProducts(products, categories) {
     // Pre-split each product's text once: " panda night lamp 154 lights electronics"
-    products.forEach(function (p) { p.searchWords = " " + splitWords(p.searchText); });
+    // Category names in every language are searchable too ("रसोई", "રસોડું").
+    products.forEach(function (p) {
+      var catWords = BZ.i18n.variants("cat_" + p.category).join(" ").toLowerCase();
+      p.searchWords = " " + splitWords(p.searchText + " " + catWords);
+    });
     // In stock first, then by item number.
     state.products = products.slice().sort(function (a, b) {
       if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
@@ -381,7 +390,16 @@
     render();
   }
 
+  // Redraw everything after a language change (keeps search and category).
+  function refresh() {
+    if (!state.products.length) return;
+    renderCategories();
+    render();
+  }
+
   BZ.catalogue = {
+    refresh: refresh,
+    categoryLabel: categoryLabel,
     init: init,
     setProducts: setProducts,
     showLoading: showLoading,

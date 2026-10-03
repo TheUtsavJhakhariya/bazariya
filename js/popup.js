@@ -126,7 +126,7 @@
 
     var layer = BZ.ui.makeLayer("sheet", "qty-title", [
       el("div", { class: "qty-sheet__head" }, [
-        el("p", { class: "mono-label", text: product.category }),
+        el("p", { class: "mono-label", text: BZ.catalogue.categoryLabel(product.category) }),
         el("button", { type: "button", class: "button button--outline button--close", "data-close": true }, [icon("close"), el("span", { text: t("close") })]),
       ]),
       el("div", { class: "qty-sheet__top" }, [

@@ -20,8 +20,10 @@
   <!-- Our scripts, in this order. Each one adds to window.BZ. -->
   <script defer src="js/i18n.js"></script>
   <script defer src="js/config.js"></script>
+  <script defer src="js/shell.js"></script>
   <script defer src="js/data.js"></script>
   <script defer src="js/ui.js"></script>
+  <script defer src="js/language.js"></script>
   <script defer src="js/catalogue.js"></script>
   <script defer src="js/whatsapp.js"></script>
   <script defer src="js/order.js"></script>
@@ -56,10 +58,9 @@
       </span>
     </a>
     <div class="site-header__actions">
-      <!-- Language picker is wired up in milestone M6 -->
       <button type="button" class="pill-button" id="language-button" aria-haspopup="dialog">
         <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
-        <span lang="en">EN</span>
+        <span id="language-code">EN</span>
         <span class="visually-hidden" data-i18n="changeLanguage">Change language</span>
       </button>
       <button type="button" class="cart-button" id="cart-button" aria-haspopup="dialog">
@@ -137,13 +138,20 @@
       </div>
       <nav class="site-footer__nav" aria-label="Footer">
         <ul>
-          <li><a href="./" data-i18n="allProducts">All products</a></li>
+          <li><a href="./" aria-current="page" data-i18n="allProducts">All products</a></li>
           <li><a href="about.html" data-i18n="aboutUs">About us</a></li>
           <li><a href="return-policy.html" data-i18n="returnPolicy">Return policy</a></li>
           <li><a href="terms.html" data-i18n="terms">Terms</a></li>
         </ul>
       </nav>
-      <p class="site-footer__copy">© <span data-bz="year"></span> <span data-bz="shop-name">BAZARIYAA</span></p>
+      <div class="site-footer__bottom">
+        <p class="site-footer__copy">© <span data-bz="year"></span> <span data-bz="shop-name">BAZARIYAA</span></p>
+        <div class="lang-quick" role="group" data-i18n-attr="aria-label:changeLanguage" aria-label="Change language">
+          <button type="button" data-lang="en" lang="en">EN</button>
+          <button type="button" data-lang="hi" lang="hi">हि</button>
+          <button type="button" data-lang="gu" lang="gu">ગુ</button>
+        </div>
+      </div>
     </div>
   </footer>
 </body>
