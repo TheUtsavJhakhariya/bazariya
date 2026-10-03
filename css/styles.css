@@ -1085,7 +1085,8 @@ body.has-dialog { overflow: hidden; }
   border-radius: var(--radius-pill);
   background: var(--color-surface-sunken);
 }
-.progress__bar { display: block; height: 100%; background: var(--color-accent); border-radius: inherit; }
+/* The dark-orange outline keeps the bar visible against the track (3:1). */
+.progress__bar { display: block; height: 100%; background: var(--color-accent); border-radius: inherit; box-shadow: inset 0 0 0 2px var(--color-accent-ink); }
 .free-box--reached .progress { display: none; }
 
 .cart-list { display: flex; flex-direction: column; gap: var(--space-10); }

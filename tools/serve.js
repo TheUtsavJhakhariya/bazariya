@@ -8,7 +8,7 @@
  *     node tools/serve.js 8080       use another port
  *
  * To test a GitHub Pages style sub-path (https://user.github.io/bazariya/):
- *     node tools/serve.js 8000 /bazariya/   then open http://localhost:8000/bazariya/
+ *     node tools/serve.js 8000 bazariya     then open http://localhost:8000/bazariya/
  *
  * Stop it with Ctrl + C.
  */
