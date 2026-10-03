@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bazariyaa",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/serve.js", "8000"],
+      "port": 8000
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BAZARIYAA – Ghar Ka Bazaar</title>
+  <meta name="description" content="Household items for every home. Browse, add to cart and send your order on WhatsApp. Cash on delivery.">
+  <meta name="theme-color" content="#EDE8E0">
+
+  <!-- Fonts from the styleguide: Anton (big display), Geist (text),
+       Geist Mono (labels), Instrument Serif (headings). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- PapaParse reads the product CSV. Pinned version. -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <!-- Our scripts, in this order. Each one adds to window.BZ. -->
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/config.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/catalogue.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skipToContent">Skip to products</a>
+
+  <!-- Shown by app.js when config.json has no valid WhatsApp number. -->
+  <div class="config-banner" id="config-banner" role="status" hidden>
+    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+    <span data-i18n="bannerNoNumber">Shop number is not set. Orders can't be sent.</span>
+  </div>
+
+  <!-- Trust strip: filled in from config.json by app.js -->
+  <div class="trust-strip">
+    <ul class="trust-strip__list">
+      <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span data-i18n="cashOnDelivery">Cash on delivery</span></li>
+      <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span data-bz="free-delivery">Free delivery</span></li>
+      <li data-bz="contact-item" hidden><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 19l1.2-3.6A7.5 7.5 0 1 1 9 18.3z"/></svg><a data-bz="whatsapp-link" href="#" target="_blank" rel="noopener"></a></li>
+    </ul>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="BAZARIYAA home">
+      <span class="brand__mark" aria-hidden="true">b</span>
+      <span class="brand__text">
+        <span class="brand__name">bazariyaa</span>
+        <span class="brand__tagline" data-bz="tagline">Ghar ka bazaar</span>
+      </span>
+    </a>
+    <div class="site-header__actions">
+      <!-- Language picker is wired up in milestone M6 -->
+      <button type="button" class="pill-button" id="language-button" aria-haspopup="dialog">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+        <span lang="en">EN</span>
+        <span class="visually-hidden" data-i18n="changeLanguage">Change language</span>
+      </button>
+      <!-- Cart drawer is wired up in milestone M3 -->
+      <button type="button" class="cart-button" id="cart-button" aria-haspopup="dialog">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="visually-hidden" data-i18n="openCart">Open cart</span>
+        <span class="cart-button__badge" id="cart-count" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- Big wordmark, as in the home design -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__name">BAZARIYAA</span>
+        <span class="hero__tagline" data-bz="tagline">Ghar ka bazaar</span>
+      </h1>
+    </section>
+
+    <!-- Dark band with the statement and the search box -->
+    <section class="band search-band" aria-labelledby="search-label">
+      <p class="search-band__statement" data-bz="statement"></p>
+      <form class="search" id="search-form" role="search">
+        <label class="visually-hidden" for="search-input" id="search-label" data-i18n="searchLabel">Search products</label>
+        <svg class="icon search__icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input class="search__input" id="search-input" type="search" inputmode="search" autocomplete="off" enterkeyhint="search"
+               data-i18n-attr="placeholder:searchPlaceholder" placeholder="Name or item no. 154">
+        <button type="button" class="search__clear" id="search-clear" hidden data-i18n="clear">Clear</button>
+        <button type="submit" class="search__go">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span class="visually-hidden" data-i18n="showResults">Show results</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Catalogue -->
+    <section class="catalogue" aria-labelledby="catalogue-title">
+      <div class="catalogue__head">
+        <h2 class="serif-heading" id="catalogue-title"><span data-i18n="allItemsA">All</span> <em data-i18n="allItemsB">items</em></h2>
+        <p class="catalogue__count" id="result-count"></p>
+      </div>
+
+      <nav class="filters" aria-labelledby="filters-label">
+        <span class="visually-hidden" id="filters-label" data-i18n="categories">Categories</span>
+        <ul class="filters__list" id="category-list"></ul>
+      </nav>
+
+      <!-- Screen readers hear "48 products found" here -->
+      <p class="visually-hidden" id="live-region" aria-live="polite" aria-atomic="true"></p>
+
+      <!-- Loading / no results / error messages appear here -->
+      <div id="catalogue-state"></div>
+
+      <ul class="product-grid" id="product-grid" aria-labelledby="catalogue-title"></ul>
+
+      <div class="catalogue__more">
+        <button type="button" class="button button--outline" id="show-more" hidden>
+          <span id="show-more-label">Show more</span>
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__card">
+      <div class="site-footer__top">
+        <p class="site-footer__mark"><span>Ghar ka</span> <em>bazaar.</em></p>
+        <ul class="site-footer__facts">
+          <li data-i18n="cashOnDelivery">Cash on delivery</li>
+          <li data-bz="free-delivery">Free delivery</li>
+          <li data-bz="contact-item" hidden><a data-bz="whatsapp-link" href="#" target="_blank" rel="noopener"></a></li>
+          <li data-bz="contact-item" hidden><a data-bz="phone-link" href="#"></a></li>
+        </ul>
+      </div>
+      <nav class="site-footer__nav" aria-label="Footer">
+        <ul>
+          <li><a href="./" data-i18n="allProducts">All products</a></li>
+          <li><a href="about.html" data-i18n="aboutUs">About us</a></li>
+          <li><a href="return-policy.html" data-i18n="returnPolicy">Return policy</a></li>
+          <li><a href="terms.html" data-i18n="terms">Terms</a></li>
+        </ul>
+      </nav>
+      <p class="site-footer__copy">© <span data-bz="year"></span> <span data-bz="shop-name">BAZARIYAA</span></p>
+    </div>
+  </footer>
+</body>
+</html>
