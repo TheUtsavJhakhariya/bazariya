@@ -1,0 +1,14 @@
+{
+  "shopName": "BAZARIYAA",
+  "tagline": "Ghar Ka Bazaar",
+  "whatsappNumber": "",
+  "freeShippingAbove": 499,
+  "currencySymbol": "₹",
+  "sheetCsvUrl": "",
+  "fallbackCsv": "data/products.csv",
+  "imageExtension": "webp",
+  "pageSize": 24,
+  "maxQtyPerItem": 99,
+  "defaultLanguage": "en",
+  "languages": ["en", "hi", "gu"]
+}
