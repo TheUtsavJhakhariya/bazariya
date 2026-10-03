@@ -9,8 +9,14 @@
  * Bad rows never crash the site: they are skipped and summed up in ONE
  * console.warn line.
  *
- * Milestone M4 adds loading from the published Google Sheet (with a
- * timeout) before falling back to data/products.csv.
+ * Loading order (BUILD_BRIEF 9.4):
+ *   1. the published Google Sheet (config.sheetCsvUrl), if set — 8 s timeout
+ *   2. otherwise, or if that fails: data/products.csv (config.fallbackCsv)
+ *   3. if both fail: the page shows "Couldn't load items" with Retry
+ *
+ * Caching: we do NOT add "?nocache=..." to the Sheet link. Google already
+ * caches the published CSV for a few minutes on its side, so a cache-buster
+ * would not make edits appear faster; it would only make every visit slower.
  */
 (function () {
   "use strict";
@@ -134,12 +140,34 @@
     return known.concat(unknown).map(function (c) { return { name: c, count: present[c] }; });
   }
 
+  var SHEET_TIMEOUT_MS = 8000;
+
+  // fetch() that gives up after ms milliseconds.
+  function fetchWithTimeout(url, ms) {
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer;
+    var timeout = new Promise(function (resolve, reject) {
+      timer = setTimeout(function () {
+        if (controller) controller.abort();
+        reject(new Error("timed out after " + ms / 1000 + " s"));
+      }, ms);
+    });
+    var request = fetch(url, controller ? { signal: controller.signal } : undefined);
+    return Promise.race([request, timeout]).then(
+      function (res) { clearTimeout(timer); return res; },
+      function (err) { clearTimeout(timer); throw err; }
+    );
+  }
+
   // Fetch a CSV file and parse it with PapaParse. Rejects on any failure.
-  function fetchCsv(url) {
-    return fetch(url).then(function (res) {
+  function fetchCsv(url, timeoutMs) {
+    var request = timeoutMs ? fetchWithTimeout(url, timeoutMs) : fetch(url);
+    return request.then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status + " for " + url);
       return res.text();
     }).then(function (csvText) {
+      // A Sheet that is not published (or a wrong link) returns a web page, not CSV.
+      if (/^\s*</.test(csvText)) throw new Error("got a web page instead of CSV — is the Sheet published as CSV?");
       if (!window.Papa) throw new Error("PapaParse did not load");
       var result = window.Papa.parse(csvText.replace(/^﻿/, ""), {
         header: true,
@@ -154,13 +182,33 @@
     });
   }
 
-  // Load products. Resolves with { products, categories }; rejects if nothing loads.
-  function load(config) {
+  // Rows -> { products, categories, source }; rejects if no product is valid.
+  function fromRows(rows, config, source) {
+    var products = buildProducts(rows, config);
+    if (!products.length) throw new Error("no valid products in " + source);
+    return { products: products, categories: categoriesIn(products), source: source };
+  }
+
+  function loadFallback(config) {
     return fetchCsv(config.fallbackCsv).then(function (rows) {
-      var products = buildProducts(rows, config);
-      if (!products.length) throw new Error("No valid products in " + config.fallbackCsv);
-      return { products: products, categories: categoriesIn(products) };
+      return fromRows(rows, config, config.fallbackCsv);
     });
+  }
+
+  // Load products. Resolves with { products, categories, source }; rejects if nothing loads.
+  function load(config) {
+    if (!config.sheetCsvUrl) return loadFallback(config);
+    if (config.sheetCsvUrl.toLowerCase().indexOf("https://") !== 0) {
+      console.warn("sheetCsvUrl must start with https:// — using " + config.fallbackCsv + " instead.");
+      return loadFallback(config);
+    }
+    return fetchCsv(config.sheetCsvUrl, SHEET_TIMEOUT_MS)
+      .then(function (rows) { return fromRows(rows, config, "Google Sheet"); })
+      .catch(function (err) {
+        // Small notice for whoever opens the console; the customer sees nothing.
+        console.warn("Google Sheet could not be loaded (" + err.message + "). Using " + config.fallbackCsv + " instead.");
+        return loadFallback(config);
+      });
   }
 
   BZ.data = { load: load, PLACEHOLDER_IMAGE: PLACEHOLDER_IMAGE };
