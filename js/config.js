@@ -32,7 +32,7 @@
     return /^\d{10,15}$/.test(digits) ? digits : "";
   }
 
-  // "919876543210" -> "+91 98765 43210" (Indian style); other lengths: "+<digits>".
+  // "91XXXXXXXXXX" -> "+91 XXXXX XXXXX" (Indian style); other lengths: "+<digits>".
   function formatNumber(digits) {
     if (!digits) return "";
     if (digits.length === 12 && digits.indexOf("91") === 0) {
