@@ -252,7 +252,7 @@
     retry.addEventListener("click", onRetry);
     els.stateBox.appendChild(el("div", { class: "state", role: "alert" }, [
       el("h3", { class: "state__title", text: t("loadFailedTitle") }),
-      el("p", { class: "state__text", text: t("loadFailedText") }),
+      el("p", { class: "state__text", text: location.protocol === "file:" ? t("openedAsFile") : t("loadFailedText") }),
       el("div", { class: "state__actions" }, [retry]),
     ]));
     els.live.textContent = t("loadFailedTitle");

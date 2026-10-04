@@ -54,6 +54,13 @@
 
     var banner = document.getElementById("config-banner");
     if (banner) banner.hidden = config.canOrder;
+
+    // Opened by double-clicking the file? Browsers then block config.json
+    // and the product list, so say clearly how to open it properly.
+    if (banner && location.protocol === "file:") {
+      banner.querySelector("span").textContent = t("openedAsFile");
+      banner.hidden = false;
+    }
   }
 
   // Info pages: the cart lives on the home page, so the badge just counts

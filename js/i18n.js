@@ -16,6 +16,7 @@
 
   var STRINGS = {
     en: {
+      openedAsFile: "You opened this page as a file, so products can't load. Double-click \"Start BAZARIYAA.bat\" in the project folder instead.",
       skipToContent: "Skip to products",
       bannerNoNumber: "Shop number is not set. Orders can't be sent.",
       cashOnDelivery: "Cash on delivery",
@@ -176,6 +177,7 @@
        Please ask a fluent Hindi speaker to check every line before launch.
        ================================================================ */
     hi: {
+      openedAsFile: "यह पेज फ़ाइल की तरह खोला गया है, इसलिए सामान लोड नहीं हो सकता। प्रोजेक्ट फ़ोल्डर में \"Start BAZARIYAA.bat\" पर डबल-क्लिक करें।",
       skipToContent: "सामान पर जाएँ",
       bannerNoNumber: "दुकान का नंबर सेट नहीं है। ऑर्डर नहीं भेजे जा सकते।",
       cashOnDelivery: "कैश ऑन डिलीवरी",
@@ -321,6 +323,7 @@
        Please ask a fluent Gujarati speaker to check every line before launch.
        ================================================================ */
     gu: {
+      openedAsFile: "આ પેજ ફાઇલ તરીકે ખોલ્યું છે, એટલે વસ્તુઓ લોડ થઈ શકતી નથી. પ્રોજેક્ટ ફોલ્ડરમાં \"Start BAZARIYAA.bat\" પર ડબલ-ક્લિક કરો.",
       skipToContent: "સામાન પર જાઓ",
       bannerNoNumber: "દુકાનનો નંબર સેટ નથી. ઓર્ડર મોકલી શકાતા નથી.",
       cashOnDelivery: "કેશ ઓન ડિલિવરી",
