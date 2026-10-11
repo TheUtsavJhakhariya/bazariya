@@ -44,7 +44,12 @@
         a.textContent = t("callNumber", { number: config.whatsappDisplay });
       });
       all('[data-bz="number-text"]', function (n) { n.textContent = config.whatsappDisplay; });
-      all("[data-cta-link]", function (a) { a.href = "https://wa.me/" + config.whatsappDigits; });
+      all("[data-cta-link]", function (a) {
+        var url = "https://wa.me/" + config.whatsappDigits;
+        var extra = a.getAttribute("data-wa-text");
+        if (extra) url += "?text=" + encodeURIComponent(extra);
+        a.href = url;
+      });
     }
     all('[data-bz="needs-number"]', function (n) {
       if (config.canOrder) return;
