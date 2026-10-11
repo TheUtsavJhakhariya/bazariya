@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About us – BAZARIYAA</title>
-  <meta name="description" content="About BAZARIYAA – Ghar Ka Bazaar: household essentials for Indian families, ordered on WhatsApp.">
+  <meta name="description" content="About BAZARIYAA – Ghar Ka Bazaar: a household shop in Surat. Order the same list on WhatsApp.">
   <meta name="theme-color" content="#EDE8E0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,20 +17,12 @@
   <script defer src="js/language.js"></script>
   <script defer src="js/page.js"></script>
 </head>
-<body class="info-page">
+<body class="about-page">
   <a class="skip-link" href="#main" data-i18n="skipToMain">Skip to main content</a>
 
   <div class="config-banner" id="config-banner" role="status" hidden>
     <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
     <span data-i18n="bannerNoNumber">Shop number is not set. Orders can't be sent.</span>
-  </div>
-
-  <div class="trust-strip">
-    <ul class="trust-strip__list">
-      <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span data-i18n="cashOnDelivery">Cash on delivery</span></li>
-      <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span data-bz="free-delivery">Free delivery</span></li>
-      <li data-bz="contact-item" hidden><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 19l1.2-3.6A7.5 7.5 0 1 1 9 18.3z"/></svg><a data-bz="whatsapp-link" href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
   </div>
 
   <header class="site-header">
@@ -41,7 +33,12 @@
         <span class="brand__tagline" data-bz="tagline">Ghar ka bazaar</span>
       </span>
     </a>
+    <p class="deliver-pill"><span class="deliver-pill__dot" aria-hidden="true"></span>Delivering across Surat</p>
     <div class="site-header__actions">
+      <a class="icon-button" href="./#search-input">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        <span class="visually-hidden" data-i18n="searchLabel">Search products</span>
+      </a>
       <button type="button" class="pill-button" id="language-button" aria-haspopup="dialog">
         <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
         <span id="language-code">EN</span>
@@ -63,94 +60,100 @@
       </ol>
     </nav>
 
-    <div class="info-hero">
-      <div class="info-hero__card">
-        <h1 class="info-hero__title" data-i18n="aboutUs">About us</h1>
-        <!-- Legal and policy text stays in English -->
-        <p class="info-hero__sub" lang="en">Your Trusted Partner <em>for Quality Home Products</em></p>
-      </div>
-      <nav class="info-contents" aria-labelledby="contents-title">
-        <h2 class="info-contents__title" id="contents-title" data-i18n="contents">Contents</h2>
-        <ol lang="en">
-          <li><a href="#who-we-are"><span>Who We Are</span><span class="info-contents__num">01</span></a></li>
-          <li><a href="#our-mission"><span>Our Mission</span><span class="info-contents__num">02</span></a></li>
-          <li><a href="#why-choose"><span>Why Choose BAZARIYAA?</span><span class="info-contents__num">03</span></a></li>
-          <li><a href="#our-commitment"><span>Our Commitment</span><span class="info-contents__num">04</span></a></li>
-          <li><a href="#contact-us"><span>Contact Us</span><span class="info-contents__num">05</span></a></li>
+    <!-- Story copy is the wording printed on Page Reference Images/03-about.png.
+         The phone number is not taken from that picture; shell.js fills it from config.json. -->
+    <article class="about-wrap" lang="en">
+      <section class="about-letter" aria-labelledby="about-quote">
+        <p class="about-kicker">A letter from the family</p>
+        <div class="about-letter__top">
+          <h1 class="about-quote" id="about-quote">“We started Bazariyaa because buying a ₹50 brush shouldn’t need an app, a card or a trip across Surat.”</h1>
+          <p class="about-sign">— <em>with love</em></p>
+        </div>
+        <div class="about-founder">
+          <!-- "Your name" is the placeholder written on the design. Replace it when the owner gives the real name. -->
+          <img src="images/about-founder.jpg" alt="" width="64" height="64">
+          <p><strong>Your name</strong><span>Founder, Bazariyaa</span></p>
+        </div>
+
+        <div class="about-photos">
+          <figure class="about-photo about-photo--shop">
+            <img src="images/about-shop.jpg" alt="">
+            <figcaption>Our shop, Surat</figcaption>
+          </figure>
+          <figure class="about-photo about-photo--pack">
+            <img src="images/about-pack.jpg" alt="">
+            <figcaption>Pack no. 001-01</figcaption>
+          </figure>
+          <p class="about-check">Checked by hand <em>before it leaves.</em></p>
+        </div>
+      </section>
+
+      <section class="about-journey" aria-labelledby="journey-title">
+        <h2 id="journey-title">Our journey</h2>
+        <ol class="journey">
+          <li>
+            <span class="journey__year">2024</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>A stall in the market</h3>
+              <p>We started selling kitchen tools from a small stall.</p>
+            </div>
+          </li>
+          <li>
+            <span class="journey__year">2025</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>Orders on WhatsApp</h3>
+              <p>Regulars began messaging us lists. We delivered on our scooter.</p>
+            </div>
+          </li>
+          <li class="is-current">
+            <span class="journey__year">2026</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>Bazariyaa online</h3>
+              <p>412 items in one catalogue, still ordered the same simple way.</p>
+            </div>
+          </li>
+          <li>
+            <span class="journey__year">Next</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>More of Surat</h3>
+              <p>Faster delivery to every area of the city before we go further.</p>
+            </div>
+          </li>
         </ol>
-      </nav>
-    </div>
-
-    <article class="info-sections" lang="en">
-      <section class="info-section" id="who-we-are" aria-labelledby="who-we-are-h">
-        <p class="info-section__num">(01)<span>Who we are</span></p>
-        <div class="info-section__body">
-          <h2 id="who-we-are-h">Who We Are</h2>
-          <p>BAZARIYAA – Ghar Ka Bazaar is your one-stop destination for all household essentials. We understand the needs of Indian families and strive to provide quality products that make daily life easier and more comfortable.</p>
-          <p>Founded with a vision to bring convenience to every home, we curate a wide range of products from kitchen essentials to home decor, ensuring quality and affordability in every purchase.</p>
-        </div>
       </section>
 
-      <section class="info-section" id="our-mission" aria-labelledby="our-mission-h">
-        <p class="info-section__num">(02)<span>Mission</span></p>
-        <div class="info-section__body">
-          <h2 id="our-mission-h">Our Mission</h2>
-          <p>To provide high-quality household products at affordable prices, delivered right to your doorstep. We believe that every home deserves the best, and we're committed to making quality accessible to all.</p>
+      <section class="about-surat" aria-labelledby="surat-title">
+        <div>
+          <p class="about-kicker">More of delivery</p>
+          <h2 id="surat-title">All of Surat.</h2>
+          <p>Only Surat for now, so we can deliver quickly and take care of the shop.</p>
         </div>
+        <ul class="area-list">
+          <li>Adajan</li>
+          <li>Vesu</li>
+          <li>Pal</li>
+          <li>Piplod</li>
+          <li>Athwa</li>
+          <li>Varachha</li>
+          <li>Katargam</li>
+          <li>Udhna</li>
+          <li>Althan</li>
+          <li>City light</li>
+        </ul>
       </section>
 
-      <section class="info-section" id="why-choose" aria-labelledby="why-choose-h">
-        <p class="info-section__num">(03)<span>Why us</span></p>
-        <div class="info-section__body">
-          <h2 id="why-choose-h">Why Choose BAZARIYAA?</h2>
-          <ul class="feature-list">
-            <li><strong>Quality Assured</strong> Every product is carefully selected to meet our high quality standards</li>
-            <li><strong>Best Prices</strong> Competitive pricing without compromising on quality</li>
-            <li><strong>Fast Delivery</strong> Quick and reliable delivery to your doorstep</li>
-            <li><strong>Easy Ordering</strong> Simple WhatsApp-based ordering process</li>
-            <li><strong>Easy Returns</strong> Hassle-free return policy for your peace of mind</li>
-            <li><strong>Home Focused</strong> Products designed specifically for Indian homes</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="info-section" id="our-commitment" aria-labelledby="our-commitment-h">
-        <p class="info-section__num">(04)<span>Commitment</span></p>
-        <div class="info-section__body">
-          <h2 id="our-commitment-h">Our Commitment</h2>
-          <p>We are committed to:</p>
-          <ul class="check-list">
-            <li>Providing genuine, quality products</li>
-            <li>Ensuring customer satisfaction</li>
-            <li>Maintaining transparent pricing</li>
-            <li>Offering excellent customer service</li>
-            <li>Building long-term trust with our customers</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="info-section" id="contact-us" aria-labelledby="contact-us-h">
-        <p class="info-section__num">(05)<span>Contact</span></p>
-        <div class="info-section__body">
-          <h2 id="contact-us-h">Contact Us</h2>
-          <p>Have questions or need assistance? We're here to help!</p>
-          <ul class="contact-list">
-            <li data-bz="contact-item" hidden>Phone: <a data-bz="phone-link" href="#"></a></li>
-            <li data-bz="contact-item" hidden>WhatsApp: <a data-bz="whatsapp-link" data-keep-text href="#" target="_blank" rel="noopener">Message Us</a></li>
-            <li data-bz="no-number-item"><span data-i18n="numberComingSoon">Our phone number will be added here soon.</span></li>
-            <li>Order via WhatsApp: Simply browse our products and send your order through WhatsApp</li>
-          </ul>
-        </div>
+      <section class="about-hello" aria-labelledby="hello-title">
+        <h2 class="about-hello__title" id="hello-title">Say namaste</h2>
+        <a class="about-chat" data-bz="needs-number" href="#" data-cta-link target="_blank" rel="noopener">
+          <span class="about-chat__dot" aria-hidden="true"></span>
+          <span>Chat with us<span data-bz="number-text"></span></span>
+        </a>
       </section>
     </article>
-
-    <section class="info-cta" aria-labelledby="cta-title">
-      <h2 class="info-cta__poster" id="cta-title"><span data-i18n="ctaQuestions">Questions?</span> <span data-i18n="ctaAskUs">Ask us</span></h2>
-      <a class="button button--outline button--lg info-cta__button" data-bz="needs-number" href="#" data-cta-link target="_blank" rel="noopener">
-        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 19l1.2-3.6A7.5 7.5 0 1 1 9 18.3z"/></svg>
-        <span data-i18n="chatOnWhatsApp">Chat with us on WhatsApp</span>
-      </a>
-    </section>
   </main>
 
   <footer class="site-footer">
@@ -160,13 +163,11 @@
         <ul class="site-footer__facts">
           <li data-i18n="cashOnDelivery">Cash on delivery</li>
           <li data-bz="free-delivery">Free delivery</li>
-          <li data-bz="contact-item" hidden><a data-bz="whatsapp-link" href="#" target="_blank" rel="noopener"></a></li>
-          <li data-bz="contact-item" hidden><a data-bz="phone-link" href="#"></a></li>
+          <li>Surat, Gujarat</li>
         </ul>
       </div>
       <nav class="site-footer__nav" aria-label="Footer">
         <ul>
-          <li><a href="./" data-i18n="allProducts">All products</a></li>
           <li><a href="about.html" aria-current="page" data-i18n="aboutUs">About us</a></li>
           <li><a href="return-policy.html" data-i18n="returnPolicy">Return policy</a></li>
           <li><a href="terms.html" data-i18n="terms">Terms</a></li>
