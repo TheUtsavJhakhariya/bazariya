@@ -1,0 +1,54 @@
+/* Lets the shop header sit on About, Return and Terms
+   without the older page styles taking over. */
+
+#site-header.site-header {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 var(--space-8);
+  background: var(--color-bg);
+}
+
+#site-header .wrap {
+  width: min(var(--page-max), calc(100% - 2 * var(--space-gutter)));
+  margin-inline: auto;
+  padding-top: var(--space-16);
+}
+
+@media (max-width: 767px) {
+  #site-header .wrap {
+    width: calc(100% - 2 * var(--space-edge));
+  }
+}
+
+/* Page icons are the svg itself. The shop header wraps its svg in a span. */
+body.about-page svg.icon,
+body.info-page svg.icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#site-header .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  stroke: none;
+}
+
+body.about-page .site-footer,
+body.info-page .site-footer {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--space-edge) var(--space-24);
+}

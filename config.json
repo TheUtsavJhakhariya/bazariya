@@ -1,14 +1,17 @@
 {
   "shopName": "BAZARIYAA",
-  "tagline": "Ghar Ka Bazaar",
-  "whatsappNumber": "+1 6474096236",
-  "freeShippingAbove": 499,
+  "tagline": "Ghar ka bazaar",
+  "whatsappNumber": "+1 647 409 6236",
+  "freeDeliveryAbove": 499,
   "currencySymbol": "₹",
+  "city": "Surat",
+  "areas": ["Adajan", "Vesu", "Pal", "Piplod", "Athwa", "Varachha", "Katargam", "Udhna", "Althan", "City Light", "Rander"],
   "sheetCsvUrl": "",
-  "fallbackCsv": "data/products.csv",
-  "imageExtension": "webp",
-  "pageSize": 24,
+  "fallbackCsv": "Product sheets - Products.csv",
+  "popularCount": 8,
+  "showMoreStep": 20,
   "maxQtyPerItem": 99,
+  "noteMaxLength": 120,
   "defaultLanguage": "en",
   "languages": ["en", "hi", "gu"]
 }

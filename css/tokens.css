@@ -1,0 +1,173 @@
+/* Design tokens from the styleguide. Do not invent extra colours. */
+
+:root {
+  --color-bg: #EDE8E0;
+  --color-surface: #FBF9F5;
+  --color-surface-sunken: #E4DED4;
+  --color-surface-pressed: #DCD5C9;
+  --color-band: #262624;
+  --color-band-raised: #3A3A37;
+  --color-white: #FFFFFF;
+
+  --color-text: #1E1E1C;
+  --color-text-secondary: #3A3833;
+  --color-text-muted: #5E5B54;
+  --color-text-faint: #807B71;
+  --color-text-on-sage: #24302A;
+  --color-text-on-band: #EDE8E0;
+  --color-text-on-band-secondary: #D9D4CB;
+  --color-text-on-band-muted: #BDB8AF;
+  --color-text-on-band-dim: #9B978F;
+  --color-text-on-ink: #FFFFFF;
+
+  --color-border-strong: #1E1E1C;
+  --color-border-input: #807B71;
+  --color-border-on-band: #7A766E;
+  --color-divider-on-band: #3A3A37;
+
+  --color-primary: #1E1E1C;
+  --color-primary-hover: #3A3A37;
+  --color-primary-pressed: #262624;
+
+  --color-accent: #FF8A3D;
+  --color-accent-hover: #F07A2C;
+  --color-accent-pressed: #D96A1C;
+  --color-accent-ink: #C2560F;
+  --color-accent-soft: #FFE1CC;
+  --color-accent-tint: #FFB27A;
+  --color-whatsapp: #FF8A3D;
+
+  --color-disabled-bg: #E4DED4;
+  --color-disabled-text: #5E5B54;
+
+  --color-sage: #A9BCB1;
+  --color-sage-light: #B9CDC1;
+  --color-success: #A9BCB1;
+  --color-warning: #FFE1CC;
+  --color-danger: #B42318;
+
+  --color-badge-oos-bg: #1E1E1C;
+  --color-badge-free-bg: #FF8A3D;
+  --color-badge-count-bg: #FF8A3D;
+
+  --color-overlay: rgba(30, 30, 28, 0.55);
+  --color-image-scrim: rgba(237, 232, 224, 0.72);
+  --color-skeleton-base: #E4DED4;
+  --color-skeleton-shimmer: #EDE8E0;
+  --color-focus: #1E1E1C;
+  --color-focus-on-dark: #FF8A3D;
+
+  --font-display: "Anton", Impact, sans-serif;
+  --font-ui: "Geist", "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* Big display sizes shrink on a phone so they stay on the screen. */
+  --text-display-size: clamp(72px, 23vw, 168px);
+  --text-display-lh: 0.86;
+  --text-display-sub-size: clamp(36px, 11.5vw, 86px);
+  --text-display-sub-lh: 0.9;
+  --text-poster-size: clamp(56px, 16vw, 118px);
+  --text-poster-lh: 0.9;
+  --text-marquee-size: 58px;
+  --text-marquee-lh: 1;
+  --text-stat-size: 88px;
+  --text-stat-lh: 1;
+  --text-stat-track: -4.4px;
+  --text-h1-size: clamp(40px, 10vw, 72px);
+  --text-h1-lh: 0.9;
+  --text-h1-track: -4.32px;
+  --text-h2-size: clamp(32px, 7vw, 52px);
+  --text-h2-lh: 1;
+  --text-h2-track: -2.6px;
+  --text-h3-size: 24px;
+  --text-h3-lh: 1.2;
+  --text-h3-track: -0.48px;
+  --text-title-size: 19px;
+  --text-title-lh: 1.25;
+  --text-serif-heading-size: 46px;
+  --text-serif-heading-lh: 1;
+  --text-statement-size: clamp(26px, 6vw, 40px);
+  --text-statement-lh: 1.24;
+  --text-statement-track: -1.2px;
+  --text-department-size: 40px;
+  --text-department-lh: 1.4;
+  --text-department-track: -1.4px;
+  --text-filter-size: 30px;
+  --text-filter-lh: 1.2;
+  --text-filter-track: -1.05px;
+  --text-body-large-size: 17px;
+  --text-body-large-lh: 1.5;
+  --text-body-size: 16px;
+  --text-body-lh: 1.45;
+  --text-small-size: 15px;
+  --text-small-lh: 1.4;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-meta-size: 13px;
+  --text-meta-lh: 1.2;
+  --text-label-size: 12px;
+  --text-label-lh: 1.4;
+  --text-badge-size: 13px;
+  --text-price-size: 20px;
+  --text-price-lh: 1.2;
+  --text-price-track: -0.4px;
+  --text-price-row-size: 28px;
+  --text-price-large-size: 42px;
+  --text-total-size: 30px;
+  --text-total-lh: 1.1;
+  --text-total-track: -0.9px;
+  --text-button-size: 15px;
+  --text-button-lg-size: 17px;
+  --text-button-mono-size: 14px;
+  --text-button-mono-track: 0.84px;
+  --text-chip-size: 14px;
+  --text-input-size: 18px;
+  --text-input-lh: 1.2;
+  --text-nav-size: 15px;
+  --text-footer-mark-size: 56px;
+  --text-footer-mark-lh: 0.95;
+
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-64: 64px;
+  --space-72: 72px;
+  --space-gutter: 24px;
+  --space-edge: 12px;
+  --space-section: 56px;
+  --space-grid: 10px;
+
+  --radius-xs: 7px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+
+  --shadow-sticker: 0 2px 6px rgba(30, 30, 28, 0.12);
+  --shadow-photo: 0 8px 24px rgba(30, 30, 28, 0.14);
+  --shadow-stack: 0 10px 24px rgba(30, 30, 28, 0.12);
+  --shadow-stack-top: 0 16px 36px rgba(30, 30, 28, 0.16);
+  --shadow-popover: 0 12px 32px rgba(30, 30, 28, 0.18);
+  --shadow-modal: 0 24px 60px rgba(30, 30, 28, 0.28);
+  --shadow-drawer: -12px 0 40px rgba(30, 30, 28, 0.22);
+  --shadow-toast: 0 10px 30px rgba(30, 30, 28, 0.22);
+  --shadow-cartbar: 0 14px 28px rgba(255, 138, 61, 0.38), 0 8px 18px rgba(30, 30, 28, 0.16);
+  --shadow-header: 0 2px 12px rgba(30, 30, 28, 0.08);
+
+  --tap-min: 48px;
+  --tap-lg: 56px;
+  --page-max: 1280px;
+}

@@ -1,277 +1,242 @@
-/*
- * ui.js — shared building blocks used by the popup, cart and WhatsApp code:
- *
- *   BZ.ui.el(tag, attrs, children)   build DOM safely (text via textContent)
- *   BZ.ui.img(src, alt)              <img> that falls back to the placeholder
- *   BZ.ui.icon(name)                 inline SVG line icon
- *   BZ.ui.openDialog(layer, opts)    show a popup (focus trap, Esc, backdrop,
- *   BZ.ui.closeDialog()              Android back button, page scroll lock)
- *   BZ.ui.swapDialog(layer, opts)    replace the top popup with another one
- *   BZ.ui.toast(message, opts)       short message at the bottom of the screen
- *
- * Popups can stack (e.g. "Remove this?" on top of the cart). Each open popup
- * adds one browser history entry, so the phone's back button closes it.
- */
-(function () {
-  "use strict";
-  var BZ = (window.BZ = window.BZ || {});
+/* Dialogs, the dimmed page behind them, and toasts.
+   One dialog sits on top of another. Escape, the backdrop, and the
+   Android back button close the top one and put focus back. */
 
-  // ---------- DOM helpers ----------
+var UI = (function () {
+  var stack = [];
+  var ignorePop = false;
+  var bound = false;
+  var toastTimer = 0;
 
-  // el("p", { class: "x", text: "hello" }, [child, child])
-  // Attribute value true -> empty attribute; false/null -> left out.
-  function el(tag, attrs, children) {
+  function el(tag, className, text) {
     var node = document.createElement(tag);
-    Object.keys(attrs || {}).forEach(function (k) {
-      var v = attrs[k];
-      if (k === "text") node.textContent = v;
-      else if (v !== false && v != null) node.setAttribute(k, v === true ? "" : v);
-    });
-    (children || []).forEach(function (c) {
-      if (c == null || c === false) return;
-      node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
-    });
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
     return node;
   }
 
-  function img(src, alt, attrs) {
-    var image = el("img", Object.assign({ src: src, alt: alt || "", decoding: "async" }, attrs || {}));
-    image.addEventListener("error", function () {
-      if (image.getAttribute("src") !== BZ.data.PLACEHOLDER_IMAGE) image.src = BZ.data.PLACEHOLDER_IMAGE;
+  function phone() {
+    return window.matchMedia('(max-width: 767px)').matches;
+  }
+
+  function root() {
+    var node = document.getElementById('layer-root');
+    if (!node) {
+      node = el('div', 'layer-root');
+      node.id = 'layer-root';
+      node.hidden = true;
+      document.body.appendChild(node);
+    }
+    return node;
+  }
+
+  function focusable(layer) {
+    var list = layer.querySelectorAll('button, a[href], input, textarea, select');
+    var out = [];
+    var i;
+    for (i = 0; i < list.length; i += 1) {
+      if (list[i].disabled) continue;
+      if (list[i].getAttribute('aria-hidden') === 'true') continue;
+      if (!list[i].getClientRects().length) continue;
+      out.push(list[i]);
+    }
+    return out;
+  }
+
+  function open(opts) {
+    bind();
+    var box = root();
+    var wrap = el('div', 'layer is-' + (opts.kind || 'modal'));
+    var back = el('div', 'layer-back');
+    var dialog = opts.node;
+    var reuseHistory = false;
+    var opener = document.activeElement;
+    if (opts.swap && stack.length) {
+      var prev = stack.pop();
+      if (prev.opener) opener = prev.opener;
+      prev.wrap.remove();
+      if (prev.onClose) prev.onClose();
+      reuseHistory = prev.history;
+    }
+    back.addEventListener('click', function () {
+      if (opts.onBack) opts.onBack();
+      else close();
     });
-    return image;
-  }
-
-  // Line icons from the styleguide (24 viewBox, 1.7 stroke).
-  var ICONS = {
-    close: "M6 6l12 12M18 6L6 18",
-    plus: "M12 5v14M5 12h14",
-    minus: "M5 12h14",
-    chat: "M5 19l1.2-3.6A7.5 7.5 0 1 1 9 18.3z",
-    cart: "M6 8h12l-1 12H7zM9 8V6.5a3 3 0 0 1 6 0V8",
-    truck: "M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19.3a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6zM17 19.3a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z",
-    check: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12.5l2.7 2.7L16 9.8",
-    note: "M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z",
-    copy: "M9 9h10v10H9zM5 15V5h10",
-    alert: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7.5V13M12 16.5h.01",
-    trash: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3",
-  };
-  function icon(name) {
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "icon");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("aria-hidden", "true");
-    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", ICONS[name] || "");
-    svg.appendChild(path);
-    return svg;
-  }
-
-  // ---------- dialogs ----------
-
-  /*
-   * A dialog "layer" is built like this (see makeLayer):
-   *   <div class="dialog-layer dialog-layer--sheet">
-   *     <div class="dialog-backdrop"></div>
-   *     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="...">…</div>
-   *   </div>
-   */
-  function makeLayer(kind, labelId, children) {
-    var box = el("div", { class: "dialog dialog--" + kind, role: "dialog", "aria-modal": "true", "aria-labelledby": labelId, tabindex: "-1" }, children);
-    var layer = el("div", { class: "dialog-layer dialog-layer--" + kind }, [el("div", { class: "dialog-backdrop" }), box]);
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    if (opts.label) dialog.setAttribute('aria-label', opts.label);
+    if (opts.labelledBy) dialog.setAttribute('aria-labelledby', opts.labelledBy);
+    wrap.appendChild(back);
+    wrap.appendChild(dialog);
+    box.appendChild(wrap);
+    box.hidden = false;
+    document.body.classList.add('has-layer');
+    var layer = {
+      wrap: wrap,
+      opener: opener,
+      onClose: opts.onClose || null,
+      history: false
+    };
+    stack.push(layer);
+    try {
+      if (reuseHistory) history.replaceState({ bazariyaa: stack.length }, '');
+      else history.pushState({ bazariyaa: stack.length }, '');
+      layer.history = true;
+    } catch (err) {
+      /* Some browsers block history. Escape still closes the dialog. */
+    }
+    window.setTimeout(function () {
+      var target = opts.focus ? dialog.querySelector(opts.focus) : null;
+      if (!target) target = focusable(dialog)[0];
+      if (target) target.focus();
+    }, 0);
     return layer;
   }
 
-  var stack = [];          // [{ layer, trigger, onClose }]
-  var expectedPops = 0;    // history.back() calls we made ourselves
-
-  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-  function focusables(layer) {
-    return Array.prototype.filter.call(layer.querySelectorAll(FOCUSABLE), function (n) {
-      return n.offsetParent !== null || n === document.activeElement;
-    });
-  }
-
-  // Make everything behind the popups unreachable for keyboard/screen readers.
-  function setBackgroundInert() {
-    var top = stack.length ? stack[stack.length - 1].layer : null;
-    Array.prototype.forEach.call(document.body.children, function (child) {
-      if (child.classList.contains("toast-region")) return;
-      var shouldBeInert = !!top && child !== top;
-      if (shouldBeInert) {
-        child.setAttribute("inert", "");
-        child.setAttribute("aria-hidden", "true");
-      } else {
-        child.removeAttribute("inert");
-        child.removeAttribute("aria-hidden");
-      }
-    });
-    document.body.classList.toggle("has-dialog", !!top);
-  }
-
-  function show(entry) {
-    if (!entry.layer.parentNode) document.body.appendChild(entry.layer);
-    entry.layer.hidden = false;
-    stack.push(entry);
-    setBackgroundInert();
-    // Focus the marked button; if it is disabled, the first usable control.
-    var marked = entry.layer.querySelector("[data-autofocus]");
-    var target = (marked && !marked.disabled ? marked : null) ||
-      entry.layer.querySelector(".dialog " + FOCUSABLE) || entry.layer.querySelector(".dialog");
-    target.focus();
-  }
-
-  function hideTop(restoreFocus) {
-    var entry = stack.pop();
-    if (!entry) return null;
-    entry.layer.hidden = true;
-    if (entry.layer.parentNode) entry.layer.parentNode.removeChild(entry.layer);
-    setBackgroundInert();
-    if (restoreFocus) {
-      var back = entry.trigger && document.body.contains(entry.trigger) ? entry.trigger : entry.fallbackFocus;
-      if (back && document.body.contains(back)) back.focus();
+  function close(fromPop) {
+    var layer = stack.pop();
+    if (!layer) return;
+    layer.wrap.remove();
+    if (layer.onClose) layer.onClose();
+    if (!stack.length) {
+      root().hidden = true;
+      document.body.classList.remove('has-layer');
     }
-    if (typeof entry.onClose === "function") entry.onClose();
-    return entry;
-  }
-
-  // opts: { trigger, fallbackFocus, onClose }
-  function openDialog(layer, opts) {
-    opts = opts || {};
-    var entry = {
-      layer: layer,
-      trigger: opts.trigger || document.activeElement,
-      fallbackFocus: opts.fallbackFocus,
-      onClose: opts.onClose,
-    };
-    try { history.pushState({ bzDialog: stack.length + 1 }, ""); } catch (e) { /* ignore */ }
-    show(entry);
-  }
-
-  // Close the top popup (from a button, Esc or the backdrop).
-  function closeDialog() {
-    if (!stack.length) return;
-    hideTop(true);
-    expectedPops++;
-    try { history.back(); } catch (e) { expectedPops--; }
-  }
-
-  // Replace the top popup with a new one, keeping the same history entry.
-  function swapDialog(layer, opts) {
-    opts = opts || {};
-    var old = stack.length ? hideTop(false) : null;
-    var entry = {
-      layer: layer,
-      trigger: opts.trigger || (old && old.trigger),
-      fallbackFocus: opts.fallbackFocus || (old && old.fallbackFocus),
-      onClose: opts.onClose,
-    };
-    if (!old) {
-      try { history.pushState({ bzDialog: 1 }, ""); } catch (e) { /* ignore */ }
+    if (!fromPop && layer.history) {
+      ignorePop = true;
+      history.back();
     }
-    show(entry);
+    if (layer.opener && layer.opener.focus) {
+      try { layer.opener.focus(); } catch (err) { /* The opener may be gone. */ }
+    }
   }
 
-  function isOpen(layer) {
-    return stack.some(function (e) { return e.layer === layer; });
+  function closeAll() {
+    var steps = 0;
+    stack.forEach(function (layer) {
+      layer.wrap.remove();
+      if (layer.onClose) layer.onClose();
+      if (layer.history) steps += 1;
+    });
+    stack = [];
+    root().hidden = true;
+    document.body.classList.remove('has-layer');
+    if (steps) {
+      ignorePop = true;
+      history.go(-steps);
+    }
   }
 
-  // Phone back button / browser back: close the top popup.
-  window.addEventListener("popstate", function () {
-    if (expectedPops > 0) { expectedPops--; return; }
-    if (stack.length) hideTop(true);
-  });
-
-  document.addEventListener("keydown", function (e) {
+  function onKey(event) {
     if (!stack.length) return;
-    var top = stack[stack.length - 1].layer;
-    if (e.key === "Escape") {
-      e.preventDefault();
-      closeDialog();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      var top = stack[stack.length - 1];
+      var back = top.wrap.querySelector('.layer-back');
+      if (back) back.click();
+      else close();
       return;
     }
-    // Keep Tab inside the top popup.
-    if (e.key === "Tab") {
-      var items = focusables(top);
-      if (!items.length) { e.preventDefault(); return; }
-      var first = items[0];
-      var last = items[items.length - 1];
-      if (e.shiftKey && (document.activeElement === first || !top.contains(document.activeElement))) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && (document.activeElement === last || !top.contains(document.activeElement))) {
-        e.preventDefault();
-        first.focus();
-      }
+    if (event.key !== 'Tab') return;
+    var dialog = stack[stack.length - 1].wrap.querySelector('[role="dialog"]');
+    var items = focusable(dialog);
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
-  });
+  }
 
-  // Tap on the dark area around a popup closes it; [data-close] buttons too.
-  document.addEventListener("click", function (e) {
-    if (!stack.length) return;
-    var top = stack[stack.length - 1].layer;
-    if (!top.contains(e.target)) return;
-    if (e.target.classList.contains("dialog-backdrop") || e.target.closest("[data-close]")) {
-      closeDialog();
+  function onPop() {
+    if (ignorePop) {
+      ignorePop = false;
+      return;
     }
-  });
+    if (stack.length) close(true);
+  }
 
-  // ---------- toasts ----------
+  function bind() {
+    if (bound) return;
+    bound = true;
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('popstate', onPop);
+  }
 
-  var toastRegion = null;
-  var toastTimer = null;
-
-  /*
-   * toast("Garlic Press added", { detail, actionLabel, onAction, tone, duration })
-   * tone: "dark" (default) | "warning" | "sage" | "light"
-   */
-  function toast(message, opts) {
-    opts = opts || {};
-    if (!toastRegion) {
-      toastRegion = el("div", { class: "toast-region", role: "status", "aria-live": "polite" });
-      document.body.appendChild(toastRegion);
+  function toastWrap() {
+    var node = document.getElementById('toast-wrap');
+    if (!node) {
+      node = el('div', 'toast-wrap');
+      node.id = 'toast-wrap';
+      document.body.appendChild(node);
     }
-    clearTimeout(toastTimer);
-    toastRegion.textContent = "";
+    return node;
+  }
 
-    var action = null;
-    if (opts.actionLabel) {
-      action = el("button", { type: "button", class: "toast__action", text: opts.actionLabel });
-      action.addEventListener("click", function () {
-        hideToast();
+  function clearToast() {
+    window.clearTimeout(toastTimer);
+    var node = document.getElementById('toast-wrap');
+    if (node) node.replaceChildren();
+  }
+
+  /* One toast at a time. timeout is in milliseconds; leave it out to keep the toast. */
+  function toast(opts) {
+    var box = toastWrap();
+    var node = el('div', 'toast' + (opts.tone ? ' toast-' + opts.tone : ''));
+    var icon = el('span', 'toast-icon');
+    var copy = el('div', 'toast-copy');
+    node.setAttribute('role', 'status');
+    if (opts.icon) icon.appendChild(Icons.el(opts.icon, 20));
+    copy.appendChild(el('strong', null, opts.title || ''));
+    if (opts.body) copy.appendChild(el('span', null, opts.body));
+    node.appendChild(icon);
+    node.appendChild(copy);
+    if (opts.action) {
+      var button = el('button', 'btn ' + (opts.actionClass || 'btn-primary'), opts.action);
+      button.type = 'button';
+      button.addEventListener('click', function () {
         if (opts.onAction) opts.onAction();
       });
+      node.appendChild(button);
     }
-    var tone = opts.tone || "dark";
-    var box = el("div", { class: "toast toast--" + tone }, [
-      icon(opts.icon || (tone === "warning" ? "alert" : "check")),
-      el("div", { class: "toast__text" }, [
-        el("p", { class: "toast__title", text: message }),
-        opts.detail ? el("p", { class: "toast__detail", text: opts.detail }) : null,
-      ]),
-      action,
-    ]);
-    toastRegion.appendChild(box);
-    // Messages with a button stay a little longer so there is time to tap it.
-    toastTimer = setTimeout(hideToast, opts.duration || (action ? 6000 : 4000));
+    box.replaceChildren(node);
+    window.clearTimeout(toastTimer);
+    function arm() {
+      if (!opts.timeout) return;
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(clearToast, opts.timeout);
+    }
+    node.addEventListener('mouseenter', function () { window.clearTimeout(toastTimer); });
+    node.addEventListener('mouseleave', arm);
+    node.addEventListener('focusin', function () { window.clearTimeout(toastTimer); });
+    node.addEventListener('focusout', arm);
+    arm();
   }
 
-  function hideToast() {
-    clearTimeout(toastTimer);
-    if (toastRegion) toastRegion.textContent = "";
+  function offlineToast() {
+    toast({
+      icon: 'offline',
+      title: I18n.t('offlineTitle'),
+      body: I18n.t('offlineBody'),
+      action: I18n.t('tryAgain'),
+      onAction: function () {
+        if (window.Shell) Shell.reload();
+      }
+    });
   }
 
-  BZ.ui = {
+  return {
     el: el,
-    img: img,
-    icon: icon,
-    makeLayer: makeLayer,
-    openDialog: openDialog,
-    closeDialog: closeDialog,
-    swapDialog: swapDialog,
-    isOpen: isOpen,
+    phone: phone,
+    open: open,
+    close: close,
+    closeAll: closeAll,
     toast: toast,
-    hideToast: hideToast,
+    clearToast: clearToast,
+    offlineToast: offlineToast
   };
 })();

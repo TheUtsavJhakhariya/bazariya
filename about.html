@@ -9,57 +9,37 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
-  <script defer src="js/i18n.js"></script>
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dialogs.css">
+  <link rel="stylesheet" href="css/info-header.css">
+  <script defer src="js/pagekit/i18n.js"></script>
+  <script defer src="js/pagekit/config.js"></script>
+  <script defer src="js/pagekit/shell.js"></script>
+  <script defer src="js/pagekit/ui.js"></script>
+  <script defer src="js/pagekit/language.js"></script>
+  <script defer src="js/pagekit/page.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script defer src="js/icons.js"></script>
   <script defer src="js/config.js"></script>
-  <script defer src="js/shell.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="products.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/cart.js"></script>
   <script defer src="js/ui.js"></script>
-  <script defer src="js/language.js"></script>
-  <script defer src="js/page.js"></script>
+  <script defer src="js/whatsapp.js"></script>
+  <script defer src="js/cartview.js"></script>
+  <script defer src="js/area.js"></script>
+  <script defer src="js/lang.js"></script>
+  <script defer src="js/shell.js"></script>
 </head>
-<body class="about-page">
+<body class="about-page" data-page="about">
   <a class="skip-link" href="#main" data-i18n="skipToMain">Skip to main content</a>
 
-  <div class="config-banner" id="config-banner" role="status" hidden>
-    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
-    <span data-i18n="bannerNoNumber">Shop number is not set. Orders can't be sent.</span>
-  </div>
-
-  <header class="site-header">
-    <a class="brand" href="./" aria-label="BAZARIYAA home">
-      <span class="brand__mark" aria-hidden="true">b</span>
-      <span class="brand__text">
-        <span class="brand__name">bazariyaa</span>
-        <span class="brand__tagline" data-bz="tagline">Ghar ka bazaar</span>
-      </span>
-    </a>
-    <p class="deliver-pill"><span class="deliver-pill__dot" aria-hidden="true"></span>Delivering across Surat</p>
-    <div class="site-header__actions">
-      <a class="icon-button" href="./#search-input">
-        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
-        <span class="visually-hidden" data-i18n="searchLabel">Search products</span>
-      </a>
-      <button type="button" class="pill-button" id="language-button" aria-haspopup="dialog">
-        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
-        <span id="language-code">EN</span>
-        <span class="visually-hidden" data-i18n="changeLanguage">Change language</span>
-      </button>
-      <a class="cart-button" id="cart-button" href="./#cart">
-        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
-        <span class="visually-hidden" data-i18n="openCart">Open cart</span>
-        <span class="cart-button__badge" id="cart-count" hidden>0</span>
-      </a>
-    </div>
-  </header>
+  <header id="site-header"></header>
 
   <main id="main" tabindex="-1">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <ol>
-        <li><a href="./" data-i18n="home">Home</a></li>
-        <li aria-current="page" data-i18n="aboutUs">About us</li>
-      </ol>
-    </nav>
-
     <!-- Story copy is the wording printed on Page Reference Images/03-about.png.
          The phone number is not taken from that picture; shell.js fills it from config.json. -->
     <article class="about-wrap" lang="en">
@@ -71,8 +51,8 @@
         </div>
         <div class="about-founder">
           <!-- "Your name" is the placeholder written on the design. Replace it when the owner gives the real name. -->
-          <img src="images/about-founder.jpg" alt="" width="64" height="64">
-          <p><strong>Your name</strong><span>Founder, Bazariyaa</span></p>
+          <img src="images/bhavya.png" alt="" width="64" height="64">
+          <p><strong>Bhavya Mehta</strong><span>Founder, Bazariyaa</span></p>
         </div>
 
         <div class="about-photos">
@@ -168,6 +148,7 @@
       </div>
       <nav class="site-footer__nav" aria-label="Footer">
         <ul>
+          <li><a href="index.html" data-i18n="home">Home</a></li>
           <li><a href="about.html" aria-current="page" data-i18n="aboutUs">About us</a></li>
           <li><a href="return-policy.html" data-i18n="returnPolicy">Return policy</a></li>
           <li><a href="terms.html" data-i18n="terms">Terms</a></li>
@@ -183,5 +164,6 @@
       </div>
     </div>
   </footer>
+  <div id="cart-bar" hidden></div>
 </body>
 </html>

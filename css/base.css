@@ -1,0 +1,131 @@
+/* Page defaults. Every control is at least 48px tall. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: var(--text-body-lh);
+}
+
+/* Hindi and Gujarati need a little more line height. */
+html[data-indic] body {
+  line-height: calc(var(--text-body-lh) + 0.15);
+}
+
+/* Anton, Geist and Instrument Serif have no Hindi or Gujarati letters.
+   Noto is the next font, so those letters still show. */
+html[data-indic="hi"] {
+  --font-display: "Anton", "Noto Sans Devanagari", Impact, sans-serif;
+  --font-ui: "Geist", "Noto Sans Devanagari", "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "Noto Sans Devanagari", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", "Noto Sans Devanagari", Georgia, serif;
+}
+
+html[data-indic="gu"] {
+  --font-display: "Anton", "Noto Sans Gujarati", Impact, sans-serif;
+  --font-ui: "Geist", "Noto Sans Gujarati", "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "Noto Sans Gujarati", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", "Noto Sans Gujarati", Georgia, serif;
+}
+
+html[data-indic="hi"] body {
+  font-family: var(--font-ui);
+}
+
+html[data-indic="gu"] body {
+  font-family: var(--font-ui);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* Dark controls need the orange ring so the focus is visible. */
+.cart-btn:focus-visible,
+.btn-primary:focus-visible {
+  outline-color: var(--color-focus-on-dark);
+}
+
+.wrap {
+  width: min(var(--page-max), calc(100% - 2 * var(--space-gutter)));
+  margin-inline: auto;
+}
+
+.page-main {
+  width: min(var(--page-max), calc(100% - 2 * var(--space-gutter)));
+  margin: var(--space-32) auto var(--space-48);
+}
+
+@media (max-width: 767px) {
+  .wrap,
+  .page-main {
+    width: calc(100% - 2 * var(--space-edge));
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body.has-cart {
+  padding-bottom: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

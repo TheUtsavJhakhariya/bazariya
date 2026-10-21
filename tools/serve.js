@@ -1,73 +1,64 @@
-/*
- * serve.js — tiny local web server for testing the site (no packages needed).
- *
- * Why: browsers block fetch() of config.json and the CSV when you open
- * index.html by double-clicking it. Run this instead:
- *
- *     node tools/serve.js            then open http://localhost:8000
- *     node tools/serve.js 8080       use another port
- *
- * To test a GitHub Pages style sub-path (https://user.github.io/bazariya/):
- *     node tools/serve.js 8000 bazariya     then open http://localhost:8000/bazariya/
- *
- * Stop it with Ctrl + C.
- */
+/* Tiny static server so fetch() can load config and the CSV.
+   Run from anywhere: node tools/serve.js
+   Then open http://localhost:8000
+   Uses only Node's built-in modules. No npm install. */
 
-"use strict";
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
 
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
+var root = path.resolve(__dirname, '..');
+var port = 8000;
 
-const ROOT = path.join(__dirname, "..");
-const PORT = Number(process.argv[2]) || 8000;
-// Optional sub-path prefix, always with a leading and trailing slash.
-const PREFIX = ("/" + (process.argv[3] || "").replace(/^\/+|\/+$/g, "") + "/").replace("//", "/");
-
-const TYPES = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".csv": "text/csv; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-  ".ico": "image/x-icon",
-  ".md": "text/plain; charset=utf-8",
+var types = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.csv': 'text/csv; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.ico': 'image/x-icon',
+  '.txt': 'text/plain; charset=utf-8'
 };
 
-http.createServer((req, res) => {
-  let urlPath = decodeURIComponent(req.url.split("?")[0]);
+function send(res, code, body, type) {
+  res.writeHead(code, { 'Content-Type': type || 'text/plain; charset=utf-8' });
+  res.end(body);
+}
 
-  // Only serve inside the prefix (when one is given).
-  if (!urlPath.startsWith(PREFIX)) {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    return res.end("Not found (site is served under " + PREFIX + ")");
-  }
-  urlPath = urlPath.slice(PREFIX.length - 1);
-  if (urlPath.endsWith("/")) urlPath += "index.html";
-
-  // Block "../" tricks: the resolved file must stay inside the project folder.
-  const filePath = path.join(ROOT, path.normalize(urlPath));
-  if (!filePath.startsWith(ROOT) || filePath.includes(path.sep + "legacy" + path.sep)) {
-    res.writeHead(403);
-    return res.end("Forbidden");
+var server = http.createServer(function (req, res) {
+  var pathname = '/';
+  try {
+    pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
+  } catch (err) {
+    send(res, 400, 'Bad request');
+    return;
   }
 
-  fs.readFile(filePath, (err, data) => {
+  var rel = pathname.replace(/^\/+/, '');
+  if (rel === '') rel = 'index.html';
+
+  var filePath = path.resolve(root, rel);
+  var rootPrefix = root.endsWith(path.sep) ? root : root + path.sep;
+  if (filePath !== root && filePath.indexOf(rootPrefix) !== 0) {
+    send(res, 403, 'Forbidden');
+    return;
+  }
+
+  fs.readFile(filePath, function (err, data) {
     if (err) {
-      res.writeHead(404, { "Content-Type": "text/plain" });
-      return res.end("Not found");
+      send(res, 404, 'Not found');
+      return;
     }
-    res.writeHead(200, {
-      "Content-Type": TYPES[path.extname(filePath).toLowerCase()] || "application/octet-stream",
-      "Cache-Control": "no-cache",
-    });
-    res.end(data);
+    var ext = path.extname(filePath).toLowerCase();
+    send(res, 200, data, types[ext] || 'application/octet-stream');
   });
-}).listen(PORT, () => {
-  console.log("BAZARIYAA running at http://localhost:" + PORT + PREFIX + "  (Ctrl + C to stop)");
+});
+
+server.listen(port, function () {
+  console.log('BAZARIYAA is at http://localhost:' + port);
 });
