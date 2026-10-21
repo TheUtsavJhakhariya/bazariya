@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin panel – BAZARIYAA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <main class="admin-screen" id="admin-login">
+    <section class="admin-card" aria-labelledby="admin-login-title">
+      <p class="admin-kicker">BAZARIYAA</p>
+      <h1 id="admin-login-title">Admin panel</h1>
+      <p class="admin-lead">Enter the shop username and password to open this page.</p>
+      <form id="admin-form">
+        <label class="admin-field">
+          <span>Username</span>
+          <input id="admin-user" name="username" type="text" autocomplete="username" required>
+        </label>
+        <label class="admin-field">
+          <span>Password</span>
+          <input id="admin-pass" name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <p class="admin-error" id="admin-error" role="alert" hidden>Username or password is wrong.</p>
+        <button class="admin-enter" type="submit">Enter</button>
+      </form>
+    </section>
+  </main>
+
+  <main class="admin-app" id="admin-panel" hidden>
+    <header class="admin-top">
+      <div>
+        <p class="admin-kicker">Signed in</p>
+        <h1 id="admin-panel-title">Products</h1>
+        <p class="admin-hint">Saves stay in this browser.</p>
+      </div>
+      <div class="admin-top-actions">
+        <div class="admin-csv" role="group" aria-label="Product sheet">
+          <label class="admin-csv-upload">
+            <span aria-hidden="true">↑</span>
+            Upload CSV
+            <input id="admin-upload" class="visually-hidden" type="file" accept=".csv,text/csv">
+          </label>
+          <button class="admin-csv-download" id="admin-download" type="button">
+            <span aria-hidden="true">↓</span>
+            Download
+          </button>
+        </div>
+        <div class="admin-account">
+          <button class="admin-account-btn" id="admin-account" type="button" aria-expanded="false" aria-haspopup="menu" aria-controls="admin-account-menu">
+            Admin
+            <span class="admin-account-mark" aria-hidden="true">B</span>
+          </button>
+          <div class="admin-account-menu" id="admin-account-menu" role="menu" hidden>
+            <a class="admin-account-link" role="menuitem" href="index.html">
+              Back to the shop
+              <span aria-hidden="true">›</span>
+            </a>
+            <button class="admin-account-out" id="admin-signout" type="button" role="menuitem">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-tools">
+      <label class="admin-field admin-search">
+        <span>Search</span>
+        <input id="admin-search" type="search" placeholder="Name, number, price, category, stock…" autocomplete="off" enterkeyhint="search">
+      </label>
+      <label class="admin-field">
+        <span>Category</span>
+        <select id="admin-category">
+          <option value="all">All</option>
+        </select>
+      </label>
+      <label class="admin-field">
+        <span>Stock</span>
+        <select id="admin-stock">
+          <option value="all">All</option>
+          <option value="in">In stock</option>
+          <option value="out">Out of stock</option>
+        </select>
+      </label>
+      <label class="admin-field">
+        <span>Popular</span>
+        <select id="admin-popular">
+          <option value="all">All</option>
+          <option value="yes">Popular</option>
+          <option value="no">Not popular</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="admin-bar">
+      <p id="admin-count" aria-live="polite">Loading products…</p>
+      <div class="admin-actions">
+        <label class="admin-check admin-select-all">
+          <input id="admin-select-all" type="checkbox">
+          <span>Select this page</span>
+        </label>
+        <button class="admin-enter" id="admin-bulk" type="button" disabled>Bulk edit</button>
+        <button class="admin-link" id="admin-clear" type="button">Clear filters</button>
+      </div>
+    </div>
+    <p class="admin-note" id="admin-note" role="status" hidden>Saved.</p>
+    <div class="admin-list" id="admin-list"></div>
+    <p class="admin-empty" id="admin-empty" hidden>No products match.</p>
+    <nav class="admin-pages" id="admin-pages" aria-label="Product pages" hidden></nav>
+
+    <div class="admin-drawer" id="admin-dialog" hidden>
+      <button class="admin-drawer-scrim" id="admin-drawer-scrim" type="button" aria-label="Close editor"></button>
+      <form class="admin-sheet" id="admin-edit-form" tabindex="-1" aria-labelledby="admin-edit-title">
+        <header class="admin-sheet-bar">
+          <h2 id="admin-edit-title">Edit product</h2>
+          <div class="admin-sheet-nav" id="admin-edit-nav">
+            <span id="admin-edit-pos">1 / 1</span>
+            <button class="admin-step" id="admin-edit-prev" type="button" aria-label="Previous product">‹</button>
+            <button class="admin-step" id="admin-edit-next" type="button" aria-label="Next product">›</button>
+          </div>
+          <button class="admin-sheet-close" id="admin-edit-cancel" type="button" aria-label="Close">×</button>
+        </header>
+        <div class="admin-sheet-body">
+          <p class="admin-edit-lead" id="admin-edit-lead" hidden>Tick Change on each detail to set it for every selected product.</p>
+          <div class="admin-photo-wrap" data-row="images">
+            <div class="admin-photo-tools">
+              <span>Image</span>
+              <label class="admin-apply"><input type="checkbox" data-apply="images"> Change</label>
+            </div>
+            <div class="admin-photo" id="edit-drop">
+              <img id="edit-preview" class="admin-preview" alt="" hidden>
+              <button class="admin-photo-clear" id="admin-photo-clear" type="button" aria-label="Remove photo" hidden>×</button>
+              <span class="admin-shop-badge" id="admin-shop-badge">
+                <span>Shop no.</span>
+                <strong id="admin-shop-no">001</strong>
+              </span>
+              <p class="admin-photo-title">Drop a photo here</p>
+              <div class="admin-photo-actions">
+                <label class="admin-browse">
+                  Browse file
+                  <input id="edit-file" class="admin-file-input" type="file" accept="image/*">
+                </label>
+                <button class="admin-paste" id="admin-paste-url" type="button">Paste URL</button>
+              </div>
+              <p class="admin-photo-note">JPEG, PNG or WEBP · leave empty to show the number tile</p>
+              <div class="admin-url" id="admin-url-row" hidden>
+                <input id="edit-url" type="text" inputmode="url" autocomplete="off" placeholder="https://...">
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-row admin-only-one" data-row="id">
+            <span class="admin-row-label">Item number</span>
+            <div class="admin-row-main">
+              <input id="edit-id" class="admin-plain" type="text" inputmode="numeric" autocomplete="off" aria-label="Item number">
+            </div>
+          </div>
+
+          <div class="admin-row admin-row-names">
+            <span class="admin-row-label">Name</span>
+            <div class="admin-names">
+              <div class="admin-name-line" data-row="name">
+                <span class="admin-lang">EN</span>
+                <input id="edit-name" type="text" autocomplete="off" aria-label="English name">
+                <label class="admin-apply"><input type="checkbox" data-apply="name"> Change</label>
+              </div>
+              <div class="admin-name-line" data-row="hi">
+                <span class="admin-lang" lang="hi">हि</span>
+                <input id="edit-hi" type="text" lang="hi" autocomplete="off" placeholder="हिंदी नाम जोड़ें" aria-label="Hindi name">
+                <label class="admin-apply"><input type="checkbox" data-apply="hi"> Change</label>
+              </div>
+              <div class="admin-name-line" data-row="gu">
+                <span class="admin-lang" lang="gu">ગુ</span>
+                <input id="edit-gu" type="text" lang="gu" autocomplete="off" placeholder="ગુજરાતી નામ ઉમેરો" aria-label="Gujarati name">
+                <label class="admin-apply"><input type="checkbox" data-apply="gu"> Change</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-row" data-row="price">
+            <span class="admin-row-label">Price</span>
+            <div class="admin-row-main">
+              <div class="admin-row-control admin-price">
+                <span class="admin-rupee" aria-hidden="true">₹</span>
+                <input id="edit-price" class="admin-plain" type="text" inputmode="decimal" autocomplete="off" aria-label="Price">
+              </div>
+              <label class="admin-apply"><input type="checkbox" data-apply="price"> Change</label>
+            </div>
+          </div>
+
+          <div class="admin-row" data-row="category">
+            <span class="admin-row-label">Category</span>
+            <div class="admin-row-main">
+              <div class="admin-row-control admin-cat">
+                <button class="admin-cat-btn" id="admin-category-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="admin-category-menu">
+                  <span id="admin-category-label">Choose a category</span>
+                  <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 7.5 10 12.5 15 7.5"/></svg>
+                </button>
+                <div class="admin-cat-menu" id="admin-category-menu" role="listbox" aria-label="Categories" hidden></div>
+                <input id="edit-category" type="hidden" value="">
+              </div>
+              <label class="admin-apply"><input type="checkbox" data-apply="category"> Change</label>
+            </div>
+          </div>
+
+          <div class="admin-row" data-row="stock">
+            <span class="admin-row-label">Stock</span>
+            <div class="admin-row-main">
+              <div class="admin-row-control admin-stock-pills" role="group" aria-label="Stock">
+                <button class="admin-pill" type="button" data-stock="yes">In stock</button>
+                <button class="admin-pill" type="button" data-stock="no">Out of stock</button>
+                <input id="edit-stock" type="hidden" value="yes">
+              </div>
+              <label class="admin-apply"><input type="checkbox" data-apply="stock"> Change</label>
+            </div>
+          </div>
+
+          <div class="admin-row" data-row="popular">
+            <span class="admin-row-label">Popular</span>
+            <div class="admin-row-main">
+              <div class="admin-row-control admin-popular">
+                <span id="admin-popular-text">Not in “Popular this week”</span>
+                <button class="admin-switch" id="admin-popular-switch" type="button" role="switch" aria-checked="false" aria-label="Popular this week"></button>
+                <input id="edit-popular" type="hidden" value="no">
+              </div>
+              <label class="admin-apply"><input type="checkbox" data-apply="popular"> Change</label>
+            </div>
+          </div>
+
+          <div class="admin-row" data-row="rank">
+            <span class="admin-row-label">Most ordered</span>
+            <div class="admin-row-main">
+              <div class="admin-row-control admin-rank-line">
+                <input id="edit-rank" class="admin-rank" type="text" inputmode="numeric" autocomplete="off" placeholder="Rank" aria-label="Most ordered rank">
+                <span class="admin-quiet">Leave empty for none</span>
+              </div>
+              <label class="admin-apply"><input type="checkbox" data-apply="rank"> Change</label>
+            </div>
+          </div>
+
+          <p class="admin-error" id="admin-edit-error" role="alert" hidden></p>
+        </div>
+        <footer class="admin-sheet-foot">
+          <button class="admin-cancel" id="admin-edit-dismiss" type="button">Cancel</button>
+          <button class="admin-save" type="submit"><span class="admin-save-dot" aria-hidden="true"></span> Save changes</button>
+        </footer>
+      </form>
+    </div>
+
+    <div class="bulk-modal" id="admin-bulk-modal" hidden>
+      <div class="bulk-card" role="dialog" aria-modal="true" aria-labelledby="admin-bulk-title">
+        <header class="bulk-head">
+          <div class="bulk-title">
+            <h2 id="admin-bulk-title">Editing products</h2>
+            <p>Changed cells turn orange</p>
+          </div>
+          <div class="bulk-head-actions">
+            <button class="bulk-close" id="admin-bulk-close" type="button" aria-label="Close">×</button>
+            <button class="bulk-clear" id="admin-bulk-clear" type="button" disabled>Clear</button>
+            <button class="bulk-save" id="admin-bulk-save" type="button" disabled>
+              <span class="admin-save-dot" aria-hidden="true"></span>
+              <span id="admin-bulk-save-label">Save</span>
+            </button>
+          </div>
+        </header>
+        <div class="bulk-scroll" id="admin-bulk-scroll">
+          <table class="bulk-table" id="admin-bulk-table" aria-label="Selected products"></table>
+        </div>
+        <p class="bulk-hint">Tab moves across cells · Ctrl+Enter saves · Esc closes</p>
+        <div class="bulk-photo-pop" id="admin-bulk-photo-pop" role="dialog" aria-label="Add a photo" hidden>
+          <p class="bulk-photo-pop-title">Add a photo</p>
+          <label class="bulk-photo-file">
+            Upload from device
+            <input id="admin-bulk-photo-file" type="file" accept="image/*" class="visually-hidden">
+          </label>
+          <label class="bulk-photo-url">
+            <span>Or paste an image URL</span>
+            <input id="admin-bulk-photo-url" type="url" inputmode="url" autocomplete="off" placeholder="https://...">
+          </label>
+          <button class="bulk-photo-use" id="admin-bulk-photo-use" type="button">Use this URL</button>
+          <p class="admin-error" id="admin-bulk-photo-error" role="alert" hidden></p>
+        </div>
+        <div class="bulk-stock-menu" id="admin-bulk-stock-menu" role="listbox" aria-label="Stock" hidden>
+          <button class="bulk-stock-option is-in" type="button" data-stock-choice="yes"><span class="bulk-dot" aria-hidden="true"></span> In stock</button>
+          <button class="bulk-stock-option is-out" type="button" data-stock-choice="no"><span class="bulk-dot is-out" aria-hidden="true"></span> Out of stock</button>
+        </div>
+        <p class="admin-error" id="admin-bulk-error" role="alert" hidden></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="products.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

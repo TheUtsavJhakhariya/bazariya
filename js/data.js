@@ -3,7 +3,10 @@
 
 var Data = (function () {
   var CACHE_KEY = 'bazariyaa-products';
+  var EDIT_KEY = 'bazariyaa-product-edits';
+  var SHEET_KEY = 'bazariyaa-uploaded-sheet';
   var list = [];
+  var base = [];
 
   /* Labels for the categories used in products.js.
      A category that is not listed here still appears, using its own name. */
@@ -61,6 +64,8 @@ var Data = (function () {
 
   function safeUrl(url) {
     if (!url) return '';
+    /* Product photos are stored as images/... from the site root. */
+    if (url.indexOf('../images/') === 0) return url.slice(3);
     if (url.indexOf('images/') === 0) return url;
     try {
       var parsed = new URL(url);
@@ -111,16 +116,14 @@ var Data = (function () {
     var products = raw.map(fromJs).filter(Boolean);
     if (!products.length) return null;
     remember(products);
-    return { products: products, source: 'script' };
+    return { products: list, source: 'script' };
   }
 
   function row(raw) {
     if (!raw || raw.id == null || !String(raw.name || '').trim()) return null;
     var price = Number(String(raw.price || '').replace(/[^\d.]/g, ''));
     if (!isFinite(price)) return null;
-    var images = String(raw.images || '').split('|').map(function (part) {
-      return safeUrl(part.trim());
-    }).filter(Boolean);
+    var images = imageParts(raw.images);
     var rank = String(raw.most_ordered || '').trim();
     return {
       id: String(raw.id).trim(),
@@ -156,23 +159,145 @@ var Data = (function () {
     });
   }
 
+  function copyProduct(product) {
+    return {
+      id: String(product.id),
+      name: product.name,
+      description: product.description || '',
+      price: product.price,
+      category: product.category || '',
+      images: (product.images || []).slice(),
+      inStock: !!product.inStock,
+      popular: !!product.popular,
+      mostOrdered: product.mostOrdered == null ? null : product.mostOrdered,
+      nameHi: product.nameHi || '',
+      nameGu: product.nameGu || ''
+    };
+  }
+
+  /* Keep the file copy separate, then lay saved edits on top. */
   function remember(products) {
-    list = products;
+    base = products.map(copyProduct);
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(products));
+      localStorage.setItem(CACHE_KEY, JSON.stringify(base));
     } catch (err) {
       /* Cache is a backup. Missing it only matters when the network fails. */
     }
+    list = applyEdits(base);
+  }
+
+  function readEdits() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(EDIT_KEY) || 'null');
+      if (!saved || typeof saved !== 'object') return {};
+      return saved;
+    } catch (err) {
+      return {};
+    }
+  }
+
+  function writeEdits(edits) {
+    localStorage.setItem(EDIT_KEY, JSON.stringify(edits));
+  }
+
+  /* Split the images column. A device upload is one long data: address and must stay whole. */
+  function imageParts(raw) {
+    var text = String(raw || '').trim();
+    var parts;
+    var out = [];
+    var i;
+    var bit;
+    if (!text) return [];
+    if (text.indexOf('data:image/') === 0) return [text];
+    parts = text.split('|');
+    for (i = 0; i < parts.length; i += 1) {
+      bit = parts[i].trim();
+      if (!bit) continue;
+      if (bit.indexOf('data:image/') === 0) out.push(bit);
+      else {
+        bit = safeUrl(bit);
+        if (bit) out.push(bit);
+      }
+    }
+    return out;
+  }
+
+  /* A photo can be a site file, a web address, or an upload from the owner's device. */
+  function savedImages(raw) {
+    var text = Array.isArray(raw) ? raw.join('|') : String(raw || '');
+    text = text.trim();
+    if (!text) return [];
+    if (text.indexOf('data:image/') === 0) return [text];
+    return text.split(/[|\n]/).map(function (part) {
+      return safeUrl(part.trim());
+    }).filter(Boolean);
+  }
+
+  /* Turn a saved edit into a product. sourceId stays the number from the file. */
+  function cleanSaved(raw, sourceId) {
+    var price = Number(String(raw.price == null ? '' : raw.price).replace(/[^\d.]/g, ''));
+    var images = savedImages(raw.images);
+    var rankText = raw.mostOrdered == null ? '' : String(raw.mostOrdered).trim();
+    var id = String(raw.id == null || String(raw.id).trim() === '' ? sourceId : raw.id).trim();
+    if (!isFinite(price) || price < 0) price = 0;
+    return {
+      id: id || String(sourceId),
+      name: String(raw.name || '').trim(),
+      description: String(raw.description || '').trim(),
+      price: price,
+      category: String(raw.category || '').trim(),
+      images: images,
+      inStock: raw.inStock === true || String(raw.inStock) === 'true' || String(raw.inStock).toUpperCase() === 'Y',
+      popular: raw.popular === true || String(raw.popular) === 'true' || String(raw.popular).toUpperCase() === 'Y',
+      mostOrdered: rankText === '' || !isFinite(Number(rankText)) ? null : Number(rankText),
+      nameHi: String(raw.nameHi || '').trim(),
+      nameGu: String(raw.nameGu || '').trim()
+    };
+  }
+
+  function applyEdits(products) {
+    var edits = readEdits();
+    return products.map(function (product) {
+      var key = String(product.id);
+      var edit = edits[key];
+      var next = edit ? cleanSaved(edit, key) : copyProduct(product);
+      next.sourceId = key;
+      return next;
+    });
+  }
+
+  /* updates: [{ sourceId, product }, ...] */
+  function saveEdits(updates) {
+    var edits = readEdits();
+    var i;
+    for (i = 0; i < updates.length; i += 1) {
+      var key = String(updates[i].sourceId);
+      edits[key] = cleanSaved(updates[i].product, key);
+    }
+    writeEdits(edits);
+    list = applyEdits(base);
   }
 
   function readCache() {
     try {
       var saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (!Array.isArray(saved) || !saved.length) return null;
+      saved.forEach(function (product) {
+        if (!product.images) return;
+        product.images = product.images.map(function (url) {
+          return url.indexOf('../images/') === 0 ? url.slice(3) : url;
+        });
+      });
       return saved;
     } catch (err) {
       return null;
     }
+  }
+
+  function localFile(url) {
+    if (!url || /^https?:\/\//i.test(url)) return url;
+    if (url.indexOf('../') === 0) return url.slice(3);
+    return url;
   }
 
   function fromUrl(url, source, timeoutMs) {
@@ -180,20 +305,49 @@ var Data = (function () {
       var products = parse(text);
       if (!products.length) throw new Error('empty');
       remember(products);
-      return { products: products, source: source };
+      return { products: list, source: source };
     });
+  }
+
+  /* The owner uploaded a sheet in the admin panel. That copy wins until they upload another. */
+  function uploadedSheet() {
+    try {
+      if (localStorage.getItem(SHEET_KEY) !== '1') return null;
+    } catch (err) {
+      return null;
+    }
+    return readCache();
+  }
+
+  /* Replace the catalogue in this browser. Old edits are cleared so they do not land on the new rows. */
+  function importCsv(text) {
+    var products = parse(text);
+    var stored;
+    if (!products.length) return 0;
+    stored = products.map(copyProduct);
+    localStorage.setItem(CACHE_KEY, JSON.stringify(stored));
+    localStorage.setItem(SHEET_KEY, '1');
+    writeEdits({});
+    remember(stored);
+    return list.length;
   }
 
   function load() {
     var cfg = Config.get();
-    var sheet = cfg.sheetCsvUrl
+    var uploaded = uploadedSheet();
+    var sheet;
+    if (uploaded) {
+      remember(uploaded);
+      return Promise.resolve({ products: list, source: 'upload' });
+    }
+    sheet = cfg.sheetCsvUrl
       ? fromUrl(cfg.sheetCsvUrl, 'sheet', 8000)
       : Promise.reject(new Error('no sheet'));
 
     return sheet.then(function (result) {
       return result;
     }, function () {
-      return fromUrl(cfg.fallbackCsv || 'data/products.csv', 'csv', 8000);
+      return fromUrl(localFile(cfg.fallbackCsv || 'data/products.csv'), 'csv', 8000);
     }).then(function (result) {
       return result;
     }, function () {
@@ -201,8 +355,8 @@ var Data = (function () {
       if (scripted) return scripted;
       var cached = readCache();
       if (!cached) throw new Error('none');
-      list = cached;
-      return { products: cached, source: 'cache' };
+      remember(cached);
+      return { products: list, source: 'cache' };
     });
   }
 
@@ -226,6 +380,8 @@ var Data = (function () {
     categories: categories,
     meta: meta,
     tagFor: tagFor,
-    padId: padId
+    padId: padId,
+    saveEdits: saveEdits,
+    importCsv: importCsv
   };
 })();
