@@ -1575,7 +1575,8 @@ var Admin = (function () {
       { id: 'home', label: 'Home' },
       { id: 'about', label: 'About' },
       { id: 'return', label: 'Return policy' },
-      { id: 'terms', label: 'Terms' }
+      { id: 'terms', label: 'Terms' },
+      { id: 'colors', label: 'Colors' }
     ];
   }
 
@@ -1841,6 +1842,27 @@ var Admin = (function () {
           { id: 'i18n.ctaAskUs', label: 'Ask us line' },
           { id: 'i18n.chatOnWhatsApp', label: 'WhatsApp button' }
         ])
+      ]),
+      sec('colors', 'page', '01', 'Page', 'Page', [
+        rows(['color.bg', 'color.surface', 'color.surface-sunken', 'color.surface-pressed', 'color.white'])
+      ]),
+      sec('colors', 'text', '02', 'Text', 'Text', [
+        rows(['color.text', 'color.text-secondary', 'color.text-muted', 'color.text-faint', 'color.text-on-sage'])
+      ]),
+      sec('colors', 'ondark', '03', 'On dark', 'On dark', [
+        rows(['color.text-on-band', 'color.text-on-band-secondary', 'color.text-on-band-muted', 'color.text-on-band-dim', 'color.text-on-ink'])
+      ]),
+      sec('colors', 'ink', '04', 'Ink', 'Ink', [
+        rows(['color.primary', 'color.primary-hover', 'color.primary-pressed', 'color.band', 'color.band-raised'])
+      ]),
+      sec('colors', 'accent', '05', 'Accent', 'Accent', [
+        rows(['color.accent', 'color.accent-hover', 'color.accent-pressed', 'color.accent-ink', 'color.accent-soft', 'color.accent-tint', 'color.whatsapp'])
+      ]),
+      sec('colors', 'status', '06', 'Status', 'Status', [
+        rows(['color.sage', 'color.sage-light', 'color.success', 'color.warning', 'color.danger', 'color.disabled-bg', 'color.disabled-text'])
+      ]),
+      sec('colors', 'lines', '07', 'Lines and badges', 'Lines and badges', [
+        rows(['color.border-strong', 'color.border-input', 'color.border-on-band', 'color.divider-on-band', 'color.badge-oos-bg', 'color.badge-free-bg', 'color.badge-count-bg', 'color.focus', 'color.focus-on-dark', 'color.skeleton-base', 'color.skeleton-shimmer'])
       ])
     ];
   }
@@ -1898,6 +1920,7 @@ var Admin = (function () {
     if (kind === 'long') return 'Paragraph';
     if (kind === 'lines') return 'One per line';
     if (kind === 'image') return 'Image';
+    if (kind === 'color') return 'Color';
     return 'Short text';
   }
 
@@ -1992,6 +2015,28 @@ var Admin = (function () {
     input.value = value;
     input.setAttribute('data-base', value);
     return input;
+  }
+
+  function siteColorControl(item, value) {
+    var block = document.createElement('div');
+    var picker = document.createElement('input');
+    var text = document.createElement('input');
+    var hex = Site.safeColor(value) || Site.safeColor(item.fallback);
+    block.className = 'site-color';
+    picker.type = 'color';
+    picker.value = hex;
+    picker.setAttribute('data-site-color', item.id);
+    picker.setAttribute('aria-label', item.label + ' picker');
+    text.type = 'text';
+    text.value = hex;
+    text.spellcheck = false;
+    text.autocomplete = 'off';
+    text.setAttribute('data-site-input', item.id);
+    text.setAttribute('data-base', hex);
+    text.setAttribute('maxlength', '7');
+    block.appendChild(picker);
+    block.appendChild(text);
+    return block;
   }
 
   function siteImageControl(item, value) {
@@ -2167,6 +2212,7 @@ var Admin = (function () {
     col.className = 'site-col';
     if (item.kind === 'image') control = siteImageControl(item, Site.shown(item));
     else if (item.kind === 'lines') control = siteLinesControl(item, Site.shown(item));
+    else if (item.kind === 'color') control = siteColorControl(item, Site.shown(item));
     else control = siteTextControl(item, Site.shown(item));
     (control.hasAttribute('data-site-input') ? control : control.querySelector('[data-site-input]')).setAttribute('aria-label', parts.name);
     col.appendChild(control);
@@ -2337,13 +2383,29 @@ var Admin = (function () {
   function saveSite() {
     var map = {};
     var bad = '';
+    var badKind = '';
     if (!window.Site) return;
     Site.fields().forEach(function (item) {
       var input = siteInput(item.id);
       var value = input ? input.value.trim() : '';
-      if (item.kind === 'image' && value && !Site.safeImage(value)) bad = item.label;
+      if (!bad && item.kind === 'image' && value && !Site.safeImage(value)) {
+        bad = item.label;
+        badKind = 'image';
+      }
+      if (!bad && item.kind === 'color' && value && !Site.safeColor(value)) {
+        bad = item.label;
+        badKind = 'color';
+      }
+      if (item.kind === 'color' && Site.safeColor(value)) {
+        value = Site.safeColor(value);
+        if (input) input.value = value;
+      }
       map[item.id] = value;
     });
+    if (badKind === 'color') {
+      showSiteNote(bad + ' needs a colour like #FF8A3D.');
+      return;
+    }
     if (bad) {
       showSiteNote(bad + ' needs a full image address starting with http, or a photo from this device.');
       return;
@@ -2351,6 +2413,7 @@ var Admin = (function () {
     try {
       Site.save(map);
       if (window.Config) Site.patchConfig(Config.get());
+      if (Site.applyColors) Site.applyColors();
       Site.fields().forEach(function (item) {
         var input = siteInput(item.id);
         if (input) input.setAttribute('data-base', input.value.trim());
@@ -2372,6 +2435,7 @@ var Admin = (function () {
       return;
     }
     siteHold = '';
+    if (Site.applyColors) Site.applyColors();
     paintSite();
     showSiteNote('Cleared. Refresh the shop page to see the original words.');
   }
@@ -2586,7 +2650,18 @@ var Admin = (function () {
       jumpToSection(btn.getAttribute('data-site-jump'));
     });
     field('admin-site-fields').addEventListener('input', function (event) {
+      var picker;
+      var hex;
       if (event.target.getAttribute('data-site-url')) onSiteUrl(event.target);
+      if (event.target.getAttribute('data-site-color')) {
+        hex = event.target.parentNode.querySelector('[data-site-input]');
+        if (hex) hex.value = String(event.target.value || '').toUpperCase();
+      }
+      if (event.target.getAttribute('data-site-input') && event.target.closest('.site-color')) {
+        picker = event.target.parentNode.querySelector('[data-site-color]');
+        hex = Site.safeColor(event.target.value);
+        if (picker && hex) picker.value = hex;
+      }
       if (event.target.classList.contains('site-chip-edit')) syncLines(event.target.closest('.site-lines'));
       siteHold = '';
       refreshDirty();

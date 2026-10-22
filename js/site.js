@@ -221,6 +221,57 @@ var Site = (function () {
     field('terms', 'i18n.chatOnWhatsApp', 'WhatsApp button', 'text', 'Chat with us on WhatsApp')
   ];
 
+  /* Every solid colour from the shop palette. id "color.bg" sets --color-bg. */
+  [
+    ['bg', 'Page background', '#EDE8E0'],
+    ['surface', 'Cards', '#FBF9F5'],
+    ['surface-sunken', 'Soft fill', '#E4DED4'],
+    ['surface-pressed', 'Pressed fill', '#DCD5C9'],
+    ['white', 'White', '#FFFFFF'],
+    ['text', 'Main text', '#1E1E1C'],
+    ['text-secondary', 'Secondary text', '#3A3833'],
+    ['text-muted', 'Muted text', '#5E5B54'],
+    ['text-faint', 'Faint text', '#807B71'],
+    ['text-on-sage', 'Text on sage', '#24302A'],
+    ['text-on-band', 'Text on dark', '#EDE8E0'],
+    ['text-on-band-secondary', 'Text on dark, secondary', '#D9D4CB'],
+    ['text-on-band-muted', 'Text on dark, muted', '#BDB8AF'],
+    ['text-on-band-dim', 'Text on dark, dim', '#9B978F'],
+    ['text-on-ink', 'Text on black buttons', '#FFFFFF'],
+    ['primary', 'Ink', '#1E1E1C'],
+    ['primary-hover', 'Ink hover', '#3A3A37'],
+    ['primary-pressed', 'Ink pressed', '#262624'],
+    ['band', 'Dark band', '#262624'],
+    ['band-raised', 'Band raised', '#3A3A37'],
+    ['accent', 'Accent', '#FF8A3D'],
+    ['accent-hover', 'Accent hover', '#F07A2C'],
+    ['accent-pressed', 'Accent pressed', '#D96A1C'],
+    ['accent-ink', 'Accent text', '#C2560F'],
+    ['accent-soft', 'Accent soft', '#FFE1CC'],
+    ['accent-tint', 'Accent tint', '#FFB27A'],
+    ['whatsapp', 'WhatsApp', '#FF8A3D'],
+    ['sage', 'Sage', '#A9BCB1'],
+    ['sage-light', 'Sage light', '#B9CDC1'],
+    ['success', 'Success', '#A9BCB1'],
+    ['warning', 'Warning', '#FFE1CC'],
+    ['danger', 'Danger', '#B42318'],
+    ['disabled-bg', 'Disabled background', '#E4DED4'],
+    ['disabled-text', 'Disabled text', '#5E5B54'],
+    ['border-strong', 'Strong line', '#1E1E1C'],
+    ['border-input', 'Input line', '#807B71'],
+    ['border-on-band', 'Line on dark', '#7A766E'],
+    ['divider-on-band', 'Divider on dark', '#3A3A37'],
+    ['badge-oos-bg', 'Out of stock badge', '#1E1E1C'],
+    ['badge-free-bg', 'Free badge', '#FF8A3D'],
+    ['badge-count-bg', 'Count badge', '#FF8A3D'],
+    ['focus', 'Focus', '#1E1E1C'],
+    ['focus-on-dark', 'Focus on dark', '#FF8A3D'],
+    ['skeleton-base', 'Loading block', '#E4DED4'],
+    ['skeleton-shimmer', 'Loading shine', '#EDE8E0']
+  ].forEach(function (row) {
+    FIELDS.push(field('colors', 'color.' + row[0], row[1], 'color', row[2]));
+  });
+
   function read() {
     try {
       var parsed = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -234,6 +285,16 @@ var Site = (function () {
     var saved = read();
     var value = saved[id];
     return value == null ? '' : String(value);
+  }
+
+  /* #RGB or #RRGGBB. Anything else is ignored. */
+  function safeColor(value) {
+    var hex = String(value || '').trim().replace(/^#/, '');
+    if (/^[0-9a-fA-F]{3}$/.test(hex)) {
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+    }
+    if (!/^[0-9a-fA-F]{6}$/.test(hex)) return '';
+    return '#' + hex.toUpperCase();
   }
 
   /* http(s), a site image path, or a photo uploaded on this device. */
@@ -329,6 +390,10 @@ var Site = (function () {
         value = safeImage(value);
         if (!value || value === builtIn(item)) return;
       }
+      if (item.kind === 'color') {
+        value = safeColor(value);
+        if (!value || value === safeColor(builtIn(item))) return;
+      }
       next[item.id] = value;
     });
     localStorage.setItem(KEY, JSON.stringify(next));
@@ -394,7 +459,21 @@ var Site = (function () {
     });
   }
 
+  /* Paint saved colours onto the page. An empty save keeps the original. */
+  function applyColors() {
+    FIELDS.forEach(function (item) {
+      var name;
+      var value;
+      if (item.kind !== 'color') return;
+      name = '--' + item.id.replace('.', '-');
+      value = safeColor(raw(item.id));
+      if (value) document.documentElement.style.setProperty(name, value);
+      else document.documentElement.style.removeProperty(name);
+    });
+  }
+
   applyDom(document);
+  applyColors();
 
   return {
     fields: function () { return FIELDS; },
@@ -407,6 +486,8 @@ var Site = (function () {
     save: save,
     clear: clear,
     applyDom: applyDom,
-    safeImage: safeImage
+    applyColors: applyColors,
+    safeImage: safeImage,
+    safeColor: safeColor
   };
 })();
