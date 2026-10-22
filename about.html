@@ -19,6 +19,7 @@
   <script defer src="js/pagekit/shell.js"></script>
   <script defer src="js/pagekit/ui.js"></script>
   <script defer src="js/pagekit/language.js"></script>
+  <script defer src="js/site.js"></script>
   <script defer src="js/pagekit/page.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script defer src="js/icons.js"></script>
@@ -44,63 +45,63 @@
          The phone number is not taken from that picture; shell.js fills it from config.json. -->
     <article class="about-wrap" lang="en">
       <section class="about-letter" aria-labelledby="about-quote">
-        <p class="about-kicker">A letter from the family</p>
+        <p class="about-kicker" data-site="about.kicker">A letter from the family</p>
         <div class="about-letter__top">
-          <h1 class="about-quote" id="about-quote">“We started Bazariyaa because buying a ₹50 brush shouldn’t need an app, a card or a trip across Surat.”</h1>
-          <p class="about-sign">— <em>with love</em></p>
+          <h1 class="about-quote" id="about-quote" data-site="about.quote">“We started Bazariyaa because buying a ₹50 brush shouldn’t need an app, a card or a trip across Surat.”</h1>
+          <p class="about-sign" data-site="about.sign">— <em>with love</em></p>
         </div>
         <div class="about-founder">
           <!-- "Your name" is the placeholder written on the design. Replace it when the owner gives the real name. -->
-          <img src="images/bhavya.png" alt="" width="64" height="64">
-          <p><strong>Bhavya Mehta</strong><span>Founder, Bazariyaa</span></p>
+          <img src="images/bhavya.png" alt="" width="64" height="64" data-site-img="about.founderImg">
+          <p><strong data-site="about.founderName">Bhavya Mehta</strong><span data-site="about.founderRole">Founder, Bazariyaa</span></p>
         </div>
 
         <div class="about-photos">
           <figure class="about-photo about-photo--shop">
-            <img src="images/about-shop.jpg" alt="">
-            <figcaption>Our shop, Surat</figcaption>
+            <img src="images/about-shop.jpg" alt="" data-site-img="about.shopImg">
+            <figcaption data-site="about.shopCap">Our shop, Surat</figcaption>
           </figure>
           <figure class="about-photo about-photo--pack">
-            <img src="images/about-pack.jpg" alt="">
-            <figcaption>Pack no. 001-01</figcaption>
+            <img src="images/about-pack.jpg" alt="" data-site-img="about.packImg">
+            <figcaption data-site="about.packCap">Pack no. 001-01</figcaption>
           </figure>
-          <p class="about-check">Checked by hand <em>before it leaves.</em></p>
+          <p class="about-check" data-site="about.check">Checked by hand <em>before it leaves.</em></p>
         </div>
       </section>
 
       <section class="about-journey" aria-labelledby="journey-title">
-        <h2 id="journey-title">Our journey</h2>
+        <h2 id="journey-title" data-site="about.journeyTitle">Our journey</h2>
         <ol class="journey">
           <li>
-            <span class="journey__year">2024</span>
+            <span class="journey__year" data-site="about.y1year">2024</span>
             <span class="journey__mark" aria-hidden="true"></span>
             <div>
-              <h3>A stall in the market</h3>
-              <p>We started selling kitchen tools from a small stall.</p>
+              <h3 data-site="about.y1title">A stall in the market</h3>
+              <p data-site="about.y1body">We started selling kitchen tools from a small stall.</p>
             </div>
           </li>
           <li>
-            <span class="journey__year">2025</span>
+            <span class="journey__year" data-site="about.y2year">2025</span>
             <span class="journey__mark" aria-hidden="true"></span>
             <div>
-              <h3>Orders on WhatsApp</h3>
-              <p>Regulars began messaging us lists. We delivered on our scooter.</p>
+              <h3 data-site="about.y2title">Orders on WhatsApp</h3>
+              <p data-site="about.y2body">Regulars began messaging us lists. We delivered on our scooter.</p>
             </div>
           </li>
           <li class="is-current">
-            <span class="journey__year">2026</span>
+            <span class="journey__year" data-site="about.y3year">2026</span>
             <span class="journey__mark" aria-hidden="true"></span>
             <div>
-              <h3>Bazariyaa online</h3>
-              <p>412 items in one catalogue, still ordered the same simple way.</p>
+              <h3 data-site="about.y3title">Bazariyaa online</h3>
+              <p data-site="about.y3body">412 items in one catalogue, still ordered the same simple way.</p>
             </div>
           </li>
           <li>
-            <span class="journey__year">Next</span>
+            <span class="journey__year" data-site="about.y4year">Next</span>
             <span class="journey__mark" aria-hidden="true"></span>
             <div>
-              <h3>More of Surat</h3>
-              <p>Faster delivery to every area of the city before we go further.</p>
+              <h3 data-site="about.y4title">More of Surat</h3>
+              <p data-site="about.y4body">Faster delivery to every area of the city before we go further.</p>
             </div>
           </li>
         </ol>
@@ -108,11 +109,11 @@
 
       <section class="about-surat" aria-labelledby="surat-title">
         <div>
-          <p class="about-kicker">More of delivery</p>
-          <h2 id="surat-title">All of Surat.</h2>
-          <p>Only Surat for now, so we can deliver quickly and take care of the shop.</p>
+          <p class="about-kicker" data-site="about.deliverKicker">More of delivery</p>
+          <h2 id="surat-title" data-site="about.deliverTitle">All of Surat.</h2>
+          <p data-site="about.deliverBody">Only Surat for now, so we can deliver quickly and take care of the shop.</p>
         </div>
-        <ul class="area-list">
+        <ul class="area-list" data-site-lines="areas">
           <li>Adajan</li>
           <li>Vesu</li>
           <li>Pal</li>
@@ -127,10 +128,10 @@
       </section>
 
       <section class="about-hello" aria-labelledby="hello-title">
-        <h2 class="about-hello__title" id="hello-title">Say namaste</h2>
+        <h2 class="about-hello__title" id="hello-title" data-site="about.hello">Say namaste</h2>
         <a class="about-chat" data-bz="needs-number" href="#" data-cta-link target="_blank" rel="noopener">
           <span class="about-chat__dot" aria-hidden="true"></span>
-          <span>Chat with us<span data-bz="number-text"></span></span>
+          <span><span data-site="about.chat">Chat with us</span><span data-bz="number-text"></span></span>
         </a>
       </section>
     </article>

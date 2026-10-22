@@ -19,6 +19,7 @@
   <script defer src="js/pagekit/shell.js"></script>
   <script defer src="js/pagekit/ui.js"></script>
   <script defer src="js/pagekit/language.js"></script>
+  <script defer src="js/site.js"></script>
   <script defer src="js/pagekit/page.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script defer src="js/icons.js"></script>
@@ -44,40 +45,40 @@
       <div class="info-hero__card">
         <h1 class="info-hero__title" data-i18n="terms">Terms</h1>
         <!-- Legal and policy text stays in English -->
-        <p class="info-hero__sub" lang="en">Terms &amp; Conditions. <em>Please read these terms carefully before placing an order</em></p>
+        <p class="info-hero__sub" lang="en" data-site="terms.intro">Terms &amp; Conditions. <em>Please read these terms carefully before placing an order</em></p>
       </div>
       <nav class="info-contents" aria-labelledby="contents-title">
         <h2 class="info-contents__title" id="contents-title" data-i18n="contents">Contents</h2>
         <ol lang="en">
-          <li><a href="#acceptance"><span>Acceptance of Terms</span><span class="info-contents__num">01</span></a></li>
-          <li><a href="#ordering"><span>Ordering Process</span><span class="info-contents__num">02</span></a></li>
-          <li><a href="#payment"><span>Payment Terms</span><span class="info-contents__num">03</span></a></li>
-          <li><a href="#delivery"><span>Delivery Terms</span><span class="info-contents__num">04</span></a></li>
-          <li><a href="#product-info"><span>Product Information</span><span class="info-contents__num">05</span></a></li>
-          <li><a href="#returns"><span>Returns &amp; Refunds</span><span class="info-contents__num">06</span></a></li>
-          <li><a href="#liability"><span>Limitation of Liability</span><span class="info-contents__num">07</span></a></li>
-          <li><a href="#privacy"><span>Privacy &amp; Data</span><span class="info-contents__num">08</span></a></li>
-          <li><a href="#ip"><span>Intellectual Property</span><span class="info-contents__num">09</span></a></li>
-          <li><a href="#modifications"><span>Modifications</span><span class="info-contents__num">10</span></a></li>
-          <li><a href="#contact"><span>Contact Information</span><span class="info-contents__num">11</span></a></li>
+          <li><a href="#acceptance"><span data-site="terms.acceptance.title">Acceptance of Terms</span><span class="info-contents__num">01</span></a></li>
+          <li><a href="#ordering"><span data-site="terms.ordering.title">Ordering Process</span><span class="info-contents__num">02</span></a></li>
+          <li><a href="#payment"><span data-site="terms.payment.title">Payment Terms</span><span class="info-contents__num">03</span></a></li>
+          <li><a href="#delivery"><span data-site="terms.delivery.title">Delivery Terms</span><span class="info-contents__num">04</span></a></li>
+          <li><a href="#product-info"><span data-site="terms.products.title">Product Information</span><span class="info-contents__num">05</span></a></li>
+          <li><a href="#returns"><span data-site="terms.returns.title">Returns &amp; Refunds</span><span class="info-contents__num">06</span></a></li>
+          <li><a href="#liability"><span data-site="terms.liability.title">Limitation of Liability</span><span class="info-contents__num">07</span></a></li>
+          <li><a href="#privacy"><span data-site="terms.privacy.title">Privacy &amp; Data</span><span class="info-contents__num">08</span></a></li>
+          <li><a href="#ip"><span data-site="terms.ip.title">Intellectual Property</span><span class="info-contents__num">09</span></a></li>
+          <li><a href="#modifications"><span data-site="terms.changes.title">Modifications</span><span class="info-contents__num">10</span></a></li>
+          <li><a href="#contact"><span data-site="terms.contact.title">Contact Information</span><span class="info-contents__num">11</span></a></li>
         </ol>
       </nav>
     </div>
 
     <article class="info-sections" lang="en">
       <section class="info-section" id="acceptance" aria-labelledby="acceptance-h">
-        <p class="info-section__num">(01)<span>Acceptance</span></p>
+        <p class="info-section__num">(01)<span data-site="terms.acceptance.short">Acceptance</span></p>
         <div class="info-section__body">
-          <h2 id="acceptance-h">Acceptance of Terms</h2>
-          <p>By accessing and using BAZARIYAA – Ghar Ka Bazaar website and placing orders, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our services.</p>
+          <h2 id="acceptance-h" data-site="terms.acceptance.title">Acceptance of Terms</h2>
+          <p data-site="terms.acceptance.body">By accessing and using BAZARIYAA – Ghar Ka Bazaar website and placing orders, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our services.</p>
         </div>
       </section>
 
       <section class="info-section" id="ordering" aria-labelledby="ordering-h">
-        <p class="info-section__num">(02)<span>Ordering</span></p>
+        <p class="info-section__num">(02)<span data-site="terms.ordering.short">Ordering</span></p>
         <div class="info-section__body">
-          <h2 id="ordering-h">Ordering Process</h2>
-          <ul class="plain-list">
+          <h2 id="ordering-h" data-site="terms.ordering.title">Ordering Process</h2>
+          <ul class="plain-list" data-site-lines="terms.ordering.body">
             <li>Orders are placed through WhatsApp communication</li>
             <li>All orders are subject to product availability</li>
             <li>We reserve the right to refuse or cancel any order</li>
@@ -88,10 +89,10 @@
       </section>
 
       <section class="info-section" id="payment" aria-labelledby="payment-h">
-        <p class="info-section__num">(03)<span>Payment</span></p>
+        <p class="info-section__num">(03)<span data-site="terms.payment.short">Payment</span></p>
         <div class="info-section__body">
-          <h2 id="payment-h">Payment Terms</h2>
-          <ul class="plain-list">
+          <h2 id="payment-h" data-site="terms.payment.title">Payment Terms</h2>
+          <ul class="plain-list" data-site-lines="terms.payment.body">
             <li>Cash on Delivery (COD): Payment is made at the time of delivery</li>
             <li>For COD orders, exact change is appreciated</li>
             <li>We accept cash payments only for COD orders</li>
@@ -102,10 +103,10 @@
       </section>
 
       <section class="info-section" id="delivery" aria-labelledby="delivery-h">
-        <p class="info-section__num">(04)<span>Delivery</span></p>
+        <p class="info-section__num">(04)<span data-site="terms.delivery.short">Delivery</span></p>
         <div class="info-section__body">
-          <h2 id="delivery-h">Delivery Terms</h2>
-          <ul class="plain-list">
+          <h2 id="delivery-h" data-site="terms.delivery.title">Delivery Terms</h2>
+          <ul class="plain-list" data-site-lines="terms.delivery.body">
             <li>Delivery timeframes are estimates and may vary</li>
             <li>Free shipping is available for orders above ₹499</li>
             <li>Delivery charges apply for orders below ₹499</li>
@@ -117,10 +118,10 @@
       </section>
 
       <section class="info-section" id="product-info" aria-labelledby="product-info-h">
-        <p class="info-section__num">(05)<span>Products</span></p>
+        <p class="info-section__num">(05)<span data-site="terms.products.short">Products</span></p>
         <div class="info-section__body">
-          <h2 id="product-info-h">Product Information</h2>
-          <ul class="plain-list">
+          <h2 id="product-info-h" data-site="terms.products.title">Product Information</h2>
+          <ul class="plain-list" data-site-lines="terms.products.body">
             <li>We strive to provide accurate product descriptions and images</li>
             <li>Product colors may vary slightly due to display settings</li>
             <li>We reserve the right to substitute products of equal or better quality</li>
@@ -130,26 +131,26 @@
       </section>
 
       <section class="info-section" id="returns" aria-labelledby="returns-h">
-        <p class="info-section__num">(06)<span>Returns</span></p>
+        <p class="info-section__num">(06)<span data-site="terms.returns.short">Returns</span></p>
         <div class="info-section__body">
-          <h2 id="returns-h">Returns &amp; Refunds</h2>
-          <p>Please refer to our <a href="return-policy.html">Return Policy</a> for detailed information about returns and refunds. Returns are accepted within 7 days of delivery, subject to terms and conditions.</p>
+          <h2 id="returns-h" data-site="terms.returns.title">Returns &amp; Refunds</h2>
+          <p data-site="terms.returns.body">Please refer to our <a href="return-policy.html">Return Policy</a> for detailed information about returns and refunds. Returns are accepted within 7 days of delivery, subject to terms and conditions.</p>
         </div>
       </section>
 
       <section class="info-section" id="liability" aria-labelledby="liability-h">
-        <p class="info-section__num">(07)<span>Liability</span></p>
+        <p class="info-section__num">(07)<span data-site="terms.liability.short">Liability</span></p>
         <div class="info-section__body">
-          <h2 id="liability-h">Limitation of Liability</h2>
-          <p>BAZARIYAA shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or services. Our liability is limited to the value of the product purchased.</p>
+          <h2 id="liability-h" data-site="terms.liability.title">Limitation of Liability</h2>
+          <p data-site="terms.liability.body">BAZARIYAA shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or services. Our liability is limited to the value of the product purchased.</p>
         </div>
       </section>
 
       <section class="info-section" id="privacy" aria-labelledby="privacy-h">
-        <p class="info-section__num">(08)<span>Privacy</span></p>
+        <p class="info-section__num">(08)<span data-site="terms.privacy.short">Privacy</span></p>
         <div class="info-section__body">
-          <h2 id="privacy-h">Privacy &amp; Data</h2>
-          <ul class="plain-list">
+          <h2 id="privacy-h" data-site="terms.privacy.title">Privacy &amp; Data</h2>
+          <ul class="plain-list" data-site-lines="terms.privacy.body">
             <li>We collect information necessary to process your order</li>
             <li>Your contact information is used only for order processing and delivery</li>
             <li>We do not share your personal information with third parties</li>
@@ -159,33 +160,33 @@
       </section>
 
       <section class="info-section" id="ip" aria-labelledby="ip-h">
-        <p class="info-section__num">(09)<span>Content</span></p>
+        <p class="info-section__num">(09)<span data-site="terms.ip.short">Content</span></p>
         <div class="info-section__body">
-          <h2 id="ip-h">Intellectual Property</h2>
-          <p>All content on this website, including text, images, logos, and product descriptions, is the property of BAZARIYAA and is protected by copyright laws. Unauthorized use is prohibited.</p>
+          <h2 id="ip-h" data-site="terms.ip.title">Intellectual Property</h2>
+          <p data-site="terms.ip.body">All content on this website, including text, images, logos, and product descriptions, is the property of BAZARIYAA and is protected by copyright laws. Unauthorized use is prohibited.</p>
         </div>
       </section>
 
       <section class="info-section" id="modifications" aria-labelledby="modifications-h">
-        <p class="info-section__num">(10)<span>Changes</span></p>
+        <p class="info-section__num">(10)<span data-site="terms.changes.short">Changes</span></p>
         <div class="info-section__body">
-          <h2 id="modifications-h">Modifications</h2>
-          <p>We reserve the right to modify these Terms and Conditions at any time. Changes will be effective immediately upon posting. Continued use of our services after changes constitutes acceptance of the modified terms.</p>
+          <h2 id="modifications-h" data-site="terms.changes.title">Modifications</h2>
+          <p data-site="terms.changes.body">We reserve the right to modify these Terms and Conditions at any time. Changes will be effective immediately upon posting. Continued use of our services after changes constitutes acceptance of the modified terms.</p>
         </div>
       </section>
 
       <section class="info-section" id="contact" aria-labelledby="contact-h">
-        <p class="info-section__num">(11)<span>Contact</span></p>
+        <p class="info-section__num">(11)<span data-site="terms.contact.short">Contact</span></p>
         <div class="info-section__body">
-          <h2 id="contact-h">Contact Information</h2>
-          <p>For any questions or concerns regarding these Terms and Conditions, please contact us:</p>
+          <h2 id="contact-h" data-site="terms.contact.title">Contact Information</h2>
+          <p data-site="terms.contact.body">For any questions or concerns regarding these Terms and Conditions, please contact us:</p>
           <ul class="contact-list">
             <li data-bz="contact-item" hidden>WhatsApp: <a data-bz="whatsapp-link" data-keep-text href="#" target="_blank" rel="noopener"><span data-bz="number-text"></span></a></li>
             <li data-bz="contact-item" hidden>Phone: <a data-bz="phone-link" href="#"></a></li>
             <li data-bz="no-number-item"><span data-i18n="numberComingSoon">Our phone number will be added here soon.</span></li>
           </ul>
-          <p class="info-note">Last Updated: December 2024</p>
-          <p class="info-note">By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
+          <p class="info-note" data-site="terms.updated">Last Updated: December 2024</p>
+          <p class="info-note" data-site="terms.agree">By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
         </div>
       </section>
     </article>

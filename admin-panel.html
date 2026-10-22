@@ -7,7 +7,7 @@
   <title>Admin panel – BAZARIYAA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/admin.css">
@@ -52,6 +52,7 @@
             Download
           </button>
         </div>
+        <button class="admin-site-btn" id="admin-site" type="button">Site config</button>
         <div class="admin-account">
           <button class="admin-account-btn" id="admin-account" type="button" aria-expanded="false" aria-haspopup="menu" aria-controls="admin-account-menu">
             Admin
@@ -294,8 +295,28 @@
     </div>
   </main>
 
+  <div class="site-modal" id="admin-site-modal" hidden>
+    <div class="site-card" id="admin-site-card" role="dialog" aria-modal="true" aria-labelledby="admin-site-title" tabindex="-1">
+      <header class="site-head">
+        <div>
+          <h2 id="admin-site-title">Site config</h2>
+          <p>Words and photos for the shop, home, about, return policy and terms. An empty box keeps the original. Saves stay in this browser.</p>
+        </div>
+        <button class="site-close" id="admin-site-close" type="button">Close</button>
+      </header>
+      <div class="site-tabs" id="admin-site-tabs" role="tablist" aria-label="Pages"></div>
+      <div class="site-scroll" id="admin-site-fields"></div>
+      <p class="admin-error" id="admin-site-note" role="status" hidden></p>
+      <footer class="site-foot">
+        <button class="site-clear" id="admin-site-clear" type="button">Clear saved changes</button>
+        <button class="site-save" id="admin-site-save" type="button">Save</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/site.js"></script>
   <script src="products.js"></script>
   <script src="js/data.js"></script>
   <script src="js/admin.js"></script>

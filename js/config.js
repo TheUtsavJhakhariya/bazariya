@@ -11,7 +11,7 @@ var Config = (function () {
     areas: [],
     sheetCsvUrl: '',
     fallbackCsv: 'data/products.csv',
-    popularCount: 8,
+    popularCount: 10,
     showMoreStep: 20,
     maxQtyPerItem: 99,
     noteMaxLength: 120,
@@ -27,6 +27,8 @@ var Config = (function () {
       data = json;
     }).catch(function () {
       data.whatsappNumber = '';
+    }).then(function () {
+      if (window.Site) Site.patchConfig(data);
     });
   }
 

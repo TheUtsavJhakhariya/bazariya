@@ -45,7 +45,7 @@ var Shell = (function () {
     link.href = 'index.html';
     var mark = UI.el('span', 'brand-mark');
     var logo = UI.el('img');
-    logo.src = 'images/Logo.svg';
+    logo.src = window.Site ? Site.image('logo', 'images/Logo.svg') : 'images/Logo.svg';
     logo.alt = '';
     mark.appendChild(logo);
     link.appendChild(mark);

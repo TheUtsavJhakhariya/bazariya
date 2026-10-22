@@ -1540,6 +1540,208 @@ var Admin = (function () {
     if (first) first.focus();
   }
 
+  var sitePage = 'shop';
+
+  function showSiteNote(text) {
+    var note = field('admin-site-note');
+    note.textContent = text;
+    note.hidden = !text;
+  }
+
+  function siteInput(id) {
+    return document.querySelector('[data-site-input="' + id + '"]');
+  }
+
+  function sitePages() {
+    return [
+      { id: 'shop', label: 'Shop' },
+      { id: 'home', label: 'Home' },
+      { id: 'about', label: 'About' },
+      { id: 'return', label: 'Return policy' },
+      { id: 'terms', label: 'Terms' }
+    ];
+  }
+
+  function showSitePage(page) {
+    sitePage = page;
+    Array.prototype.forEach.call(field('admin-site-tabs').querySelectorAll('[data-site-page]'), function (btn) {
+      var on = btn.getAttribute('data-site-page') === page;
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('[data-page]'), function (row) {
+      row.hidden = row.getAttribute('data-page') !== page;
+    });
+  }
+
+  function siteTextControl(item, value) {
+    var input = item.kind === 'text' ? document.createElement('input') : document.createElement('textarea');
+    input.setAttribute('data-site-input', item.id);
+    input.setAttribute('aria-label', item.label);
+    if (item.kind === 'text') input.type = 'text';
+    else input.rows = item.kind === 'lines' ? 6 : 3;
+    input.value = value;
+    return input;
+  }
+
+  function siteImageControl(item, value) {
+    var block = document.createElement('div');
+    var preview = document.createElement('img');
+    var url = document.createElement('input');
+    var fileLabel = document.createElement('label');
+    var file = document.createElement('input');
+    var hidden = document.createElement('input');
+    block.className = 'site-image';
+    preview.className = 'site-preview';
+    preview.alt = '';
+    preview.hidden = !value;
+    if (value) preview.src = value;
+    url.type = 'url';
+    url.inputMode = 'url';
+    url.autocomplete = 'off';
+    url.setAttribute('aria-label', item.label);
+    url.placeholder = value.indexOf('data:image/') === 0
+      ? 'Photo from this device. Paste a URL to replace it.'
+      : 'https://... or images/photo.jpg';
+    if (value.indexOf('data:image/') !== 0) url.value = value;
+    file.type = 'file';
+    file.accept = 'image/*';
+    file.className = 'visually-hidden';
+    file.setAttribute('data-site-file', item.id);
+    fileLabel.className = 'site-file';
+    fileLabel.appendChild(document.createTextNode('Upload from device'));
+    fileLabel.appendChild(file);
+    hidden.type = 'hidden';
+    hidden.setAttribute('data-site-input', item.id);
+    hidden.value = value;
+    url.setAttribute('data-site-url', item.id);
+    block.appendChild(preview);
+    block.appendChild(url);
+    block.appendChild(fileLabel);
+    block.appendChild(hidden);
+    return block;
+  }
+
+  function paintSite() {
+    var tabs = field('admin-site-tabs');
+    var box = field('admin-site-fields');
+    tabs.textContent = '';
+    box.textContent = '';
+    sitePages().forEach(function (page) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'site-tab';
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('data-site-page', page.id);
+      btn.textContent = page.label;
+      tabs.appendChild(btn);
+    });
+    if (!window.Site) return;
+    Site.fields().forEach(function (item) {
+      var wrap = document.createElement('div');
+      var name = document.createElement('span');
+      wrap.className = 'site-field';
+      wrap.setAttribute('data-page', item.page);
+      name.textContent = item.label;
+      wrap.appendChild(name);
+      wrap.appendChild(item.kind === 'image'
+        ? siteImageControl(item, Site.shown(item))
+        : siteTextControl(item, Site.shown(item)));
+      box.appendChild(wrap);
+    });
+    showSitePage(sitePage);
+    showSiteNote('');
+  }
+
+  function openSite() {
+    var ready = window.Config ? Config.load() : Promise.resolve();
+    ready.then(paintSite, paintSite).then(function () {
+      field('admin-site-modal').hidden = false;
+      document.body.classList.add('admin-noscroll');
+      field('admin-site-card').focus();
+    });
+  }
+
+  function closeSite() {
+    if (field('admin-site-modal').hidden) return;
+    field('admin-site-modal').hidden = true;
+    if (field('admin-dialog').hidden && field('admin-bulk-modal').hidden) {
+      document.body.classList.remove('admin-noscroll');
+    }
+    field('admin-site').focus();
+  }
+
+  function onSiteUrl(input) {
+    var id = input.getAttribute('data-site-url');
+    var hidden = siteInput(id);
+    var preview = input.parentNode.querySelector('.site-preview');
+    var value = input.value.trim();
+    if (hidden) hidden.value = value;
+    if (!preview) return;
+    if (Site.safeImage(value)) {
+      preview.hidden = false;
+      preview.src = Site.safeImage(value);
+    } else if (!value) {
+      preview.hidden = true;
+      preview.removeAttribute('src');
+    }
+  }
+
+  function onSiteFile(input) {
+    var id = input.getAttribute('data-site-file');
+    var hidden = siteInput(id);
+    var block = input.closest('.site-image');
+    var url = block.querySelector('[data-site-url]');
+    var preview = block.querySelector('.site-preview');
+    if (!input.files || !input.files[0]) return;
+    shrinkImage(input.files[0]).then(function (src) {
+      if (hidden) hidden.value = src;
+      if (url) url.value = '';
+      if (preview) {
+        preview.hidden = false;
+        preview.src = src;
+      }
+      input.value = '';
+    }).catch(function () {
+      showSiteNote('That photo could not be read. Try another one.');
+    });
+  }
+
+  function saveSite() {
+    var map = {};
+    var bad = '';
+    if (!window.Site) return;
+    Site.fields().forEach(function (item) {
+      var input = siteInput(item.id);
+      var value = input ? input.value.trim() : '';
+      if (item.kind === 'image' && value && !Site.safeImage(value)) bad = item.label;
+      map[item.id] = value;
+    });
+    if (bad) {
+      showSiteNote(bad + ' needs a full image address starting with http, or a photo from this device.');
+      return;
+    }
+    try {
+      Site.save(map);
+      if (window.Config) Site.patchConfig(Config.get());
+      showSiteNote('Saved in this browser. Refresh the shop page to see it.');
+    } catch (err) {
+      showSiteNote('This browser could not store that. Try a smaller photo.');
+    }
+  }
+
+  function clearSite() {
+    if (!window.Site) return;
+    try {
+      Site.clear();
+    } catch (err) {
+      showSiteNote('This browser could not clear the saved words.');
+      return;
+    }
+    paintSite();
+    showSiteNote('Cleared. Refresh the shop page to see the original words.');
+  }
+
   function start() {
     var form = document.getElementById('admin-form');
     var error = document.getElementById('admin-error');
@@ -1715,11 +1917,7 @@ var Admin = (function () {
       closeDialog();
       closeBulk();
       forget();
-      error.hidden = true;
-      user.value = '';
-      pass.value = '';
-      show(false);
-      user.focus();
+      window.location.href = 'index.html';
     });
 
     dialog.addEventListener('click', function (event) {
@@ -1734,6 +1932,24 @@ var Admin = (function () {
     field('admin-account').addEventListener('click', function (event) {
       event.stopPropagation();
       toggleAccount();
+    });
+    field('admin-site').addEventListener('click', openSite);
+    field('admin-site-close').addEventListener('click', closeSite);
+    field('admin-site-save').addEventListener('click', saveSite);
+    field('admin-site-clear').addEventListener('click', clearSite);
+    field('admin-site-modal').addEventListener('click', function (event) {
+      if (event.target.id === 'admin-site-modal') closeSite();
+    });
+    field('admin-site-tabs').addEventListener('click', function (event) {
+      var btn = event.target.closest('[data-site-page]');
+      if (!btn) return;
+      showSitePage(btn.getAttribute('data-site-page'));
+    });
+    field('admin-site-fields').addEventListener('input', function (event) {
+      if (event.target.getAttribute('data-site-url')) onSiteUrl(event.target);
+    });
+    field('admin-site-fields').addEventListener('change', function (event) {
+      if (event.target.getAttribute('data-site-file')) onSiteFile(event.target);
     });
     document.addEventListener('click', function (event) {
       if (event.target.closest && event.target.closest('.admin-account')) return;
@@ -1790,6 +2006,10 @@ var Admin = (function () {
     document.addEventListener('keydown', function (event) {
       var bulkOpen = !field('admin-bulk-modal').hidden;
       if (event.key === 'Escape') {
+        if (!field('admin-site-modal').hidden) {
+          closeSite();
+          return;
+        }
         if (!field('admin-account-menu').hidden) {
           closeAccount();
           field('admin-account').focus();

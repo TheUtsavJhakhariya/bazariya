@@ -477,8 +477,12 @@
 
   // Look up a string; fall back to English, then to the key itself.
   function t(key, vars) {
-    var dict = STRINGS[current] || STRINGS.en;
-    var text = dict[key] !== undefined ? dict[key] : STRINGS.en[key];
+    var custom = window.Site ? Site.raw('i18n.' + key) : '';
+    var dict;
+    var text;
+    if (custom) return fill(custom, vars);
+    dict = STRINGS[current] || STRINGS.en;
+    text = dict[key] !== undefined ? dict[key] : STRINGS.en[key];
     return fill(text !== undefined ? text : key, vars);
   }
 

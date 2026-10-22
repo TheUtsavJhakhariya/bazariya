@@ -34,5 +34,7 @@
     form.addEventListener("change", function (event) {
       if (event.target && event.target.name === "case") show(event.target);
     });
+    var checked = form.querySelector('input[name="case"]:checked');
+    if (checked) show(checked);
   }
 })();

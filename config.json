@@ -8,7 +8,7 @@
   "areas": ["Adajan", "Vesu", "Pal", "Piplod", "Athwa", "Varachha", "Katargam", "Udhna", "Althan", "City Light", "Rander"],
   "sheetCsvUrl": "",
   "fallbackCsv": "Product sheets - Products.csv",
-  "popularCount": 8,
+  "popularCount": 10,
   "showMoreStep": 20,
   "maxQtyPerItem": 99,
   "noteMaxLength": 120,

@@ -13,6 +13,11 @@
   margin-top: var(--space-section);
 }
 
+#shop{
+  margin-top: var(--space-section);
+  margin-bottom: var(--space-section);
+}
+
 #shop,
 #departments,
 #help,
@@ -146,7 +151,7 @@
 .band {
   background: var(--color-band);
   color: var(--color-text-on-band);
-  margin-top: var(--space-section);
+  margin: var(--space-section) 0;
   padding: 48px 0;
 }
 
@@ -390,6 +395,7 @@
   border-radius: var(--radius-pill);
   background: var(--color-white);
   color: var(--color-text);
+  cursor: text;
 }
 
 .order-input {
@@ -875,6 +881,7 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   min-height: 420px;
+  display: none;
 }
 
 .promise img {

@@ -81,12 +81,14 @@
       })
       .then(function (json) {
         var c = clean(json);
+        if (window.Site) Site.patchConfig(c);
         c.loadedFromFile = true;
         return c;
       })
       .catch(function (err) {
         console.warn("config.json could not be loaded, using defaults:", err.message);
         var c = clean(null);
+        if (window.Site) Site.patchConfig(c);
         c.loadedFromFile = false;
         return c;
       });

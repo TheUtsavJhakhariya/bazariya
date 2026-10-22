@@ -114,7 +114,7 @@ var Home = (function () {
   }
 
   function catalogueView(products) {
-    var base = cfg().popularCount || 8;
+    var base = cfg().popularCount || 10;
     var step = cfg().showMoreStep || 20;
     var popular = [];
     var rest = [];
@@ -239,7 +239,7 @@ var Home = (function () {
   }
 
   function buildTrio() {
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var grid = UI.el('div', 'trio');
     grid.appendChild(buildFreeCard());
@@ -286,6 +286,10 @@ var Home = (function () {
     match.setAttribute('aria-live', 'polite');
     pill.appendChild(match);
     pill.appendChild(go);
+    pill.addEventListener('click', function (event) {
+      if (event.target.closest && event.target.closest('.order-go')) return;
+      input.focus();
+    });
     card.appendChild(pill);
     return card;
   }
@@ -304,9 +308,10 @@ var Home = (function () {
     head.appendChild(pin);
     card.appendChild(head);
     card.appendChild(UI.el('p', 'trio-note', fill('onlyCity', { city: city() })));
-    HOME_AREAS.forEach(function (area) {
+    var customAreas = window.Site ? Site.lines('areas') : null;
+    (customAreas || HOME_AREAS).forEach(function (area) {
       var pill;
-      if (allowed.indexOf(area) === -1) return;
+      if (!customAreas && allowed.indexOf(area) === -1) return;
       pill = button('area-pill', area, 'area');
       pill.setAttribute('data-area', area);
       pills.appendChild(pill);
@@ -316,7 +321,7 @@ var Home = (function () {
   }
 
   function buildDepartments(products) {
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var head = UI.el('div', 'dept-head');
     var all = button('dept-all', I18n.t('allArrow'), 'show-all');
@@ -344,7 +349,7 @@ var Home = (function () {
   }
 
   function buildShop(products, opts) {
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var head = UI.el('div', 'shop-head');
     var filters = UI.el('div', 'filter-row');
@@ -376,7 +381,7 @@ var Home = (function () {
     if (opts.error) {
       inner.appendChild(errorPanel());
     } else if (opts.loading) {
-      Catalogue.fill(grid, 8);
+      Catalogue.fill(grid, 10);
       inner.appendChild(grid);
     } else {
       view.items.forEach(function (product) {
@@ -423,7 +428,7 @@ var Home = (function () {
 
   function buildUnder(products) {
     var items = underList(products);
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var panel = UI.el('div', 'small-panel');
     var head = UI.el('div', 'small-head');
@@ -466,7 +471,7 @@ var Home = (function () {
 
   function buildMost(products) {
     var items = mostList(products);
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var head = UI.el('div', 'most-head');
     var title = UI.el('h2', 'most-title');
@@ -551,14 +556,14 @@ var Home = (function () {
   }
 
   function buildPromise() {
-    var section = UI.el('section', 'home-gap');
+    var section = UI.el('section');
     var inner = UI.el('div', 'wrap');
     var card = UI.el('div', 'promise');
     var label = UI.el('div', 'promise-label');
     var notes = UI.el('div', 'notes');
     label.appendChild(UI.el('h2', null, I18n.t('ourPromise')));
     label.appendChild(UI.el('span', null, I18n.t('promiseCount')));
-    card.appendChild(lazyImg('https://picsum.photos/seed/bzpromise/1400/800'));
+    card.appendChild(lazyImg(window.Site ? Site.image('home.promise', 'https://picsum.photos/seed/bzpromise/1400/800') : 'https://picsum.photos/seed/bzpromise/1400/800'));
     card.appendChild(label);
     notes.appendChild(note(I18n.t('packed'), '', false));
     notes.appendChild(note(I18n.t('checked'), '', false));
@@ -578,7 +583,7 @@ var Home = (function () {
   }
 
   function buildPoster() {
-    var section = UI.el('section', 'home-gap poster');
+    var section = UI.el('section', 'poster');
     var inner = UI.el('div', 'wrap');
     var title = UI.el('p', 'poster-line');
     var link;
@@ -698,7 +703,6 @@ var Home = (function () {
       buildHero(),
       buildSearch(products),
       buildTrio(),
-      buildDepartments(products),
       buildShop(products, opts),
       buildUnder(products),
       buildMost(products),
@@ -835,7 +839,7 @@ var Home = (function () {
     var more;
     bind();
     if (board && board.closest('.home')) {
-      Catalogue.fill(board, 8);
+      Catalogue.fill(board, 10);
       more = document.querySelector('.show-more');
       if (more) more.hidden = true;
       return;

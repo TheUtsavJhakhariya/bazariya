@@ -656,7 +656,10 @@ var I18n = (function () {
   var listeners = [];
 
   function t(key) {
-    var table = STR[current] || STR.en;
+    var custom = window.Site ? Site.raw('i18n.' + key) : '';
+    var table;
+    if (custom) return custom;
+    table = STR[current] || STR.en;
     if (table[key] != null && table[key] !== '') return table[key];
     return STR.en[key] || key;
   }

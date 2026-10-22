@@ -43,7 +43,7 @@
   min-height: 56px;
   padding: 4px;
   border-radius: var(--radius-pill);
-  background: #E7E1D6;
+  background: #ffffff;
 }
 
 .admin-csv-upload,
@@ -1904,5 +1904,206 @@ body.admin-noscroll {
   .admin-popular,
   .admin-rank-line {
     justify-content: flex-start;
+  }
+}
+
+/* Site config dialog. Same cream card as the shop's language popup. */
+.admin-site-btn {
+  min-height: 56px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  box-shadow: 0 0 0 1.5px #E6E0D6;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-site-btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.site-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(30, 24, 16, 0.45);
+}
+
+.site-card {
+  width: min(760px, 100%);
+  max-height: min(92vh, 880px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 28px 28px 20px 20px;
+  background: var(--color-surface);
+}
+
+.site-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-head h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.site-head p {
+  margin: 8px 0 0;
+  font-size: 16px;
+}
+
+.site-close,
+.site-clear,
+.site-save,
+.site-tab,
+.site-file {
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-close,
+.site-clear {
+  padding: 0 18px;
+  background: var(--color-white);
+  box-shadow: 0 0 0 1.5px #E6E0D6;
+  color: var(--color-text);
+}
+
+.site-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.site-tab {
+  padding: 0 16px;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.site-tab.is-on {
+  background: var(--color-primary);
+  color: var(--color-text-on-ink);
+}
+
+.site-tab:focus-visible,
+.site-close:focus-visible,
+.site-clear:focus-visible,
+.site-file:focus-visible,
+.site-card :focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.site-tab.is-on:focus-visible,
+.site-save:focus-visible {
+  outline-color: var(--color-focus-on-dark);
+}
+
+.site-scroll {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.site-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.site-field > span {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.site-field input,
+.site-field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--color-white);
+  box-shadow: 0 0 0 1.5px #E6E0D6;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.site-field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.site-image {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.site-preview {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #EDE8E0;
+}
+
+.site-file {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: 0 18px;
+  background: var(--color-primary);
+  color: var(--color-text-on-ink);
+}
+
+.site-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.site-save {
+  padding: 0 22px;
+  background: var(--color-primary);
+  color: var(--color-text-on-ink);
+}
+
+@media (min-width: 700px) {
+  .site-modal {
+    align-items: center;
+  }
+
+  .site-card {
+    border-radius: 28px;
   }
 }
