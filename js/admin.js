@@ -1541,11 +1541,28 @@ var Admin = (function () {
   }
 
   var sitePage = 'shop';
+  var siteHold = '';
 
   function showSiteNote(text) {
+    siteHold = text || '';
+    paintSiteNote();
+  }
+
+  function paintSiteNote() {
     var note = field('admin-site-note');
-    note.textContent = text;
-    note.hidden = !text;
+    var text = field('admin-site-note-text');
+    var count;
+    if (!note || !text) return;
+    if (siteHold) {
+      text.textContent = siteHold;
+      note.classList.remove('is-dirty');
+      return;
+    }
+    count = field('admin-site-fields').querySelectorAll('.site-row.is-dirty').length;
+    note.classList.toggle('is-dirty', count > 0);
+    if (count === 0) text.textContent = 'No unsaved changes';
+    else if (count === 1) text.textContent = '1 unsaved change across tabs';
+    else text.textContent = count + ' unsaved changes across tabs';
   }
 
   function siteInput(id) {
@@ -1562,103 +1579,693 @@ var Admin = (function () {
     ];
   }
 
+  /* Groups match the config design. ids stay the saved field names. */
+  function siteSections() {
+    return [
+      sec('shop', 'identity', '01', 'Identity', 'Identity', [
+        rows(['shopName', 'tagline', 'logo'])
+      ]),
+      sec('shop', 'contact', '02', 'Contact & money', 'Contact & money', [
+        rows(['whatsappNumber', 'city', 'freeDeliveryAbove', 'currencySymbol'])
+      ]),
+      sec('shop', 'areas', '03', 'Delivery areas', 'Delivery areas', [
+        rows(['areas'])
+      ]),
+      sec('home', 'banner', '01', 'Free delivery banner', 'Free delivery banner', [
+        rows(['i18n.freeFrom', 'i18n.payAtDoor', 'i18n.freeNote'])
+      ]),
+      sec('home', 'order', '02', 'Order by number', 'Order by number', [
+        rows([
+          { id: 'i18n.navOrder', label: 'Heading' },
+          { id: 'i18n.orderHelp', label: 'Help' }
+        ])
+      ]),
+      sec('home', 'deliver', '03', 'Delivering', 'Delivering', [
+        rows([
+          { id: 'i18n.deliveringInCity', label: 'Heading' },
+          { id: 'i18n.onlyCity', label: 'Note' }
+        ])
+      ]),
+      sec('home', 'under', '04', 'Under today', 'Under today', [
+        rows([
+          { id: 'i18n.underToday', label: 'Heading' },
+          { id: 'i18n.smallHelp', label: 'Note' }
+        ])
+      ]),
+      sec('home', 'how', '05', 'How ordering works', 'How ordering works', [
+        rows([
+          { id: 'i18n.howTitle', label: 'Heading' },
+          { id: 'i18n.noLogin', label: 'Note' }
+        ]),
+        card('01 / 03  Step 1', [
+          { id: 'i18n.stepPick', label: 'Title' },
+          { id: 'i18n.pickBody', label: 'Text' }
+        ]),
+        card('02 / 03  Step 2', [
+          { id: 'i18n.stepSend', label: 'Title' },
+          { id: 'i18n.sendBody', label: 'Text' }
+        ]),
+        card('03 / 03  Step 3', [
+          { id: 'i18n.stepPay', label: 'Title' },
+          { id: 'i18n.payBody', label: 'Text' }
+        ])
+      ]),
+      sec('home', 'promise', '06', 'Promise', 'Promise', [
+        rows([{ id: 'i18n.ourPromise', label: 'Heading' }]),
+        card('01 / 03  Promise 1', [{ id: 'i18n.packed', label: 'Text' }]),
+        card('02 / 03  Promise 2', [{ id: 'i18n.checked', label: 'Text' }]),
+        card('03 / 03  Promise 3', [
+          { id: 'i18n.replaced', label: 'Text' },
+          { id: 'i18n.replacedBody', label: 'Detail' }
+        ]),
+        rows([{ id: 'home.promise', label: 'Promise photo' }])
+      ]),
+      sec('home', 'poster', '07', 'Poster', 'Poster', [
+        rows([
+          { id: 'i18n.orderOn', label: 'Line 1' },
+          { id: 'i18n.whatsappWord', label: 'Line 2' },
+          { id: 'i18n.sayNamaste', label: 'Button' }
+        ])
+      ]),
+      sec('about', 'letter', '01', 'Founder letter', 'Founder letter', [
+        rows([
+          { id: 'about.kicker', label: 'Letter label' },
+          { id: 'about.sign', label: 'Sign-off' },
+          { id: 'about.quote', label: 'Letter' },
+          { id: 'about.founderName', label: 'Founder name' },
+          { id: 'about.founderRole', label: 'Founder role' },
+          { id: 'about.founderImg', label: 'Founder photo' }
+        ])
+      ]),
+      sec('about', 'photos', '02', 'Shop photos', 'Shop photos', [
+        card('01 / 02  Shop photo', [
+          { id: 'about.shopImg', label: 'Photo' },
+          { id: 'about.shopCap', label: 'Caption' }
+        ]),
+        card('02 / 02  Packing photo', [
+          { id: 'about.packImg', label: 'Photo' },
+          { id: 'about.packCap', label: 'Caption' }
+        ]),
+        rows([{ id: 'about.check', label: 'Checked line' }])
+      ]),
+      sec('about', 'journey', '03', 'Journey', 'Journey', [
+        rows([{ id: 'about.journeyTitle', label: 'Heading' }]),
+        card('01 / 04  Journey 1', [
+          { id: 'about.y1year', label: 'Year' },
+          { id: 'about.y1title', label: 'Title' },
+          { id: 'about.y1body', label: 'Text' }
+        ]),
+        card('02 / 04  Journey 2', [
+          { id: 'about.y2year', label: 'Year' },
+          { id: 'about.y2title', label: 'Title' },
+          { id: 'about.y2body', label: 'Text' }
+        ]),
+        card('03 / 04  Journey 3', [
+          { id: 'about.y3year', label: 'Year' },
+          { id: 'about.y3title', label: 'Title' },
+          { id: 'about.y3body', label: 'Text' }
+        ]),
+        card('04 / 04  Journey 4', [
+          { id: 'about.y4year', label: 'Year' },
+          { id: 'about.y4title', label: 'Title' },
+          { id: 'about.y4body', label: 'Text' }
+        ])
+      ]),
+      sec('about', 'delivery', '04', 'Delivery', 'Delivery', [
+        rows([
+          { id: 'about.deliverKicker', label: 'Label' },
+          { id: 'about.deliverTitle', label: 'Heading' },
+          { id: 'about.deliverBody', label: 'Text' }
+        ])
+      ]),
+      sec('about', 'chat', '05', 'Chat', 'Chat', [
+        rows([
+          { id: 'about.hello', label: 'Heading' },
+          { id: 'about.chat', label: 'Button' }
+        ])
+      ]),
+      sec('return', 'top', '01', 'Page top', 'Page top', [
+        rows([
+          { id: 'return.title', label: 'Page heading' },
+          { id: 'return.lead', label: 'Page intro' }
+        ])
+      ]),
+      sec('return', 'cases', '02', 'Cases', 'Cases', [
+        card('01 / 06  Arrived broken', caseFields('broken')),
+        card('02 / 06  Wrong item', caseFields('wrong')),
+        card('03 / 06  Something missing', caseFields('missing')),
+        card('04 / 06  Changed my mind', caseFields('mind')),
+        card('05 / 06  Already used', caseFields('used')),
+        card('06 / 06  Too late', caseFields('late'))
+      ]),
+      sec('return', 'window', '03', 'Return window', 'Return window', [
+        rows([
+          { id: 'return.daysTitle', label: 'Heading' },
+          { id: 'return.daysKicker', label: 'Label' }
+        ]),
+        card('01 / 03  Day 0', [
+          { id: 'return.day0.name', label: 'Name' },
+          { id: 'return.day0.body', label: 'Text' }
+        ]),
+        card('02 / 03  Day 1', [
+          { id: 'return.day1.name', label: 'Name' },
+          { id: 'return.day1.body', label: 'Text' }
+        ]),
+        card('03 / 03  Day 2', [
+          { id: 'return.day2.name', label: 'Name' },
+          { id: 'return.day2.body', label: 'Text' }
+        ])
+      ]),
+      sec('return', 'send', '04', 'What to send', 'What to send', [
+        rows([
+          { id: 'return.sendTitle', label: 'Heading' },
+          { id: 'return.sendKicker', label: 'Label' }
+        ]),
+        card('01 / 03  Photo 1', photoFields('return.send1')),
+        card('02 / 03  Photo 2', photoFields('return.send2')),
+        card('03 / 03  Photo 3', photoFields('return.send3'))
+      ]),
+      sec('return', 'good', '05', 'Good to know', 'Good to know', [
+        rows([
+          { id: 'return.goodKicker', label: 'Label' },
+          { id: 'return.goodTitle', label: 'Heading' },
+          { id: 'return.good.lines', label: 'Lines' }
+        ])
+      ]),
+      sec('return', 'chat', '06', 'Chat', 'Chat', [
+        rows([
+          { id: 'return.chatKicker', label: 'Chat label' },
+          { id: 'return.chat1', label: 'Chat heading 1' },
+          { id: 'return.chat2', label: 'Chat heading 2' },
+          { id: 'return.chat3', label: 'Chat heading 3' },
+          { id: 'return.chatLead', label: 'Chat intro' },
+          { id: 'return.chatName', label: 'Chat name' },
+          { id: 'return.chatReply', label: 'Reply time' },
+          { id: 'return.chatCap', label: 'Photo caption' },
+          { id: 'return.chatImg', label: 'Chat photo' }
+        ]),
+        card('01 / 01  Sample conversation', [
+          { id: 'return.bubble1', label: 'Shop message 1' },
+          { id: 'return.bubble2', label: 'Customer message' },
+          { id: 'return.bubble3', label: 'Shop message 2' },
+          { id: 'return.chatNote', label: 'Sample note' }
+        ])
+      ]),
+      sec('return', 'choose', '07', 'You choose', 'You choose', [
+        rows([
+          { id: 'return.chooseTitle', label: 'Heading' },
+          { id: 'return.chooseKicker', label: 'Label' }
+        ]),
+        card('01 / 02  Replace', [
+          { id: 'return.replaceWord', label: 'Word' },
+          { id: 'return.replaceBody', label: 'Text' }
+        ]),
+        card('02 / 02  Refund', [
+          { id: 'return.refundWord', label: 'Word' },
+          { id: 'return.refundBody', label: 'Text' }
+        ])
+      ]),
+      sec('return', 'print', '08', 'Fine print', 'Fine print', [
+        rows([
+          { id: 'return.receiptShop', label: 'Shop line' },
+          { id: 'return.printTitle', label: 'Heading' }
+        ]),
+        card('01 / 07  Time', pair('return.print.timeL', 'return.print.timeV')),
+        card('02 / 07  Damaged', pair('return.print.damageL', 'return.print.damageV')),
+        card('03 / 07  Changed mind', pair('return.print.mindL', 'return.print.mindV')),
+        card('04 / 07  Pickup', pair('return.print.pickupL', 'return.print.pickupV')),
+        card('05 / 07  Refund', pair('return.print.refundL', 'return.print.refundV')),
+        card('06 / 07  Forms', pair('return.print.formsL', 'return.print.formsV')),
+        card('07 / 07  You pay', pair('return.print.payL', 'return.print.payV')),
+        rows([{ id: 'return.print.date', label: 'Date' }])
+      ]),
+      sec('return', 'cant', '09', "Can't take back", "Can't take back", [
+        rows([
+          { id: 'return.cantKicker', label: 'Label' },
+          { id: 'return.cant1', label: 'Item 1' },
+          { id: 'return.cant2', label: 'Item 2' },
+          { id: 'return.cant3', label: 'Item 3' },
+          { id: 'return.cantNote', label: 'Note' }
+        ])
+      ]),
+      sec('return', 'start', '10', 'Start', 'Start', [
+        rows([
+          { id: 'return.start', label: 'Heading' },
+          { id: 'return.startBtn', label: 'Button' }
+        ])
+      ]),
+      sec('terms', 'top', '01', 'Page top', 'Page top', [
+        rows([
+          { id: 'i18n.terms', label: 'Page heading' },
+          { id: 'terms.intro', label: 'Intro' }
+        ])
+      ]),
+      sec('terms', 'clauses', '02', 'Clauses', 'Clauses', [
+        clause('01', 'Acceptance', 'terms.acceptance', 'Text'),
+        clause('02', 'Ordering', 'terms.ordering', 'Lines'),
+        clause('03', 'Payment', 'terms.payment', 'Lines'),
+        clause('04', 'Delivery', 'terms.delivery', 'Lines'),
+        clause('05', 'Products', 'terms.products', 'Lines'),
+        clause('06', 'Returns', 'terms.returns', 'Text'),
+        clause('07', 'Liability', 'terms.liability', 'Text'),
+        clause('08', 'Privacy', 'terms.privacy', 'Lines'),
+        clause('09', 'Content', 'terms.ip', 'Text'),
+        clause('10', 'Changes', 'terms.changes', 'Text'),
+        clause('11', 'Contact', 'terms.contact', 'Text')
+      ]),
+      sec('terms', 'close', '03', 'Closing', 'Closing', [
+        rows([
+          { id: 'terms.updated', label: 'Last updated line' },
+          { id: 'i18n.ctaQuestions', label: 'Questions line' },
+          { id: 'terms.agree', label: 'Agreement line' },
+          { id: 'i18n.ctaAskUs', label: 'Ask us line' },
+          { id: 'i18n.chatOnWhatsApp', label: 'WhatsApp button' }
+        ])
+      ])
+    ];
+  }
+
+  function sec(page, id, num, title, chip, blocks) {
+    return { page: page, id: id, num: num, title: title, chip: chip, blocks: blocks };
+  }
+
+  function rows(ids) {
+    return { ids: ids };
+  }
+
+  function card(title, ids) {
+    return { card: title, ids: ids };
+  }
+
+  function caseFields(key) {
+    return [
+      { id: 'return.' + key + '.label', label: 'Case' },
+      { id: 'return.' + key + '.badge', label: 'Answer badge' },
+      { id: 'return.' + key + '.title', label: 'Answer title' },
+      { id: 'return.' + key + '.body', label: 'Answer text' }
+    ];
+  }
+
+  function photoFields(prefix) {
+    return [
+      { id: prefix + '.img', label: 'Photo' },
+      { id: prefix + '.title', label: 'Title' },
+      { id: prefix + '.body', label: 'Text' }
+    ];
+  }
+
+  function pair(labelId, valueId) {
+    return [
+      { id: labelId, label: 'Label' },
+      { id: valueId, label: 'Value' }
+    ];
+  }
+
+  function clause(num, name, prefix, bodyLabel) {
+    return card(num + ' / 11  ' + num + ' · ' + name, [
+      { id: prefix + '.short', label: 'Short label' },
+      { id: prefix + '.title', label: 'Title' },
+      { id: prefix + '.body', label: bodyLabel }
+    ]);
+  }
+
+  function entryOf(entry) {
+    if (typeof entry === 'string') return { id: entry, label: '' };
+    return entry;
+  }
+
+  function kindLabel(kind) {
+    if (kind === 'long') return 'Paragraph';
+    if (kind === 'lines') return 'One per line';
+    if (kind === 'image') return 'Image';
+    return 'Short text';
+  }
+
+  function labelParts(label) {
+    var cut = label.indexOf('. ');
+    if (cut === -1) return { name: label, hint: '' };
+    return { name: label.slice(0, cut), hint: label.slice(cut + 2) };
+  }
+
+  function cleanLines(value) {
+    return String(value || '').split(/\n/).map(function (part) {
+      return part.trim();
+    }).filter(Boolean).join('\n');
+  }
+
   function showSitePage(page) {
+    var current = null;
     sitePage = page;
+    sitePages().forEach(function (item) {
+      if (item.id === page) current = item;
+    });
     Array.prototype.forEach.call(field('admin-site-tabs').querySelectorAll('[data-site-page]'), function (btn) {
       var on = btn.getAttribute('data-site-page') === page;
       btn.classList.toggle('is-on', on);
       btn.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('[data-page]'), function (row) {
-      row.hidden = row.getAttribute('data-page') !== page;
+    field('admin-site-search').value = '';
+    field('admin-site-search').placeholder = 'Find a field in ' + (current ? current.label : 'Shop') + ' …';
+    paintJumps();
+    applySiteFilter();
+    field('admin-site-fields').scrollTop = 0;
+  }
+
+  function paintJumps() {
+    var box = field('admin-site-chips');
+    var first = true;
+    box.textContent = '';
+    siteSections().forEach(function (section) {
+      var btn;
+      if (section.page !== sitePage) return;
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'site-jump' + (first ? ' is-on' : '');
+      btn.setAttribute('data-site-jump', section.id);
+      btn.textContent = section.chip;
+      box.appendChild(btn);
+      first = false;
     });
+  }
+
+  function applySiteFilter() {
+    var query = field('admin-site-search').value.trim().toLowerCase();
+    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-sec'), function (sec) {
+      var any = false;
+      if (sec.getAttribute('data-page') !== sitePage) {
+        sec.hidden = true;
+        return;
+      }
+      Array.prototype.forEach.call(sec.querySelectorAll('.site-row'), function (row) {
+        var hay = row.getAttribute('data-search') || '';
+        var match = !query || hay.indexOf(query) !== -1;
+        row.hidden = !match;
+        if (match) any = true;
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('.site-group'), function (group) {
+        group.hidden = !group.querySelector('.site-row:not([hidden])');
+      });
+      sec.hidden = !any;
+    });
+  }
+
+  function jumpToSection(id) {
+    var sec = document.getElementById('site-sec-' + id);
+    var scroller;
+    field('admin-site-search').value = '';
+    applySiteFilter();
+    Array.prototype.forEach.call(field('admin-site-chips').querySelectorAll('[data-site-jump]'), function (btn) {
+      btn.classList.toggle('is-on', btn.getAttribute('data-site-jump') === id);
+    });
+    if (!sec) return;
+    scroller = field('admin-site-fields');
+    scroller.scrollTop = sec.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
   }
 
   function siteTextControl(item, value) {
     var input = item.kind === 'text' ? document.createElement('input') : document.createElement('textarea');
     input.setAttribute('data-site-input', item.id);
     input.setAttribute('aria-label', item.label);
+    input.placeholder = 'Empty — keeps original';
     if (item.kind === 'text') input.type = 'text';
-    else input.rows = item.kind === 'lines' ? 6 : 3;
+    else input.rows = 2;
     input.value = value;
+    input.setAttribute('data-base', value);
     return input;
   }
 
   function siteImageControl(item, value) {
     var block = document.createElement('div');
+    var thumb = document.createElement('span');
     var preview = document.createElement('img');
+    var fallback = document.createElement('span');
     var url = document.createElement('input');
     var fileLabel = document.createElement('label');
     var file = document.createElement('input');
     var hidden = document.createElement('input');
     block.className = 'site-image';
+    thumb.className = 'site-thumb' + (value ? ' is-on' : '');
     preview.className = 'site-preview';
     preview.alt = '';
-    preview.hidden = !value;
     if (value) preview.src = value;
+    fallback.className = 'site-thumb-fallback';
+    fallback.textContent = 'photo';
+    thumb.appendChild(preview);
+    thumb.appendChild(fallback);
     url.type = 'url';
     url.inputMode = 'url';
     url.autocomplete = 'off';
-    url.setAttribute('aria-label', item.label);
+    url.setAttribute('aria-label', item.label + ' address');
     url.placeholder = value.indexOf('data:image/') === 0
-      ? 'Photo from this device. Paste a URL to replace it.'
+      ? 'Photo from this device'
       : 'https://... or images/photo.jpg';
     if (value.indexOf('data:image/') !== 0) url.value = value;
+    url.setAttribute('data-site-url', item.id);
     file.type = 'file';
     file.accept = 'image/*';
     file.className = 'visually-hidden';
     file.setAttribute('data-site-file', item.id);
     fileLabel.className = 'site-file';
-    fileLabel.appendChild(document.createTextNode('Upload from device'));
+    fileLabel.appendChild(document.createTextNode('↑ Upload'));
     fileLabel.appendChild(file);
     hidden.type = 'hidden';
     hidden.setAttribute('data-site-input', item.id);
     hidden.value = value;
-    url.setAttribute('data-site-url', item.id);
-    block.appendChild(preview);
+    hidden.setAttribute('data-base', value);
+    block.appendChild(thumb);
     block.appendChild(url);
     block.appendChild(fileLabel);
     block.appendChild(hidden);
     return block;
   }
 
+  function siteLinesControl(item, value) {
+    var cleaned = cleanLines(value);
+    var block = document.createElement('div');
+    var hidden = document.createElement('input');
+    var add = document.createElement('button');
+    block.className = 'site-lines';
+    hidden.type = 'hidden';
+    hidden.setAttribute('data-site-input', item.id);
+    hidden.value = cleaned;
+    hidden.setAttribute('data-base', cleaned);
+    block.appendChild(hidden);
+    cleaned.split('\n').forEach(function (line) {
+      if (line) block.appendChild(lineChip(item.id, line, false));
+    });
+    add.type = 'button';
+    add.className = 'site-add';
+    add.setAttribute('data-site-add', item.id);
+    add.textContent = '+ Add';
+    block.appendChild(add);
+    return block;
+  }
+
+  function lineChip(fieldId, text, editing) {
+    var chip = document.createElement('span');
+    var closer = document.createElement('button');
+    chip.className = 'site-chip';
+    if (editing) {
+      var edit = document.createElement('input');
+      edit.type = 'text';
+      edit.className = 'site-chip-edit';
+      edit.value = text;
+      edit.setAttribute('aria-label', 'New line');
+      chip.appendChild(edit);
+    } else {
+      var span = document.createElement('span');
+      span.textContent = text;
+      chip.appendChild(span);
+    }
+    closer.type = 'button';
+    closer.className = 'site-chip-x';
+    closer.setAttribute('data-site-remove', fieldId);
+    closer.setAttribute('aria-label', 'Remove ' + (text || 'line'));
+    closer.textContent = '×';
+    chip.appendChild(closer);
+    return chip;
+  }
+
+  function syncLines(block) {
+    var hidden;
+    var parts = [];
+    if (!block) return;
+    hidden = block.querySelector('[data-site-input]');
+    Array.prototype.forEach.call(block.querySelectorAll('.site-chip'), function (chip) {
+      var edit = chip.querySelector('.site-chip-edit');
+      var span = chip.querySelector('span');
+      var text = edit ? edit.value.trim() : (span ? span.textContent.trim() : '');
+      if (text) parts.push(text);
+    });
+    if (hidden) hidden.value = parts.join('\n');
+  }
+
+  function addSiteLine(id) {
+    var hidden = siteInput(id);
+    var block = hidden && hidden.closest('.site-lines');
+    var add;
+    var chip;
+    var edit;
+    if (!block) return;
+    add = block.querySelector('[data-site-add]');
+    chip = lineChip(id, '', true);
+    block.insertBefore(chip, add);
+    edit = chip.querySelector('.site-chip-edit');
+    if (edit) edit.focus();
+  }
+
+  function commitChip(edit) {
+    var chip = edit.closest('.site-chip');
+    var block = edit.closest('.site-lines');
+    var text = edit.value.trim();
+    var span;
+    var closer;
+    if (!text) chip.remove();
+    else {
+      span = document.createElement('span');
+      span.textContent = text;
+      chip.insertBefore(span, edit);
+      edit.remove();
+      closer = chip.querySelector('.site-chip-x');
+      if (closer) closer.setAttribute('aria-label', 'Remove ' + text);
+    }
+    syncLines(block);
+    siteHold = '';
+    refreshDirty();
+  }
+
+  function appendSiteRow(parent, item, labelText) {
+    var parts;
+    var row;
+    var label;
+    var name;
+    var dot;
+    var kind;
+    var col;
+    var hint;
+    var control;
+    if (!item) return;
+    parts = labelParts(labelText || item.label);
+    row = document.createElement('div');
+    label = document.createElement('div');
+    name = document.createElement('span');
+    dot = document.createElement('span');
+    kind = document.createElement('span');
+    col = document.createElement('div');
+    row.className = 'site-row';
+    row.setAttribute('data-page', item.page);
+    row.setAttribute('data-search', (parts.name + ' ' + item.label).toLowerCase());
+    label.className = 'site-label';
+    name.className = 'site-label-name';
+    name.textContent = parts.name;
+    dot.className = 'site-dirty-dot';
+    name.appendChild(dot);
+    kind.className = 'site-label-kind';
+    kind.textContent = kindLabel(item.kind);
+    label.appendChild(name);
+    label.appendChild(kind);
+    col.className = 'site-col';
+    if (item.kind === 'image') control = siteImageControl(item, Site.shown(item));
+    else if (item.kind === 'lines') control = siteLinesControl(item, Site.shown(item));
+    else control = siteTextControl(item, Site.shown(item));
+    (control.hasAttribute('data-site-input') ? control : control.querySelector('[data-site-input]')).setAttribute('aria-label', parts.name);
+    col.appendChild(control);
+    if (parts.hint) {
+      hint = document.createElement('p');
+      hint.className = 'site-hint';
+      hint.textContent = parts.hint;
+      col.appendChild(hint);
+    }
+    row.appendChild(label);
+    row.appendChild(col);
+    parent.appendChild(row);
+  }
+
+  function renderSiteSection(section, byId) {
+    var box = document.createElement('section');
+    var title = document.createElement('h3');
+    var num = document.createElement('span');
+    box.className = 'site-sec';
+    box.id = 'site-sec-' + section.id;
+    box.setAttribute('data-page', section.page);
+    title.className = 'site-sec-title';
+    num.textContent = section.num;
+    title.appendChild(num);
+    title.appendChild(document.createTextNode(section.title));
+    box.appendChild(title);
+    section.blocks.forEach(function (block) {
+      var host = box;
+      var heading;
+      if (block.card) {
+        host = document.createElement('div');
+        host.className = 'site-group';
+        heading = document.createElement('p');
+        heading.className = 'site-group-title';
+        heading.textContent = block.card;
+        host.appendChild(heading);
+        box.appendChild(host);
+      }
+      block.ids.forEach(function (entry) {
+        var spec = entryOf(entry);
+        appendSiteRow(host, byId[spec.id], spec.label);
+      });
+    });
+    return box;
+  }
+
   function paintSite() {
     var tabs = field('admin-site-tabs');
     var box = field('admin-site-fields');
+    var byId = {};
+    var counts = {};
     tabs.textContent = '';
     box.textContent = '';
+    if (window.Site) {
+      Site.fields().forEach(function (item) {
+        byId[item.id] = item;
+        counts[item.page] = (counts[item.page] || 0) + 1;
+      });
+    }
     sitePages().forEach(function (page) {
       var btn = document.createElement('button');
+      var name = document.createElement('span');
+      var meta = document.createElement('span');
+      var dot = document.createElement('span');
+      var count = document.createElement('span');
       btn.type = 'button';
-      btn.className = 'site-tab';
+      btn.className = 'site-nav-btn';
       btn.setAttribute('role', 'tab');
       btn.setAttribute('data-site-page', page.id);
-      btn.textContent = page.label;
+      name.textContent = page.label;
+      meta.className = 'site-nav-meta';
+      dot.className = 'site-nav-dot';
+      count.textContent = String(counts[page.id] || 0);
+      meta.appendChild(dot);
+      meta.appendChild(count);
+      btn.appendChild(name);
+      btn.appendChild(meta);
       tabs.appendChild(btn);
     });
-    if (!window.Site) return;
-    Site.fields().forEach(function (item) {
-      var wrap = document.createElement('div');
-      var name = document.createElement('span');
-      wrap.className = 'site-field';
-      wrap.setAttribute('data-page', item.page);
-      name.textContent = item.label;
-      wrap.appendChild(name);
-      wrap.appendChild(item.kind === 'image'
-        ? siteImageControl(item, Site.shown(item))
-        : siteTextControl(item, Site.shown(item)));
-      box.appendChild(wrap);
+    siteSections().forEach(function (section) {
+      box.appendChild(renderSiteSection(section, byId));
     });
     showSitePage(sitePage);
-    showSiteNote('');
+    refreshDirty();
   }
 
   function openSite() {
     var ready = window.Config ? Config.load() : Promise.resolve();
-    ready.then(paintSite, paintSite).then(function () {
+    ready.then(function () {
+      siteHold = '';
+      paintSite();
       field('admin-site-modal').hidden = false;
       document.body.classList.add('admin-noscroll');
-      field('admin-site-card').focus();
+      field('admin-site-search').focus();
+    }, function () {
+      siteHold = '';
+      paintSite();
+      field('admin-site-modal').hidden = false;
+      document.body.classList.add('admin-noscroll');
     });
   }
 
@@ -1671,18 +2278,34 @@ var Admin = (function () {
     field('admin-site').focus();
   }
 
+  function refreshDirty() {
+    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-row'), function (row) {
+      var input = row.querySelector('[data-site-input]');
+      var base = input ? input.getAttribute('data-base') || '' : '';
+      var now = input ? input.value.trim() : '';
+      row.classList.toggle('is-dirty', now !== String(base).trim());
+    });
+    Array.prototype.forEach.call(field('admin-site-tabs').querySelectorAll('[data-site-page]'), function (btn) {
+      var page = btn.getAttribute('data-site-page');
+      var dirty = field('admin-site-fields').querySelector('.site-row.is-dirty[data-page="' + page + '"]');
+      btn.classList.toggle('is-dirty', !!dirty);
+    });
+    paintSiteNote();
+  }
+
   function onSiteUrl(input) {
     var id = input.getAttribute('data-site-url');
     var hidden = siteInput(id);
-    var preview = input.parentNode.querySelector('.site-preview');
+    var block = input.closest('.site-image');
+    var preview = block.querySelector('.site-preview');
+    var thumb = block.querySelector('.site-thumb');
     var value = input.value.trim();
     if (hidden) hidden.value = value;
-    if (!preview) return;
     if (Site.safeImage(value)) {
-      preview.hidden = false;
+      thumb.classList.add('is-on');
       preview.src = Site.safeImage(value);
     } else if (!value) {
-      preview.hidden = true;
+      thumb.classList.remove('is-on');
       preview.removeAttribute('src');
     }
   }
@@ -1693,15 +2316,19 @@ var Admin = (function () {
     var block = input.closest('.site-image');
     var url = block.querySelector('[data-site-url]');
     var preview = block.querySelector('.site-preview');
+    var thumb = block.querySelector('.site-thumb');
     if (!input.files || !input.files[0]) return;
     shrinkImage(input.files[0]).then(function (src) {
       if (hidden) hidden.value = src;
-      if (url) url.value = '';
-      if (preview) {
-        preview.hidden = false;
-        preview.src = src;
+      if (url) {
+        url.value = '';
+        url.placeholder = 'Photo from this device';
       }
+      if (preview) preview.src = src;
+      if (thumb) thumb.classList.add('is-on');
       input.value = '';
+      siteHold = '';
+      refreshDirty();
     }).catch(function () {
       showSiteNote('That photo could not be read. Try another one.');
     });
@@ -1724,6 +2351,12 @@ var Admin = (function () {
     try {
       Site.save(map);
       if (window.Config) Site.patchConfig(Config.get());
+      Site.fields().forEach(function (item) {
+        var input = siteInput(item.id);
+        if (input) input.setAttribute('data-base', input.value.trim());
+      });
+      siteHold = '';
+      refreshDirty();
       showSiteNote('Saved in this browser. Refresh the shop page to see it.');
     } catch (err) {
       showSiteNote('This browser could not store that. Try a smaller photo.');
@@ -1738,6 +2371,7 @@ var Admin = (function () {
       showSiteNote('This browser could not clear the saved words.');
       return;
     }
+    siteHold = '';
     paintSite();
     showSiteNote('Cleared. Refresh the shop page to see the original words.');
   }
@@ -1945,11 +2579,45 @@ var Admin = (function () {
       if (!btn) return;
       showSitePage(btn.getAttribute('data-site-page'));
     });
+    field('admin-site-search').addEventListener('input', applySiteFilter);
+    field('admin-site-chips').addEventListener('click', function (event) {
+      var btn = event.target.closest('[data-site-jump]');
+      if (!btn) return;
+      jumpToSection(btn.getAttribute('data-site-jump'));
+    });
     field('admin-site-fields').addEventListener('input', function (event) {
       if (event.target.getAttribute('data-site-url')) onSiteUrl(event.target);
+      if (event.target.classList.contains('site-chip-edit')) syncLines(event.target.closest('.site-lines'));
+      siteHold = '';
+      refreshDirty();
     });
     field('admin-site-fields').addEventListener('change', function (event) {
       if (event.target.getAttribute('data-site-file')) onSiteFile(event.target);
+    });
+    field('admin-site-fields').addEventListener('click', function (event) {
+      var add = event.target.closest('[data-site-add]');
+      var remove = event.target.closest('[data-site-remove]');
+      var block;
+      if (add) {
+        addSiteLine(add.getAttribute('data-site-add'));
+        return;
+      }
+      if (!remove) return;
+      block = remove.closest('.site-lines');
+      if (!remove.closest('.site-chip')) return;
+      remove.closest('.site-chip').remove();
+      syncLines(block);
+      siteHold = '';
+      refreshDirty();
+    });
+    field('admin-site-fields').addEventListener('focusout', function (event) {
+      if (event.target.classList.contains('site-chip-edit')) commitChip(event.target);
+    });
+    field('admin-site-fields').addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && event.target.classList.contains('site-chip-edit')) {
+        event.preventDefault();
+        event.target.blur();
+      }
     });
     document.addEventListener('click', function (event) {
       if (event.target.closest && event.target.closest('.admin-account')) return;

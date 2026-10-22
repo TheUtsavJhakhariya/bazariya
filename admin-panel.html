@@ -297,20 +297,27 @@
 
   <div class="site-modal" id="admin-site-modal" hidden>
     <div class="site-card" id="admin-site-card" role="dialog" aria-modal="true" aria-labelledby="admin-site-title" tabindex="-1">
-      <header class="site-head">
-        <div>
-          <h2 id="admin-site-title">Site config</h2>
-          <p>Words and photos for the shop, home, about, return policy and terms. An empty box keeps the original. Saves stay in this browser.</p>
-        </div>
-        <button class="site-close" id="admin-site-close" type="button">Close</button>
-      </header>
-      <div class="site-tabs" id="admin-site-tabs" role="tablist" aria-label="Pages"></div>
-      <div class="site-scroll" id="admin-site-fields"></div>
-      <p class="admin-error" id="admin-site-note" role="status" hidden></p>
-      <footer class="site-foot">
+      <aside class="site-side">
+        <h2 id="admin-site-title">Site config</h2>
+        <p>An empty box keeps the original. Saves stay in this browser.</p>
+        <div class="site-nav" id="admin-site-tabs" role="tablist" aria-label="Pages"></div>
         <button class="site-clear" id="admin-site-clear" type="button">Clear saved changes</button>
-        <button class="site-save" id="admin-site-save" type="button">Save</button>
-      </footer>
+      </aside>
+      <div class="site-main">
+        <div class="site-bar">
+          <label class="site-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+            <input id="admin-site-search" type="search" placeholder="Find a field in Shop …" autocomplete="off">
+          </label>
+          <button class="site-close" id="admin-site-close" type="button">Close</button>
+        </div>
+        <div class="site-jumps" id="admin-site-chips"></div>
+        <div class="site-scroll" id="admin-site-fields"></div>
+        <footer class="site-foot">
+          <p id="admin-site-note" role="status"><span class="site-foot-dot" aria-hidden="true"></span><span id="admin-site-note-text">No unsaved changes</span></p>
+          <button class="site-save" id="admin-site-save" type="button">Save</button>
+        </footer>
+      </div>
     </div>
   </div>
 
