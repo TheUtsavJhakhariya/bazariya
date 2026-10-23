@@ -14,6 +14,17 @@ var Admin = (function () {
   var shownIds = [];
   var editingIds = [];
   var bulkRows = [];
+  var bulkCategory = 'all';
+  var bulkPrice = 'any';
+  var bulkStock = 'any';
+  var bulkRule = 'up-pct';
+  var bulkAmount = 20;
+  var bulkRound = 'exact';
+  var bulkAlsoStock = '';
+  var bulkAlsoPopular = '';
+  var bulkAlsoCategory = '';
+  var bulkOut = {};
+  var bulkShowAll = false;
   var BULK_FIELDS = ['name', 'price', 'category', 'inStock', 'popular', 'mostOrdered', 'images'];
   var stockMenuOwner = null;
   var photoOwner = null;
@@ -58,42 +69,9 @@ var Admin = (function () {
     return node;
   }
 
-  /* One lowercase line of everything we know about a product. */
-  function details(product) {
-    var meta = Data.meta(product.category);
-    var bits = [
-      product.id,
-      Data.padId(product.id),
-      'no. ' + Data.padId(product.id),
-      product.name,
-      product.nameHi,
-      product.nameGu,
-      product.description,
-      product.category,
-      meta ? meta.department : '',
-      meta ? meta.filter : '',
-      meta ? meta.tag : '',
-      String(product.price),
-      Config.money(product.price),
-      product.inStock ? 'in stock yes available' : 'out of stock no sold out unavailable',
-      product.popular ? 'popular yes' : 'not popular',
-      product.mostOrdered != null ? 'most ordered ' + product.mostOrdered : '',
-      (product.images || []).join(' ')
-    ];
-    return bits.join(' ').toLowerCase();
-  }
-
-  /* Every word the owner types must appear somewhere on the product. */
+  /* Whole words only. Capitals do not matter. Picture addresses are ignored. */
   function matchesSearch(product, query) {
-    var words = String(query || '').toLowerCase().trim().split(/\s+/).filter(Boolean);
-    var blob;
-    var i;
-    if (!words.length) return true;
-    blob = details(product);
-    for (i = 0; i < words.length; i += 1) {
-      if (blob.indexOf(words[i]) === -1) return false;
-    }
-    return true;
+    return Data.matchesQuery(product, query);
   }
 
   function chosen() {
@@ -230,9 +208,9 @@ var Admin = (function () {
 
   function updateBulkButton() {
     var button = document.getElementById('admin-bulk');
-    var count = selectedIds().length;
-    button.disabled = count === 0;
-    button.textContent = count ? 'Bulk edit (' + count + ')' : 'Bulk edit';
+    if (!button) return;
+    button.disabled = false;
+    button.textContent = 'Bulk edit';
   }
 
   function syncSelectAll() {
@@ -777,6 +755,7 @@ var Admin = (function () {
     var old = document.createElement('span');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'price');
+    td.setAttribute('data-label', 'Price');
     wrap.className = 'bulk-price';
     if (!apply) {
       old.className = 'bulk-old';
@@ -795,6 +774,7 @@ var Admin = (function () {
     var td = document.createElement('td');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'category');
+    td.setAttribute('data-label', 'Category');
     td.appendChild(bulkSelect(key, 'category', bulkChoices('category', apply, value), apply ? '' : value, apply ? 'Category for all selected products' : 'Category for ' + label));
     return td;
   }
@@ -809,6 +789,7 @@ var Admin = (function () {
     var hidden = document.createElement('input');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'inStock');
+    td.setAttribute('data-label', 'Stock');
     wrap.className = 'bulk-stock';
     button.type = 'button';
     button.className = 'bulk-stock-btn';
@@ -838,6 +819,7 @@ var Admin = (function () {
     var caption = document.createElement('span');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'images');
+    td.setAttribute('data-label', 'Photo');
     button.type = 'button';
     button.className = 'bulk-photo';
     button.setAttribute('data-bulk-key', key);
@@ -857,6 +839,7 @@ var Admin = (function () {
     var td = document.createElement('td');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'popular');
+    td.setAttribute('data-label', 'Popular');
     td.appendChild(bulkSelect(
       key,
       'popular',
@@ -871,6 +854,7 @@ var Admin = (function () {
     var td = document.createElement('td');
     td.className = 'bulk-cell';
     td.setAttribute('data-bulk-cell', 'mostOrdered');
+    td.setAttribute('data-label', 'Most ordered');
     td.appendChild(bulkInput(
       key,
       'mostOrdered',
@@ -906,11 +890,14 @@ var Admin = (function () {
     var tr = document.createElement('tr');
     var nameCell = document.createElement('td');
     var name = bulkInput(row.sourceId, 'name', row.draft.name, '', 'Name for ' + row.draft.name);
+    var noCell = text('td', 'bulk-no', Data.padId(row.id));
     tr.className = 'bulk-product';
-    tr.appendChild(text('td', 'bulk-no', Data.padId(row.id)));
+    noCell.setAttribute('data-label', 'No.');
+    tr.appendChild(noCell);
     name.className = 'bulk-input bulk-name';
     nameCell.className = 'bulk-cell';
     nameCell.setAttribute('data-bulk-cell', 'name');
+    nameCell.setAttribute('data-label', 'Name');
     nameCell.appendChild(name);
     tr.appendChild(nameCell);
     tr.appendChild(photoCell(row.sourceId, false, row.draft.name));
@@ -1077,12 +1064,15 @@ var Admin = (function () {
     for (i = 0; i < options.length; i += 1) {
       options[i].setAttribute('aria-selected', options[i].getAttribute('data-stock-choice') === hidden.value ? 'true' : 'false');
     }
+    var menuWidth = Math.min(Math.max(rect.width, 168), window.innerWidth - 16);
+    var left = rect.left;
     menu.hidden = false;
+    menu.style.width = menuWidth + 'px';
     top = rect.bottom + 6;
     if (top + menu.offsetHeight > window.innerHeight - 8) top = Math.max(8, rect.top - menu.offsetHeight - 6);
+    if (left + menuWidth > window.innerWidth - 8) left = window.innerWidth - menuWidth - 8;
     menu.style.top = top + 'px';
-    menu.style.left = Math.max(8, rect.left) + 'px';
-    menu.style.width = Math.max(rect.width, 168) + 'px';
+    menu.style.left = Math.max(8, left) + 'px';
   }
 
   function chooseStock(value) {
@@ -1202,42 +1192,687 @@ var Admin = (function () {
     paintBulk();
   }
 
+  /* Bulk edit applies one price rule to the products that match the filters.
+     Untick a row to leave that product out. Nothing is written until Update. */
+
+  function bulkMoney(amount) {
+    var symbol = '₹';
+    var config = window.Config && Config.get ? Config.get() : null;
+    if (config && config.currencySymbol) symbol = config.currencySymbol;
+    return symbol + String(Math.round(Number(amount) || 0));
+  }
+
+  function bulkCommas(n) {
+    return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function bulkPriceOf(product) {
+    var amount = Number(String(product.price == null ? '' : product.price).replace(/[^\d.]/g, ''));
+    return isFinite(amount) ? amount : 0;
+  }
+
+  function bulkRoundPrice(amount, mode) {
+    var value = Math.max(0, Number(amount) || 0);
+    var base;
+    var down;
+    var up;
+    if (mode === 'five') return Math.max(0, Math.round(value / 5) * 5);
+    if (mode === 'nine') {
+      base = Math.round(value);
+      down = Math.floor((base + 1) / 10) * 10 - 1;
+      up = down + 10;
+      if (down < 0) return up;
+      return (base - down) <= (up - base) ? down : up;
+    }
+    return Math.round(value);
+  }
+
+  function bulkNextPrice(price) {
+    var next = price;
+    if (bulkRule === 'up-pct') next = price * (1 + bulkAmount / 100);
+    else if (bulkRule === 'down-pct') next = price * (1 - bulkAmount / 100);
+    else if (bulkRule === 'up-rs') next = price + bulkAmount;
+    else if (bulkRule === 'down-rs') next = price - bulkAmount;
+    else next = bulkAmount;
+    if (next < 0) next = 0;
+    return bulkRoundPrice(next, bulkRound);
+  }
+
+  function bulkPriceBands() {
+    return [
+      { id: '1-10', min: 1, max: 10 },
+      { id: '11-50', min: 11, max: 50 },
+      { id: '51-100', min: 51, max: 100 },
+      { id: '101-200', min: 101, max: 200 },
+      { id: '201-500', min: 201, max: 500 },
+      { id: '501-1000', min: 501, max: 1000 },
+      { id: '1001-3999', min: 1001, max: 3999 },
+      { id: '4000', min: 4000, max: null }
+    ];
+  }
+
+  function bulkBandLabel(band) {
+    if (!band) return 'Any price';
+    if (band.max == null) return bulkMoney(band.min) + '+';
+    return bulkMoney(band.min) + '–' + bulkMoney(band.max);
+  }
+
+  function bulkPriceLabel() {
+    var bands = bulkPriceBands();
+    var i;
+    if (bulkPrice === 'any') return 'Any price';
+    for (i = 0; i < bands.length; i += 1) {
+      if (bands[i].id === bulkPrice) return bulkBandLabel(bands[i]);
+    }
+    return 'Any price';
+  }
+
+  function bulkInBand(price) {
+    var bands = bulkPriceBands();
+    var amount = Math.round(price);
+    var i;
+    if (bulkPrice === 'any') return true;
+    for (i = 0; i < bands.length; i += 1) {
+      if (bands[i].id !== bulkPrice) continue;
+      if (amount < bands[i].min) return false;
+      if (bands[i].max != null && amount > bands[i].max) return false;
+      return true;
+    }
+    return true;
+  }
+
+  function bulkPass(product, category) {
+    if (category && category !== 'all' && product.category !== category) return false;
+    if (!bulkInBand(bulkPriceOf(product))) return false;
+    if (bulkStock === 'in' && !product.inStock) return false;
+    if (bulkStock === 'out' && product.inStock) return false;
+    return true;
+  }
+
+  function bulkMatched() {
+    return Data.products().filter(function (product) {
+      return bulkPass(product, bulkCategory);
+    }).sort(byNumber);
+  }
+
+  function bulkCount(category) {
+    var products = Data.products();
+    var total = 0;
+    var i;
+    for (i = 0; i < products.length; i += 1) {
+      if (bulkPass(products[i], category)) total += 1;
+    }
+    return total;
+  }
+
+  function bulkRowChanged(product, next) {
+    if (next !== Math.round(bulkPriceOf(product))) return true;
+    if (bulkAlsoStock === 'in' && !product.inStock) return true;
+    if (bulkAlsoStock === 'out' && product.inStock) return true;
+    if (bulkAlsoPopular === 'yes' && !product.popular) return true;
+    if (bulkAlsoPopular === 'no' && product.popular) return true;
+    if (bulkAlsoCategory && bulkAlsoCategory !== (product.category || '')) return true;
+    return false;
+  }
+
+  function bulkPhrase() {
+    var who = bulkCategory === 'all' ? 'Prices' : bulkCategory + ' prices';
+    if (bulkRule === 'up-pct') return who + ' go up ' + bulkAmount + '%.';
+    if (bulkRule === 'down-pct') return who + ' go down ' + bulkAmount + '%.';
+    if (bulkRule === 'up-rs') return who + ' go up ' + bulkMoney(bulkAmount) + '.';
+    if (bulkRule === 'down-rs') return who + ' go down ' + bulkMoney(bulkAmount) + '.';
+    return who + ' become ' + bulkMoney(bulkAmount) + '.';
+  }
+
+  // A product near the middle of the chosen band, so the example is a real item in that range.
+  function bulkExampleProduct(included) {
+    var bands = bulkPriceBands();
+    var band = null;
+    var ordered;
+    var i;
+    var best = null;
+    var bestGap = Infinity;
+    var target;
+    var price;
+    var gap;
+    if (!included.length) return null;
+    for (i = 0; i < bands.length; i += 1) {
+      if (bands[i].id === bulkPrice) band = bands[i];
+    }
+    if (!band) {
+      ordered = included.slice().sort(function (a, b) {
+        return bulkPriceOf(a) - bulkPriceOf(b);
+      });
+      return ordered[Math.floor((ordered.length - 1) / 2)];
+    }
+    target = band.max == null ? band.min : (band.min + band.max) / 2;
+    for (i = 0; i < included.length; i += 1) {
+      price = bulkPriceOf(included[i]);
+      gap = Math.abs(price - target);
+      if (gap < bestGap) {
+        bestGap = gap;
+        best = included[i];
+      }
+    }
+    return best;
+  }
+
+  function bulkSummary() {
+    var cat = bulkCategory === 'all' ? 'All' : bulkCategory;
+    var stock = { any: 'Any stock', in: 'In stock', out: 'Out of stock' };
+    return cat + ' · ' + bulkPriceLabel() + ' · ' + stock[bulkStock];
+  }
+
+  function bulkChip(label, on, attr, value) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bulk-chip' + (on ? ' is-on' : '');
+    btn.setAttribute(attr, value);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = label;
+    return btn;
+  }
+
+  function bulkBand(label, options, attr, current) {
+    var row = document.createElement('div');
+    var name = document.createElement('span');
+    var chips = document.createElement('div');
+    row.className = 'bulk-band';
+    name.className = 'bulk-band-label';
+    name.textContent = label;
+    chips.className = 'bulk-band-chips';
+    options.forEach(function (opt) {
+      chips.appendChild(bulkChip(opt[1], current === opt[0], attr, opt[0]));
+    });
+    row.appendChild(name);
+    row.appendChild(chips);
+    return row;
+  }
+
+  function bulkSelect(attr, options, current) {
+    var select = document.createElement('select');
+    select.className = 'bulk-select';
+    select.setAttribute(attr, '1');
+    options.forEach(function (opt) {
+      var option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = opt.label;
+      if (opt.value === current) option.selected = true;
+      select.appendChild(option);
+    });
+    return select;
+  }
+
+  function refreshBulkFigures() {
+    var list = bulkMatched();
+    var included = [];
+    var i;
+    var sumNow = 0;
+    var sumNext = 0;
+    var changes = 0;
+    var sample = null;
+    var exampleProduct;
+    var total = Data.products().length;
+    var line = field('bulk-example-text');
+    var avg = field('bulk-avg');
+    var note = field('bulk-preview-note');
+    var more = field('bulk-review-all');
+    var lead = field('admin-bulk-lead');
+    var pill = field('bulk-match-pill');
+    var watchCount = field('bulk-watch-count');
+    var watchOf = field('bulk-watch-of');
+    var watchSum = field('bulk-watch-summary');
+    var shown;
+    for (i = 0; i < list.length; i += 1) {
+      if (!bulkOut[sourceId(list[i])]) included.push(list[i]);
+    }
+    exampleProduct = bulkExampleProduct(included);
+    for (i = 0; i < included.length; i += 1) {
+      var now = Math.round(bulkPriceOf(included[i]));
+      var next = bulkNextPrice(bulkPriceOf(included[i]));
+      sumNow += now;
+      sumNext += next;
+      if (bulkRowChanged(included[i], next)) changes += 1;
+      if (exampleProduct && sourceId(included[i]) === sourceId(exampleProduct)) {
+        sample = { product: included[i], now: now, next: next };
+      }
+    }
+    if (!sample && list.length) {
+      sample = {
+        product: list[0],
+        now: Math.round(bulkPriceOf(list[0])),
+        next: bulkNextPrice(bulkPriceOf(list[0]))
+      };
+    }
+    if (lead) lead.textContent = bulkCommas(list.length) + ' of ' + bulkCommas(total) + ' products match';
+    if (pill) pill.textContent = bulkCommas(list.length) + ' match';
+    if (watchCount) watchCount.textContent = bulkCommas(list.length);
+    if (watchOf) watchOf.textContent = 'of ' + bulkCommas(total) + ' products';
+    if (watchSum) watchSum.textContent = bulkSummary();
+    if (line) {
+      line.textContent = sample
+        ? (bulkPrice === 'any' ? '' : bulkPriceLabel() + ' · ') + bulkPhrase() + ' e.g. ' + (sample.product.name || 'Product') + ': ' + bulkMoney(sample.now) + ' → ' + bulkMoney(sample.next)
+        : 'No products match these filters.';
+    }
+    if (avg) {
+      avg.textContent = included.length
+        ? 'avg ' + bulkMoney(sumNow / included.length) + ' → ' + bulkMoney(sumNext / included.length)
+        : '';
+    }
+    shown = bulkShowAll ? list.length : Math.min(8, list.length);
+    if (note) {
+      note.textContent = list.length
+        ? 'Showing ' + bulkCommas(shown) + ' of ' + bulkCommas(list.length) + ' · untick a row to leave it out'
+        : 'No products match these filters.';
+    }
+    if (more) {
+      more.hidden = bulkShowAll || list.length <= 8;
+      more.textContent = 'Review all ' + bulkCommas(list.length);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#admin-bulk-body .bulk-row'), function (row) {
+      var priceNow = Number(row.getAttribute('data-price'));
+      var priceNext = bulkNextPrice(priceNow);
+      var diff = priceNext - priceNow;
+      var neu = row.querySelector('.bulk-new');
+      var delta = row.querySelector('.bulk-delta');
+      if (neu) {
+        neu.textContent = bulkMoney(priceNext);
+        neu.classList.toggle('is-changed', diff !== 0);
+      }
+      if (delta) {
+        if (diff > 0) delta.textContent = '+' + bulkMoney(diff);
+        else if (diff < 0) delta.textContent = '−' + bulkMoney(Math.abs(diff));
+        else delta.textContent = bulkMoney(0);
+        delta.classList.toggle('is-up', diff > 0);
+        delta.classList.toggle('is-down', diff < 0);
+      }
+    });
+    field('admin-bulk-save').disabled = changes === 0;
+    field('admin-bulk-save-label').textContent = 'Update ' + included.length + (included.length === 1 ? ' product' : ' products');
+  }
+
+  function paintBulkScreen() {
+    var body = field('admin-bulk-body');
+    var scroll = body ? body.scrollTop : 0;
+    var top = document.createElement('div');
+    var filters = document.createElement('section');
+    var head = document.createElement('div');
+    var kicker = document.createElement('p');
+    var pill = document.createElement('p');
+    var catRow = document.createElement('div');
+    var selects = document.createElement('div');
+    var watch = document.createElement('aside');
+    var watchKicker = document.createElement('p');
+    var watchCount = document.createElement('p');
+    var watchOf = document.createElement('p');
+    var watchSum = document.createElement('p');
+    var rule = document.createElement('section');
+    var ruleKicker = document.createElement('p');
+    var ruleRow = document.createElement('div');
+    var rules = document.createElement('div');
+    var amount = document.createElement('div');
+    var down = document.createElement('button');
+    var amountInput = document.createElement('input');
+    var unit = document.createElement('span');
+    var up = document.createElement('button');
+    var rounds = document.createElement('div');
+    var example = document.createElement('div');
+    var exampleText = document.createElement('p');
+    var avg = document.createElement('p');
+    var also = document.createElement('div');
+    var alsoLabel = document.createElement('p');
+    var catPick = document.createElement('select');
+    var keepOpt = document.createElement('option');
+    var preview = document.createElement('section');
+    var bar = document.createElement('div');
+    var note = document.createElement('p');
+    var more = document.createElement('button');
+    var table = document.createElement('div');
+    var tableHead = document.createElement('div');
+    var list = bulkMatched();
+    var shown = bulkShowAll ? list.length : Math.min(8, list.length);
+    var names;
+    var i;
+    if (!body) return;
+    body.textContent = '';
+    top.className = 'bulk-top';
+    filters.className = 'bulk-filters';
+    head.className = 'bulk-filter-head';
+    kicker.className = 'bulk-kicker';
+    kicker.textContent = '01  ·  Which products';
+    pill.className = 'bulk-match-pill';
+    pill.id = 'bulk-match-pill';
+    head.appendChild(kicker);
+    head.appendChild(pill);
+    filters.appendChild(head);
+    catRow.className = 'bulk-chips';
+    catRow.appendChild(bulkChip('All ' + bulkCommas(bulkCount('all')), bulkCategory === 'all', 'data-bulk-cat', 'all'));
+    names = bulkCategoryList();
+    for (i = 0; i < names.length; i += 1) {
+      catRow.appendChild(bulkChip(
+        names[i] + ' ' + bulkCommas(bulkCount(names[i])),
+        bulkCategory === names[i],
+        'data-bulk-cat',
+        names[i]
+      ));
+    }
+    filters.appendChild(catRow);
+    var priceChoices = [['any', 'Any price']];
+    var priceSelect = [{ value: 'any', label: 'Price · Any price' }];
+    bulkPriceBands().forEach(function (band) {
+      var label = bulkBandLabel(band);
+      priceChoices.push([band.id, label]);
+      priceSelect.push({ value: band.id, label: 'Price · ' + label });
+    });
+    filters.appendChild(bulkBand('Price now', priceChoices, 'data-bulk-price', bulkPrice));
+    filters.appendChild(bulkBand('Stock', [
+      ['any', 'Any stock'],
+      ['in', 'In stock'],
+      ['out', 'Out of stock']
+    ], 'data-bulk-stock', bulkStock));
+    selects.className = 'bulk-selects';
+    selects.appendChild(bulkSelect('data-bulk-price-select', priceSelect, bulkPrice));
+    selects.appendChild(bulkSelect('data-bulk-stock-select', [
+      { value: 'any', label: 'Stock · Any stock' },
+      { value: 'in', label: 'Stock · In stock' },
+      { value: 'out', label: 'Stock · Out of stock' }
+    ], bulkStock));
+    filters.appendChild(selects);
+    watch.className = 'bulk-watch';
+    watchKicker.className = 'bulk-watch-kicker';
+    watchKicker.textContent = 'Watching';
+    watchCount.className = 'bulk-watch-count';
+    watchCount.id = 'bulk-watch-count';
+    watchOf.className = 'bulk-watch-of';
+    watchOf.id = 'bulk-watch-of';
+    watchSum.className = 'bulk-watch-summary';
+    watchSum.id = 'bulk-watch-summary';
+    watch.appendChild(watchKicker);
+    watch.appendChild(watchCount);
+    watch.appendChild(watchOf);
+    watch.appendChild(watchSum);
+    top.appendChild(filters);
+    top.appendChild(watch);
+    body.appendChild(top);
+
+    rule.className = 'bulk-rule';
+    ruleKicker.className = 'bulk-kicker';
+    ruleKicker.textContent = '02  ·  What changes — price';
+    rule.appendChild(ruleKicker);
+    ruleRow.className = 'bulk-rule-row';
+    rules.className = 'bulk-chips';
+    [
+      ['up-pct', 'Increase %'],
+      ['up-rs', 'Increase ' + (window.Config && Config.get && Config.get().currencySymbol ? Config.get().currencySymbol : '₹')],
+      ['down-pct', 'Decrease %'],
+      ['down-rs', 'Decrease ' + (window.Config && Config.get && Config.get().currencySymbol ? Config.get().currencySymbol : '₹')],
+      ['set', 'Set to ' + (window.Config && Config.get && Config.get().currencySymbol ? Config.get().currencySymbol : '₹')]
+    ].forEach(function (item) {
+      rules.appendChild(bulkChip(item[1], bulkRule === item[0], 'data-bulk-rule', item[0]));
+    });
+    amount.className = 'bulk-amount';
+    down.type = 'button';
+    down.setAttribute('data-bulk-step', '-1');
+    down.setAttribute('aria-label', 'Decrease amount');
+    down.textContent = '−';
+    amountInput.type = 'text';
+    amountInput.inputMode = 'decimal';
+    amountInput.setAttribute('data-bulk-amount', '1');
+    amountInput.setAttribute('aria-label', 'Amount');
+    amountInput.value = String(bulkAmount);
+    unit.className = 'bulk-amount-unit';
+    unit.textContent = (bulkRule === 'up-pct' || bulkRule === 'down-pct')
+      ? '%'
+      : (window.Config && Config.get && Config.get().currencySymbol ? Config.get().currencySymbol : '₹');
+    up.type = 'button';
+    up.setAttribute('data-bulk-step', '1');
+    up.setAttribute('aria-label', 'Increase amount');
+    up.textContent = '+';
+    amount.appendChild(down);
+    amount.appendChild(amountInput);
+    amount.appendChild(unit);
+    amount.appendChild(up);
+    rounds.className = 'bulk-chips bulk-rounds';
+    rounds.appendChild(bulkChip('Exact', bulkRound === 'exact', 'data-bulk-round', 'exact'));
+    rounds.appendChild(bulkChip('Nearest ' + bulkMoney(5), bulkRound === 'five', 'data-bulk-round', 'five'));
+    rounds.appendChild(bulkChip('Ends in 9', bulkRound === 'nine', 'data-bulk-round', 'nine'));
+    ruleRow.appendChild(rules);
+    ruleRow.appendChild(amount);
+    ruleRow.appendChild(rounds);
+    rule.appendChild(ruleRow);
+    example.className = 'bulk-example';
+    exampleText.id = 'bulk-example-text';
+    avg.id = 'bulk-avg';
+    example.appendChild(exampleText);
+    example.appendChild(avg);
+    rule.appendChild(example);
+    also.className = 'bulk-also-row';
+    alsoLabel.className = 'bulk-also-label';
+    alsoLabel.textContent = 'Also set for these products';
+    also.appendChild(alsoLabel);
+    also.appendChild(bulkChip(
+      bulkAlsoStock === 'in' ? 'Stock: In stock' : bulkAlsoStock === 'out' ? 'Stock: Out of stock' : 'Stock: Keep as is',
+      bulkAlsoStock !== '',
+      'data-bulk-cycle',
+      'stock'
+    ));
+    also.appendChild(bulkChip(
+      bulkAlsoPopular === 'yes' ? 'Popular: Yes' : bulkAlsoPopular === 'no' ? 'Popular: No' : 'Popular: Keep as is',
+      bulkAlsoPopular !== '',
+      'data-bulk-cycle',
+      'popular'
+    ));
+    catPick.className = 'bulk-also' + (bulkAlsoCategory ? ' is-set' : '');
+    catPick.setAttribute('data-bulk-also', 'category');
+    catPick.setAttribute('aria-label', 'Also set category');
+    keepOpt.value = '';
+    keepOpt.textContent = 'Category: Keep as is';
+    catPick.appendChild(keepOpt);
+    bulkCategoryList().forEach(function (name) {
+      var option = document.createElement('option');
+      option.value = name;
+      option.textContent = 'Category: ' + name;
+      if (name === bulkAlsoCategory) option.selected = true;
+      catPick.appendChild(option);
+    });
+    also.appendChild(catPick);
+    rule.appendChild(also);
+    body.appendChild(rule);
+
+    preview.className = 'bulk-preview';
+    bar.className = 'bulk-preview-bar';
+    note.id = 'bulk-preview-note';
+    more.type = 'button';
+    more.id = 'bulk-review-all';
+    more.setAttribute('data-bulk-all', '1');
+    bar.appendChild(note);
+    bar.appendChild(more);
+    preview.appendChild(bar);
+    table.className = 'bulk-table-view';
+    tableHead.className = 'bulk-preview-head';
+    ['', 'No.', 'Name', 'Category', 'Price now', 'New price', 'Change'].forEach(function (label) {
+      var cell = document.createElement('span');
+      cell.textContent = label;
+      tableHead.appendChild(cell);
+    });
+    table.appendChild(tableHead);
+    for (i = 0; i < shown; i += 1) {
+      var product = list[i];
+      var key = sourceId(product);
+      var row = document.createElement('div');
+      var check = document.createElement('label');
+      var box = document.createElement('input');
+      var no = document.createElement('span');
+      var name = document.createElement('span');
+      var cat = document.createElement('span');
+      var meta = document.createElement('span');
+      var now = document.createElement('span');
+      var neu = document.createElement('span');
+      var delta = document.createElement('span');
+      row.className = 'bulk-row';
+      row.setAttribute('data-price', String(Math.round(bulkPriceOf(product))));
+      row.setAttribute('data-source', key);
+      check.className = 'bulk-check';
+      box.type = 'checkbox';
+      box.checked = !bulkOut[key];
+      box.setAttribute('data-bulk-keep', key);
+      box.setAttribute('aria-label', 'Include ' + (product.name || 'product'));
+      check.appendChild(box);
+      no.className = 'bulk-no';
+      no.textContent = Data.padId(product.id);
+      name.className = 'bulk-name';
+      name.textContent = product.name || '';
+      cat.className = 'bulk-cat';
+      cat.textContent = product.category || '';
+      meta.className = 'bulk-meta';
+      meta.textContent = 'No. ' + Data.padId(product.id) + (product.category ? ' · ' + product.category : '');
+      now.className = 'bulk-now';
+      now.textContent = bulkMoney(bulkPriceOf(product));
+      neu.className = 'bulk-new';
+      delta.className = 'bulk-delta';
+      row.appendChild(check);
+      row.appendChild(no);
+      row.appendChild(name);
+      row.appendChild(cat);
+      row.appendChild(meta);
+      row.appendChild(now);
+      row.appendChild(neu);
+      row.appendChild(delta);
+      table.appendChild(row);
+    }
+    preview.appendChild(table);
+    body.appendChild(preview);
+    refreshBulkFigures();
+    body.scrollTop = scroll;
+  }
+
+  function onBulkScreenClick(event) {
+    var cat = event.target.closest('[data-bulk-cat]');
+    var price = event.target.closest('[data-bulk-price]');
+    var stock = event.target.closest('[data-bulk-stock]');
+    var rule = event.target.closest('[data-bulk-rule]');
+    var round = event.target.closest('[data-bulk-round]');
+    var step = event.target.closest('[data-bulk-step]');
+    var cycle = event.target.closest('[data-bulk-cycle]');
+    var all = event.target.closest('[data-bulk-all]');
+    if (cat) {
+      bulkCategory = cat.getAttribute('data-bulk-cat');
+      bulkShowAll = false;
+      bulkOut = {};
+      paintBulkScreen();
+      return;
+    }
+    if (price) {
+      bulkPrice = price.getAttribute('data-bulk-price');
+      bulkShowAll = false;
+      bulkOut = {};
+      paintBulkScreen();
+      return;
+    }
+    if (stock) {
+      bulkStock = stock.getAttribute('data-bulk-stock');
+      bulkShowAll = false;
+      bulkOut = {};
+      paintBulkScreen();
+      return;
+    }
+    if (rule) {
+      bulkRule = rule.getAttribute('data-bulk-rule');
+      paintBulkScreen();
+      return;
+    }
+    if (round) {
+      bulkRound = round.getAttribute('data-bulk-round');
+      paintBulkScreen();
+      return;
+    }
+    if (step) {
+      bulkAmount = Math.max(0, Math.round((bulkAmount + Number(step.getAttribute('data-bulk-step'))) * 100) / 100);
+      paintBulkScreen();
+      return;
+    }
+    if (cycle) {
+      if (cycle.getAttribute('data-bulk-cycle') === 'stock') {
+        bulkAlsoStock = bulkAlsoStock === '' ? 'in' : bulkAlsoStock === 'in' ? 'out' : '';
+      } else {
+        bulkAlsoPopular = bulkAlsoPopular === '' ? 'yes' : bulkAlsoPopular === 'yes' ? 'no' : '';
+      }
+      paintBulkScreen();
+      return;
+    }
+    if (all) {
+      bulkShowAll = true;
+      paintBulkScreen();
+    }
+  }
+
+  function onBulkScreenChange(event) {
+    var keep = event.target.getAttribute('data-bulk-keep');
+    if (keep) {
+      if (event.target.checked) delete bulkOut[keep];
+      else bulkOut[keep] = true;
+      refreshBulkFigures();
+      return;
+    }
+    if (event.target.getAttribute('data-bulk-price-select')) {
+      bulkPrice = event.target.value;
+      bulkShowAll = false;
+      bulkOut = {};
+      paintBulkScreen();
+      return;
+    }
+    if (event.target.getAttribute('data-bulk-stock-select')) {
+      bulkStock = event.target.value;
+      bulkShowAll = false;
+      bulkOut = {};
+      paintBulkScreen();
+      return;
+    }
+    if (event.target.getAttribute('data-bulk-also') === 'category') {
+      bulkAlsoCategory = event.target.value;
+      refreshBulkFigures();
+      event.target.classList.toggle('is-set', !!bulkAlsoCategory);
+    }
+  }
+
+  function onBulkScreenInput(event) {
+    if (!event.target.getAttribute('data-bulk-amount')) return;
+    bulkAmount = Number(String(event.target.value).replace(/[^\d.]/g, ''));
+    if (!isFinite(bulkAmount) || bulkAmount < 0) bulkAmount = 0;
+    refreshBulkFigures();
+  }
+
   function closeBulk() {
-    var table = field('admin-bulk-table');
-    closeStockMenu();
-    closePhotoPop();
-    field('admin-bulk-modal').hidden = true;
-    document.body.classList.remove('admin-noscroll');
-    bulkRows = [];
-    while (table.firstChild) table.removeChild(table.firstChild);
-    bulkError('');
+    var modal = field('admin-bulk-modal');
+    var body = field('admin-bulk-body');
+    if (modal) modal.hidden = true;
+    if (body) body.textContent = '';
+    if (field('admin-dialog').hidden && field('admin-site-modal').hidden) {
+      document.body.classList.remove('admin-noscroll');
+    }
+    if (field('admin-bulk-error')) bulkError('');
   }
 
   function saveBulk() {
+    var list = bulkMatched();
     var updates = [];
     var i;
-    var row;
-    var product;
-    var current;
     bulkError('');
-    if (!bulkRows.length || field('admin-bulk-save').disabled) return;
-    for (i = 0; i < bulkRows.length; i += 1) {
-      row = bulkRows[i];
-      if (!rowDirty(row)) continue;
-      if (!String(row.draft.name).trim()) return bulkError('Enter a name for every product.');
-      if (!priceOk(row.draft.price)) return bulkError('Enter a price, 0 or more.');
-      if (!rankOk(row.draft.mostOrdered)) return bulkError('Most ordered must be a number, or empty.');
-      current = findProduct(row.sourceId);
-      if (!current) continue;
-      product = formProduct(current);
-      product.name = String(row.draft.name).trim();
-      product.price = String(row.draft.price).trim();
-      product.category = String(row.draft.category).trim();
-      product.inStock = !!row.draft.inStock;
-      product.popular = !!row.draft.popular;
-      product.mostOrdered = String(row.draft.mostOrdered).trim();
-      if (bulkDirty(row.original, row.draft, 'images')) product.images = row.draft.images || '';
-      updates.push({ sourceId: row.sourceId, product: product });
+    if (field('admin-bulk-save').disabled) return;
+    for (i = 0; i < list.length; i += 1) {
+      var product = list[i];
+      var key = sourceId(product);
+      var next = bulkNextPrice(bulkPriceOf(product));
+      var saved;
+      if (bulkOut[key] || !bulkRowChanged(product, next)) continue;
+      saved = formProduct(product);
+      saved.price = String(next);
+      if (bulkAlsoStock === 'in') saved.inStock = true;
+      if (bulkAlsoStock === 'out') saved.inStock = false;
+      if (bulkAlsoPopular === 'yes') saved.popular = true;
+      if (bulkAlsoPopular === 'no') saved.popular = false;
+      if (bulkAlsoCategory) saved.category = bulkAlsoCategory;
+      updates.push({ sourceId: key, product: saved });
     }
     if (!updates.length) return;
     try {
@@ -1254,34 +1889,22 @@ var Admin = (function () {
   }
 
   function openBulk() {
-    var ids = selectedIds();
-    var products = [];
-    var i;
-    var product;
-    var first;
-    if (!ids.length) return;
-    for (i = 0; i < ids.length; i += 1) {
-      product = findProduct(ids[i]);
-      if (product) products.push(product);
-    }
-    if (!products.length) return;
-    products.sort(byNumber);
-    bulkRows = products.map(function (item) {
-      var snap = bulkSnap(item);
-      return {
-        sourceId: sourceId(item),
-        id: item.id,
-        original: snap,
-        draft: copySnap(snap)
-      };
-    });
-    field('admin-bulk-title').textContent = 'Editing ' + bulkRows.length + (bulkRows.length === 1 ? ' product' : ' products');
+    bulkCategory = 'all';
+    bulkPrice = 'any';
+    bulkStock = 'any';
+    bulkRule = 'up-pct';
+    bulkAmount = 20;
+    bulkRound = 'exact';
+    bulkAlsoStock = '';
+    bulkAlsoPopular = '';
+    bulkAlsoCategory = '';
+    bulkOut = {};
+    bulkShowAll = false;
     bulkError('');
-    buildBulkTable();
+    field('admin-bulk-title').textContent = 'Bulk edit';
+    paintBulkScreen();
     document.body.classList.add('admin-noscroll');
     field('admin-bulk-modal').hidden = false;
-    first = field('admin-bulk-table').querySelector('.bulk-apply [data-bulk-field="price"]');
-    if (first) first.focus();
   }
 
   function priceOk(value) {
@@ -1561,8 +2184,7 @@ var Admin = (function () {
     count = field('admin-site-fields').querySelectorAll('.site-row.is-dirty').length;
     note.classList.toggle('is-dirty', count > 0);
     if (count === 0) text.textContent = 'No unsaved changes';
-    else if (count === 1) text.textContent = '1 unsaved change across tabs';
-    else text.textContent = count + ' unsaved changes across tabs';
+    else text.textContent = count + ' unsaved';
   }
 
   function siteInput(id) {
@@ -1937,18 +2559,13 @@ var Admin = (function () {
   }
 
   function showSitePage(page) {
-    var current = null;
     sitePage = page;
-    sitePages().forEach(function (item) {
-      if (item.id === page) current = item;
-    });
     Array.prototype.forEach.call(field('admin-site-tabs').querySelectorAll('[data-site-page]'), function (btn) {
       var on = btn.getAttribute('data-site-page') === page;
       btn.classList.toggle('is-on', on);
       btn.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     field('admin-site-search').value = '';
-    field('admin-site-search').placeholder = 'Find a field in ' + (current ? current.label : 'Shop') + ' …';
     paintJumps();
     applySiteFilter();
     field('admin-site-fields').scrollTop = 0;
@@ -1971,16 +2588,36 @@ var Admin = (function () {
     });
   }
 
+  // Labels plus the text currently in the boxes, including unsaved typing.
+  function siteRowHay(row) {
+    var bits = [row.getAttribute('data-search') || ''];
+    var sec = row.closest('.site-sec');
+    var group = row.closest('.site-group');
+    var title = sec && sec.querySelector('.site-sec-title');
+    var groupTitle = group && group.querySelector('.site-group-title');
+    if (title) bits.push(title.textContent || '');
+    if (groupTitle) bits.push(groupTitle.textContent || '');
+    Array.prototype.forEach.call(row.querySelectorAll('input, textarea'), function (box) {
+      if (box.type === 'file' || box.type === 'color' || box.type === 'checkbox' || box.type === 'radio') return;
+      bits.push(box.value || '');
+    });
+    return bits.join('\n').toLowerCase();
+  }
+
   function applySiteFilter() {
     var query = field('admin-site-search').value.trim().toLowerCase();
+    var card = field('admin-site-card');
+    var jumps = field('admin-site-chips');
+    if (card) card.classList.toggle('is-finding', !!query);
+    if (jumps) jumps.hidden = !!query;
     Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-sec'), function (sec) {
       var any = false;
-      if (sec.getAttribute('data-page') !== sitePage) {
+      if (!query && sec.getAttribute('data-page') !== sitePage) {
         sec.hidden = true;
         return;
       }
       Array.prototype.forEach.call(sec.querySelectorAll('.site-row'), function (row) {
-        var hay = row.getAttribute('data-search') || '';
+        var hay = siteRowHay(row);
         var match = !query || hay.indexOf(query) !== -1;
         row.hidden = !match;
         if (match) any = true;
@@ -1989,6 +2626,20 @@ var Admin = (function () {
         group.hidden = !group.querySelector('.site-row:not([hidden])');
       });
       sec.hidden = !any;
+    });
+    var firstOpen = true;
+    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-sec'), function (sec) {
+      var toggle;
+      var open;
+      if (sec.hidden) {
+        sec.classList.remove('is-open');
+        return;
+      }
+      open = !window.matchMedia('(max-width: 800px)').matches || !!query || firstOpen;
+      sec.classList.toggle('is-open', open);
+      toggle = sec.querySelector('[data-site-toggle]');
+      if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      firstOpen = false;
     });
   }
 
@@ -2001,6 +2652,13 @@ var Admin = (function () {
       btn.classList.toggle('is-on', btn.getAttribute('data-site-jump') === id);
     });
     if (!sec) return;
+    Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-sec'), function (item) {
+      var on = item.id === 'site-sec-' + id;
+      var phone = window.matchMedia('(max-width: 800px)').matches;
+      var toggle = item.querySelector('[data-site-toggle]');
+      item.classList.toggle('is-open', !phone || on);
+      if (toggle) toggle.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
     scroller = field('admin-site-fields');
     scroller.scrollTop = sec.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
   }
@@ -2070,8 +2728,15 @@ var Admin = (function () {
     file.accept = 'image/*';
     file.className = 'visually-hidden';
     file.setAttribute('data-site-file', item.id);
+    var wide = document.createElement('span');
+    var narrow = document.createElement('span');
     fileLabel.className = 'site-file';
-    fileLabel.appendChild(document.createTextNode('↑ Upload'));
+    wide.className = 'site-file-wide';
+    wide.textContent = '↑ Upload';
+    narrow.className = 'site-file-narrow';
+    narrow.textContent = '↑ Upload photo';
+    fileLabel.appendChild(wide);
+    fileLabel.appendChild(narrow);
     fileLabel.appendChild(file);
     hidden.type = 'hidden';
     hidden.setAttribute('data-site-input', item.id);
@@ -2177,6 +2842,7 @@ var Admin = (function () {
     syncLines(block);
     siteHold = '';
     refreshDirty();
+    if (field('admin-site-search').value.trim()) applySiteFilter();
   }
 
   function appendSiteRow(parent, item, labelText) {
@@ -2229,16 +2895,47 @@ var Admin = (function () {
 
   function renderSiteSection(section, byId) {
     var box = document.createElement('section');
-    var title = document.createElement('h3');
+    var toggle = document.createElement('button');
+    var title = document.createElement('span');
     var num = document.createElement('span');
+    var tail = document.createElement('span');
+    var count = document.createElement('span');
+    var chev = document.createElement('span');
+    var total = 0;
     box.className = 'site-sec';
     box.id = 'site-sec-' + section.id;
     box.setAttribute('data-page', section.page);
+    toggle.type = 'button';
+    toggle.className = 'site-sec-toggle';
+    toggle.setAttribute('data-site-toggle', section.id);
+    toggle.setAttribute('aria-expanded', 'false');
     title.className = 'site-sec-title';
+    num.className = 'site-sec-num';
     num.textContent = section.num;
     title.appendChild(num);
-    title.appendChild(document.createTextNode(section.title));
-    box.appendChild(title);
+    title.appendChild(document.createTextNode(' ' + section.title));
+    sitePages().forEach(function (item) {
+      var pageName;
+      if (item.id !== section.page) return;
+      pageName = document.createElement('span');
+      pageName.className = 'site-sec-page';
+      pageName.textContent = item.label;
+      title.appendChild(pageName);
+    });
+    section.blocks.forEach(function (block) {
+      total += block.ids.length;
+    });
+    tail.className = 'site-sec-tail';
+    count.className = 'site-sec-count';
+    count.textContent = String(total);
+    chev.className = 'site-sec-chev';
+    chev.setAttribute('aria-hidden', 'true');
+    chev.textContent = '▾';
+    tail.appendChild(count);
+    tail.appendChild(chev);
+    toggle.appendChild(title);
+    toggle.appendChild(tail);
+    box.appendChild(toggle);
     section.blocks.forEach(function (block) {
       var host = box;
       var heading;
@@ -2263,13 +2960,11 @@ var Admin = (function () {
     var tabs = field('admin-site-tabs');
     var box = field('admin-site-fields');
     var byId = {};
-    var counts = {};
     tabs.textContent = '';
     box.textContent = '';
     if (window.Site) {
       Site.fields().forEach(function (item) {
         byId[item.id] = item;
-        counts[item.page] = (counts[item.page] || 0) + 1;
       });
     }
     sitePages().forEach(function (page) {
@@ -2277,7 +2972,6 @@ var Admin = (function () {
       var name = document.createElement('span');
       var meta = document.createElement('span');
       var dot = document.createElement('span');
-      var count = document.createElement('span');
       btn.type = 'button';
       btn.className = 'site-nav-btn';
       btn.setAttribute('role', 'tab');
@@ -2285,9 +2979,7 @@ var Admin = (function () {
       name.textContent = page.label;
       meta.className = 'site-nav-meta';
       dot.className = 'site-nav-dot';
-      count.textContent = String(counts[page.id] || 0);
       meta.appendChild(dot);
-      meta.appendChild(count);
       btn.appendChild(name);
       btn.appendChild(meta);
       tabs.appendChild(btn);
@@ -2665,14 +3357,31 @@ var Admin = (function () {
       if (event.target.classList.contains('site-chip-edit')) syncLines(event.target.closest('.site-lines'));
       siteHold = '';
       refreshDirty();
+      if (field('admin-site-search').value.trim()) applySiteFilter();
     });
     field('admin-site-fields').addEventListener('change', function (event) {
       if (event.target.getAttribute('data-site-file')) onSiteFile(event.target);
     });
     field('admin-site-fields').addEventListener('click', function (event) {
+      var toggle = event.target.closest('[data-site-toggle]');
       var add = event.target.closest('[data-site-add]');
       var remove = event.target.closest('[data-site-remove]');
       var block;
+      var sec;
+      var willOpen;
+      if (toggle && window.matchMedia('(max-width: 800px)').matches) {
+        sec = toggle.closest('.site-sec');
+        willOpen = !sec.classList.contains('is-open');
+        Array.prototype.forEach.call(field('admin-site-fields').querySelectorAll('.site-sec'), function (item) {
+          if (item.getAttribute('data-page') !== sitePage) return;
+          item.classList.remove('is-open');
+          var button = item.querySelector('[data-site-toggle]');
+          if (button) button.setAttribute('aria-expanded', 'false');
+        });
+        sec.classList.toggle('is-open', willOpen);
+        toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        return;
+      }
       if (add) {
         addSiteLine(add.getAttribute('data-site-add'));
         return;
@@ -2684,6 +3393,7 @@ var Admin = (function () {
       syncLines(block);
       siteHold = '';
       refreshDirty();
+      if (field('admin-site-search').value.trim()) applySiteFilter();
     });
     field('admin-site-fields').addEventListener('focusout', function (event) {
       if (event.target.classList.contains('site-chip-edit')) commitChip(event.target);
@@ -2699,52 +3409,15 @@ var Admin = (function () {
       closeAccount();
     });
 
-    field('admin-bulk-clear').addEventListener('click', clearBulkChanges);
+    field('admin-bulk-discard').addEventListener('click', closeBulk);
     field('admin-bulk-close').addEventListener('click', closeBulk);
     field('admin-bulk-save').addEventListener('click', saveBulk);
     field('admin-bulk-modal').addEventListener('click', function (event) {
-      var stockButton = event.target.closest ? event.target.closest('.bulk-stock-btn') : null;
-      var stockChoice = event.target.closest ? event.target.closest('[data-stock-choice]') : null;
-      var photoButton = event.target.closest ? event.target.closest('.bulk-photo') : null;
-      if (event.target.id === 'admin-bulk-modal') {
-        closeBulk();
-        return;
-      }
-      if (photoButton && photoButton.closest('#admin-bulk-table')) {
-        openPhotoPop(photoButton);
-        return;
-      }
-      if (event.target.closest && event.target.closest('#admin-bulk-photo-pop')) return;
-      if (!field('admin-bulk-photo-pop').hidden) closePhotoPop();
-      if (stockButton) {
-        if (stockMenuOwner === stockButton) closeStockMenu();
-        else openStockMenu(stockButton);
-        return;
-      }
-      if (stockChoice) {
-        chooseStock(stockChoice.getAttribute('data-stock-choice'));
-        return;
-      }
-      if (!event.target.closest || !event.target.closest('.bulk-stock-menu')) closeStockMenu();
+      if (event.target.id === 'admin-bulk-modal') closeBulk();
     });
-    field('admin-bulk-photo-use').addEventListener('click', usePhotoUrl);
-    field('admin-bulk-photo-url').addEventListener('keydown', function (event) {
-      if (event.key !== 'Enter' || event.ctrlKey || event.metaKey) return;
-      event.preventDefault();
-      usePhotoUrl();
-    });
-    field('admin-bulk-photo-file').addEventListener('change', function (event) {
-      onBulkImage(event.target);
-    });
-    field('admin-bulk-scroll').addEventListener('scroll', function () {
-      closeStockMenu();
-      closePhotoPop();
-    });
-    field('admin-bulk-table').addEventListener('input', onBulkInput);
-    field('admin-bulk-table').addEventListener('change', function (event) {
-      if (event.target && event.target.type === 'file') onBulkImage(event.target);
-      else onBulkInput(event);
-    });
+    field('admin-bulk-body').addEventListener('click', onBulkScreenClick);
+    field('admin-bulk-body').addEventListener('change', onBulkScreenChange);
+    field('admin-bulk-body').addEventListener('input', onBulkScreenInput);
 
     document.addEventListener('keydown', function (event) {
       var bulkOpen = !field('admin-bulk-modal').hidden;
@@ -2759,9 +3432,7 @@ var Admin = (function () {
           return;
         }
         if (bulkOpen) {
-          if (!field('admin-bulk-photo-pop').hidden) closePhotoPop();
-          else if (stockMenuOwner) closeStockMenu();
-          else closeBulk();
+          closeBulk();
           return;
         }
         if (dialog.hidden) return;

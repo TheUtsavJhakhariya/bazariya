@@ -62,6 +62,52 @@ var Data = (function () {
     return String(category || '').toUpperCase();
   }
 
+  /* Words and numbers, lower case. "CAR" and "car" become the same word.
+     A photo link is not included, so a number inside a picture address does not match. */
+  function searchWords(text) {
+    return String(text || '').toLowerCase().split(/[^0-9a-z\u0900-\u0aff]+/).filter(Boolean);
+  }
+
+  function searchBlob(product) {
+    var info = meta(product.category);
+    var bits = [
+      product.name,
+      product.nameHi,
+      product.nameGu,
+      product.description,
+      product.category,
+      info ? info.department : '',
+      info ? info.filter : '',
+      info ? info.tag : '',
+      product.id,
+      padId(product.id),
+      String(product.price),
+      product.inStock ? 'in stock available' : 'out of stock unavailable',
+      product.popular ? 'popular' : '',
+      product.mostOrdered != null ? 'ordered ' + product.mostOrdered : ''
+    ];
+    var words = {};
+    var list = searchWords(bits.join(' '));
+    var i;
+    for (i = 0; i < list.length; i += 1) words[list[i]] = true;
+    return words;
+  }
+
+  /* Every typed word must be a whole word on the product. "150" matches a price
+     of 150 and the name "150 Piece", and does not match 1500 or 2150. */
+  function matchesQuery(product, query) {
+    var text = String(query || '').toLowerCase().trim().replace(/^(?:no\.?\s*|#\s*)(?=\d)/, '');
+    var need = searchWords(text);
+    var have;
+    var i;
+    if (!need.length) return true;
+    have = searchBlob(product);
+    for (i = 0; i < need.length; i += 1) {
+      if (!have[need[i]]) return false;
+    }
+    return true;
+  }
+
   function safeUrl(url) {
     if (!url) return '';
     /* Product photos are stored as images/... from the site root. */
@@ -381,6 +427,7 @@ var Data = (function () {
     meta: meta,
     tagFor: tagFor,
     padId: padId,
+    matchesQuery: matchesQuery,
     saveEdits: saveEdits,
     importCsv: importCsv
   };

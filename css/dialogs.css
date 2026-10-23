@@ -40,6 +40,7 @@ body.has-layer {
   position: relative;
   z-index: 1;
   max-height: min(92vh, 920px);
+  max-height: min(92dvh, 920px);
   overflow: auto;
 }
 
@@ -750,6 +751,28 @@ body.has-layer {
 .btn-light {
   background: var(--color-white);
   color: var(--color-text);
+}
+
+@media (max-height: 520px) {
+  .layer {
+    padding: 8px;
+  }
+
+  .layer > [role="dialog"] {
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .layer.is-sheet,
+  .layer.is-drawer {
+    padding: 0;
+  }
+
+  .layer.is-sheet > [role="dialog"],
+  .layer.is-drawer > [role="dialog"] {
+    max-height: 100vh;
+    max-height: 100dvh;
+  }
 }
 
 @media (max-width: 767px) {

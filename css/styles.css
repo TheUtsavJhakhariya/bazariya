@@ -156,12 +156,15 @@ html {
 
 body {
   margin: 0;
+  max-width: 100%;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: var(--leading-body);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img, svg { display: block; max-width: 100%; }
@@ -854,6 +857,24 @@ body.has-dialog { overflow: hidden; }
   padding: var(--space-12) var(--space-12) var(--space-16);
   background: var(--color-bg);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+@media (max-height: 520px) {
+  .dialog-layer {
+    padding: 8px;
+  }
+
+  .dialog {
+    max-height: calc(100dvh - 16px);
+  }
+
+  .dialog-layer--sheet {
+    padding: 0;
+  }
+
+  .dialog--sheet {
+    max-height: 100dvh;
+  }
 }
 
 /* Cart drawer: full screen on phones, right-hand panel on wider screens */

@@ -18,45 +18,10 @@ var Search = (function () {
     return String(parseInt(match[1], 10));
   }
 
-  function wordsOf(product) {
-    var meta = Data.meta(product.category);
-    var blob = [
-      product.name,
-      product.category,
-      product.description || '',
-      meta ? meta.department : '',
-      meta ? meta.filter : '',
-      meta ? meta.tag : ''
-    ].join(' ');
-    return blob.toLowerCase().split(/[^a-z0-9\u0900-\u0aff]+/).filter(Boolean);
-  }
-
-  /* Every typed word must start a word in the name, category or description. */
-  function wordHit(product, query) {
-    var need = String(query).toLowerCase().split(/\s+/).filter(Boolean);
-    var parts = wordsOf(product);
-    var i;
-    if (!need.length) return false;
-    for (i = 0; i < need.length; i += 1) {
-      var word = need[i];
-      var ok = parts.some(function (part) { return part.indexOf(word) === 0; });
-      if (!ok) return false;
-    }
-    return true;
-  }
-
   function filter(products, query) {
-    var digits = digitsOf(query);
     var q = String(query || '').trim();
     if (!q) return [];
-    if (digits) {
-      return products.filter(function (product) {
-        var id = String(product.id);
-        var name = product.name.toLowerCase();
-        return id === digits || id.indexOf(digits) === 0 || name.indexOf(digits) !== -1;
-      });
-    }
-    return products.filter(function (product) { return wordHit(product, q); });
+    return products.filter(function (product) { return Data.matchesQuery(product, q); });
   }
 
   function photo(product) {
@@ -241,7 +206,7 @@ var Search = (function () {
         rows = products.filter(function (product) {
           var id = String(product.id);
           if (exact && String(exact.id) === id) return false;
-          return id.indexOf(digits) === 0 || product.name.toLowerCase().indexOf(digits) !== -1;
+          return Data.matchesQuery(product, digits);
         }).slice(0, 6);
         if (exact) {
           var hit = section(I18n.t('itemNumberMatch'));
