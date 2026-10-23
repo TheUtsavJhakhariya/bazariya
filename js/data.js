@@ -165,24 +165,115 @@ var Data = (function () {
     return { products: list, source: 'script' };
   }
 
+  /* The shop sheet uses plain headings. Older files use the short names.
+     Both are accepted. Extra columns, such as the price increment, are ignored. */
+  function headerName(name) {
+    return String(name || '')
+      .replace(/^\uFEFF/, '')
+      .replace(/\u00a0/g, ' ')
+      .trim()
+      .toLowerCase()
+      .replace(/[_]+/g, ' ')
+      .replace(/\s+/g, ' ');
+  }
+
+  function canonicalHeader(name) {
+    var key = headerName(name);
+    var aliases = {
+      'id': 'id',
+      'product id': 'id',
+      's.n.': 'id',
+      's.n': 'id',
+      'sn': 'id',
+      'name': 'name',
+      'product name': 'name',
+      'product name (english)': 'name',
+      'name hi': 'name_hi',
+      'product name (hindi)': 'name_hi',
+      'name gu': 'name_gu',
+      'product name (gujarati)': 'name_gu',
+      'description': 'description',
+      'category': 'category',
+      'price': 'price',
+      'price (inr)': 'base_price',
+      'updated price': 'updated_price',
+      'updated price (inr)': 'updated_price',
+      'images': 'images',
+      'image': 'images',
+      'in stock': 'in_stock',
+      'stock': 'in_stock',
+      'popular': 'popular',
+      'most ordered': 'most_ordered'
+    };
+    return aliases[key] || '';
+  }
+
+  /* Turn one parsed CSV row into the short names the rest of the site uses. */
+  function sheetRow(raw) {
+    var out = {};
+    var keys;
+    var i;
+    var canon;
+    if (!raw) return out;
+    keys = Object.keys(raw);
+    for (i = 0; i < keys.length; i += 1) {
+      canon = canonicalHeader(keys[i]);
+      if (!canon) continue;
+      if (out[canon] == null || String(out[canon]).trim() === '') out[canon] = raw[keys[i]];
+    }
+    return out;
+  }
+
+  function money(value) {
+    var text = String(value == null ? '' : value).trim();
+    var amount;
+    if (!text) return null;
+    amount = Number(text.replace(/[^\d.]/g, ''));
+    if (!isFinite(amount)) return null;
+    return amount;
+  }
+
+  /* "In Stock", "Popular" and Y all mean yes. "Out of Stock" and "Not Popular" do not. */
+  function flagged(value, yesWords) {
+    var text = String(value == null ? '' : value).trim().toLowerCase();
+    if (text === 'y' || text === 'yes' || text === 'true' || text === '1') return true;
+    return yesWords.indexOf(text) !== -1;
+  }
+
+  /* A number keeps its rank. Yes means "show this in Most ordered". No means leave it out. */
+  function rankValue(value) {
+    var text = String(value == null ? '' : value).trim();
+    var lower = text.toLowerCase();
+    var amount;
+    if (!text) return null;
+    if (lower === 'n' || lower === 'no' || lower === 'false' || lower === '0' || lower === 'not') return null;
+    if (lower === 'y' || lower === 'yes' || lower === 'true') return 1;
+    amount = Number(text);
+    if (!isFinite(amount)) return null;
+    return amount;
+  }
+
   function row(raw) {
-    if (!raw || raw.id == null || !String(raw.name || '').trim()) return null;
-    var price = Number(String(raw.price || '').replace(/[^\d.]/g, ''));
-    if (!isFinite(price)) return null;
-    var images = imageParts(raw.images);
-    var rank = String(raw.most_ordered || '').trim();
+    var mapped = sheetRow(raw);
+    var price = money(mapped.updated_price);
+    var images;
+    if (price == null) price = money(mapped.price);
+    if (price == null) price = money(mapped.base_price);
+    if (price == null) price = 0;
+    if (mapped.id == null || !String(mapped.name || '').trim()) return null;
+    images = imageParts(mapped.images || mapped.image);
     return {
-      id: String(raw.id).trim(),
-      name: String(raw.name).trim(),
-      description: String(raw.description || '').trim(),
+      id: String(mapped.id).trim(),
+      name: String(mapped.name).trim(),
+      description: String(mapped.description || '').trim(),
       price: price,
-      category: String(raw.category || '').trim(),
+      category: String(mapped.category || '').trim(),
       images: images,
-      inStock: String(raw.in_stock || '').trim().toUpperCase() === 'Y',
-      popular: String(raw.popular || '').trim().toUpperCase() === 'Y',
-      mostOrdered: rank ? Number(rank) : null,
-      nameHi: String(raw.name_hi || '').trim(),
-      nameGu: String(raw.name_gu || '').trim()
+      inStock: flagged(mapped.in_stock, ['in stock', 'instock']),
+      popular: flagged(mapped.popular, ['popular']),
+      mostOrdered: rankValue(mapped.most_ordered),
+      nameHi: String(mapped.name_hi || '').trim(),
+      nameGu: String(mapped.name_gu || '').trim()
     };
   }
 
@@ -342,8 +433,8 @@ var Data = (function () {
 
   function localFile(url) {
     if (!url || /^https?:\/\//i.test(url)) return url;
-    if (url.indexOf('../') === 0) return url.slice(3);
-    return url;
+    if (url.indexOf('../') === 0) url = url.slice(3);
+    return encodeURI(url);
   }
 
   function fromUrl(url, source, timeoutMs) {

@@ -451,9 +451,10 @@ var Home = (function () {
     var copy = UI.el('div');
     var actions = UI.el('div', 'small-actions');
     var meta = Data.meta(product.category);
+    var catLabel = meta ? meta.filter : String(product.category || '').trim();
     row.appendChild(UI.el('p', 'small-price', Config.money(product.price)));
     copy.appendChild(UI.el('p', 'small-name', product.name));
-    copy.appendChild(UI.el('p', 'small-meta', 'No. ' + Data.padId(product.id) + ' · ' + (meta ? meta.filter : product.category)));
+    copy.appendChild(UI.el('p', 'small-meta', catLabel ? 'No. ' + Data.padId(product.id) + ' · ' + catLabel : 'No. ' + Data.padId(product.id)));
     row.appendChild(copy);
     actions.appendChild(addBtn(product, featured ? 'btn btn-ghost' : 'btn btn-outline'));
     actions.appendChild(buyBtn(product, featured ? 'btn btn-accent' : 'btn btn-primary'));
@@ -497,9 +498,10 @@ var Home = (function () {
     var actions = UI.el('div', 'most-actions');
     var add = addBtn(product, 'btn btn-outline btn-mono most-add', I18n.t('addMono'));
     var buy = buyBtn(product, 'btn btn-primary btn-round btn-mono most-buy', I18n.t('buyMono'));
+    var tag = Data.tagFor(product.category);
     row.appendChild(UI.el('p', 'most-name', product.name));
     meta.appendChild(UI.el('span', 'most-id', Data.padId(product.id)));
-    meta.appendChild(UI.el('span', 'most-tag', Data.tagFor(product.category)));
+    if (tag) meta.appendChild(UI.el('span', 'most-tag', tag));
     row.appendChild(meta);
     row.appendChild(UI.el('span', 'most-price', Config.money(product.price)));
     actions.appendChild(add);

@@ -181,7 +181,7 @@ var Admin = (function () {
     }
     if (product.description) copy.appendChild(text('p', 'admin-item-desc', product.description));
     if (product.popular) meta += ' · Popular';
-    if (product.mostOrdered != null) meta += ' · Most ordered ' + product.mostOrdered;
+    if (product.mostOrdered != null && !isNaN(product.mostOrdered)) meta += ' · Most ordered';
     copy.appendChild(text('p', 'admin-item-meta', meta));
     item.appendChild(copy);
     item.appendChild(text('p', 'admin-item-price', Config.money(product.price)));
@@ -2135,7 +2135,7 @@ var Admin = (function () {
         return;
       }
       if (!count) {
-        note('That file has no products. Keep the same columns as the product sheet.');
+        note('That file has no products. The first row needs Product Id and Product Name (English).');
         return;
       }
       page = 1;
