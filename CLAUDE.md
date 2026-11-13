@@ -3,15 +3,15 @@
 Standing rules for this project. Full details are in `BUILD_BRIEF.md`; the visual designs are in `design/`.
 
 ## What this is
-BAZARIYAA ("Ghar Ka Bazaar") is a mobile-first product catalogue for an Indian household shop. Customers browse 400+ items, keep a cart in their browser, and send the order as a pre-filled WhatsApp message. No accounts, payment, database or backend. Hosted on GitHub Pages. Cash on delivery and shipping happen off-site.
+BAZARIYAA ("Ghar Ka Bazaar") is a mobile-first product catalogue for an Indian household shop. Customers browse 400+ items, keep a cart in their browser, and send the order as a pre-filled WhatsApp message. No customer accounts or payment. Products and site settings live in Supabase (free plan); the owner edits them only through `admin-panel.html` (Supabase email login). Hosted on GitHub Pages. Cash on delivery and shipping happen off-site.
 
 ## Who it is for
-Indian families, many older and not tech-savvy, on cheap Android phones and slow networks. The owner is a non-developer who updates products by editing a Google Sheet.
+Indian families, many older and not tech-savvy, on cheap Android phones and slow networks. The owner is a non-developer who updates products in the admin panel (CSV upload, edit, add, delete).
 
 ## Stack (do not add to it without asking)
 - Plain HTML, CSS, vanilla JavaScript. No framework, no build step.
-- PapaParse (CDN, pinned version) for CSV. Nothing else.
-- Data: published Google Sheet CSV (`config.json` -> `sheetCsvUrl`), fallback `data/products.csv`.
+- PapaParse (CDN, pinned version) for CSV. Supabase via plain fetch in `js/db.js` (no library).
+- Data: Supabase `products` table first; if unreachable, the browser's last copy, then `config.json` -> `fallbackCsv`. Schema and RLS in `supabase/schema.sql`. Only the publishable key goes in code, never the service key.
 - Settings: `config.json`. State: `localStorage` (cart, language), always in try/catch.
 
 ## Rules
@@ -24,7 +24,7 @@ Indian families, many older and not tech-savvy, on cheap Android phones and slow
 7. Senior-friendly: text ≥ 16px, tap targets ≥ 48px, WCAG AA contrast, visible focus, no hover-only actions.
 8. Buy Now never changes the cart. The cart stores only `{id, qty, note}` and reads prices from the current catalogue.
 9. WhatsApp message format is fixed in BUILD_BRIEF.md section 12.
-10. Do not build anything not in scope (no admin panel, login, payment, analytics, PWA).
+10. Do not build anything not in scope (no payment, analytics, PWA). The admin panel + Supabase login are in scope (added Nov 2026).
 11. Keep code simple and commented for a beginner. Report plainly, including what you could not verify.
 
 ## Folders

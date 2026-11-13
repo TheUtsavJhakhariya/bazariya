@@ -1,6 +1,7 @@
 /* Site text and photos the owner can change from the admin panel.
-   Saved in this browser only (localStorage). An empty save keeps the
-   words already written on the page. Nothing here is sent to other phones. */
+   With Supabase set in config.json, the saved copy lives in the site_settings table and
+   every visitor gets it; localStorage only keeps a copy for quick paint and offline use.
+   Without Supabase it is saved in this browser only. An empty save keeps the page's own words. */
 
 var Site = (function () {
   var KEY = 'bazariyaa-site-config';
@@ -272,7 +273,10 @@ var Site = (function () {
     FIELDS.push(field('colors', 'color.' + row[0], row[1], 'color', row[2]));
   });
 
+  var cache = null;
+
   function read() {
+    if (cache) return cache;
     try {
       var parsed = JSON.parse(localStorage.getItem(KEY) || '{}');
       return parsed && typeof parsed === 'object' ? parsed : {};
@@ -397,10 +401,43 @@ var Site = (function () {
       next[item.id] = value;
     });
     localStorage.setItem(KEY, JSON.stringify(next));
+    return next;
   }
 
   function clear() {
     localStorage.removeItem(KEY);
+  }
+
+  /* Fetch the shared settings from Supabase (4 s max), keep a copy, repaint.
+     Always resolves, so a slow network never blocks the shop. */
+  function sync(json) {
+    var url = json && json.supabaseUrl ? String(json.supabaseUrl).replace(/\/+$/, '') : '';
+    var key = json && json.supabaseKey ? String(json.supabaseKey) : '';
+    var controller;
+    var timer;
+    if (!url || !key || !window.fetch) return Promise.resolve(false);
+    controller = window.AbortController ? new AbortController() : null;
+    timer = setTimeout(function () { if (controller) controller.abort(); }, 4000);
+    return fetch(url + '/rest/v1/site_settings?select=data&id=eq.1', {
+      headers: { apikey: key },
+      cache: 'no-cache',
+      signal: controller ? controller.signal : undefined
+    }).then(function (res) {
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('settings ' + res.status);
+      return res.json();
+    }).then(function (rows) {
+      var data = rows && rows[0] && rows[0].data && typeof rows[0].data === 'object' ? rows[0].data : null;
+      if (!data) return false;
+      try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (err) { /* paint still works below */ }
+      cache = data;
+      applyDom(document);
+      applyColors();
+      return true;
+    }).catch(function () {
+      clearTimeout(timer);
+      return false;
+    });
   }
 
   function listItems(el) {
@@ -483,8 +520,9 @@ var Site = (function () {
     shown: shown,
     builtIn: builtIn,
     patchConfig: patchConfig,
-    save: save,
-    clear: clear,
+    save: function (map) { cache = null; return save(map); },
+    clear: function () { cache = null; return clear(); },
+    sync: sync,
     applyDom: applyDom,
     applyColors: applyColors,
     safeImage: safeImage,

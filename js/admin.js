@@ -1,7 +1,8 @@
 /* Sign-in for the admin panel, then the full product list.
    Search looks through every detail we store for a product.
    Category, stock and popular narrow that list further.
-   The password check runs in the browser only. This page has no server. */
+   With Supabase set in config.json, sign-in is a real Supabase account and saves go
+   to the database. Without it, the old browser-only check and browser-only saves remain. */
 
 var Admin = (function () {
   var USERNAME = 'adminpanel';
@@ -33,7 +34,20 @@ var Admin = (function () {
   var pickedImage = '';
   var keptImage = '';
 
+  function live() {
+    return !!(window.Db && Db.enabled());
+  }
+
+  /* Saving only makes sense when the products came from the database. */
+  function cannotSave() {
+    if (live() && !Data.usingDatabase()) {
+      return 'The database could not be reached, so changes would only stay on this device. Check the internet and reload.';
+    }
+    return '';
+  }
+
   function remember() {
+    if (live()) return;
     try {
       sessionStorage.setItem(SESSION_KEY, '1');
     } catch (err) {
@@ -42,6 +56,7 @@ var Admin = (function () {
   }
 
   function signedIn() {
+    if (live()) return Db.hasSession();
     try {
       return sessionStorage.getItem(SESSION_KEY) === '1';
     } catch (err) {
@@ -50,6 +65,7 @@ var Admin = (function () {
   }
 
   function forget() {
+    if (live()) Db.signOut();
     try {
       sessionStorage.removeItem(SESSION_KEY);
     } catch (err) {
@@ -208,9 +224,60 @@ var Admin = (function () {
 
   function updateBulkButton() {
     var button = document.getElementById('admin-bulk');
+    var del = document.getElementById('admin-delete-selected');
+    var count = selectedIds().length;
+    if (del) {
+      del.hidden = !count;
+      del.textContent = 'Delete selected (' + count + ')';
+    }
     if (!button) return;
     button.disabled = false;
     button.textContent = 'Bulk edit';
+  }
+
+  var NEW_KEY = '__new__';
+
+  function openNew() {
+    if (!live() || !Data.usingDatabase()) {
+      note('Adding products needs the database. Check the internet and reload.');
+      return;
+    }
+    editingIds = [NEW_KEY];
+    clearApplyBoxes();
+    setFieldsEnabled(true);
+    lockAllRows(false);
+    fillForm({ id: Data.nextId(), name: '', price: '', category: '', images: [], inStock: true,
+      popular: false, mostOrdered: null, nameHi: '', nameGu: '' });
+    openDialog(false);
+    field('admin-edit-title').textContent = 'Add product';
+    field('admin-edit-nav').hidden = true;
+    field('admin-edit-delete').hidden = true;
+    field('edit-name').focus();
+  }
+
+  function deleteKeys(keys, done) {
+    var names = keys.map(function (k) {
+      var p = findProduct(k);
+      return p ? '#' + p.id + ' ' + p.name : '#' + k;
+    });
+    if (!keys.length) return;
+    if (!live() || !Data.usingDatabase()) {
+      note('Deleting needs the database. Check the internet and reload.');
+      return;
+    }
+    if (!window.confirm('Delete ' + keys.length + (keys.length === 1 ? ' product' : ' products') +
+      ' for good?\n\n' + names.slice(0, 8).join('\n') + (names.length > 8 ? '\n…' : '') +
+      '\n\nTip: marking it Out of stock hides nothing and keeps it. Delete cannot be undone.')) return;
+    note('Deleting…');
+    Data.deleteProducts(keys).then(function () {
+      keys.forEach(function (k) { delete selected[k]; });
+      if (done) done();
+      fillCategories();
+      render();
+      note('Deleted ' + keys.length + (keys.length === 1 ? ' product.' : ' products.') + ' Live on the site now.');
+    }, function (err) {
+      note(saveProblem(err));
+    });
   }
 
   function syncSelectAll() {
@@ -573,6 +640,7 @@ var Admin = (function () {
       ? 'Edit ' + editingIds.length + (editingIds.length === 1 ? ' product' : ' products')
       : 'Edit product';
     field('admin-edit-lead').hidden = !bulk;
+    field('admin-edit-delete').hidden = true;
     field('admin-edit-lead').textContent = 'Tick Change on each detail to set it for every selected product.';
     updateStepper();
     document.body.classList.add('admin-noscroll');
@@ -603,6 +671,7 @@ var Admin = (function () {
     lockAllRows(false);
     fillForm(product);
     openDialog(false);
+    field('admin-edit-delete').hidden = !(live() && Data.usingDatabase());
   }
 
   /* Centered sheet for many products. One product still opens the drawer. */
@@ -1875,17 +1944,30 @@ var Admin = (function () {
       updates.push({ sourceId: key, product: saved });
     }
     if (!updates.length) return;
-    try {
-      Data.saveEdits(updates);
-    } catch (err) {
-      bulkError('Could not save. This browser blocked storage.');
-      return;
-    }
-    closeBulk();
-    fillCategories();
-    render();
-    field('admin-note').hidden = false;
-    field('admin-note').textContent = 'Saved.';
+    if (cannotSave()) return bulkError(cannotSave());
+    field('admin-bulk-save').disabled = true;
+    bulkError('Saving ' + updates.length + ' products…');
+    Data.saveEdits(updates).then(function () {
+      field('admin-bulk-save').disabled = false;
+      bulkError('');
+      closeBulk();
+      fillCategories();
+      render();
+      field('admin-note').hidden = false;
+      field('admin-note').textContent = live() ? 'Saved. Live on the site now.' : 'Saved.';
+    }, function (err) {
+      field('admin-bulk-save').disabled = false;
+      bulkError(saveProblem(err));
+    });
+  }
+
+  function saveProblem(err) {
+    var status = err && err.status;
+    if (err && err.message === 'signed-out') return 'You were signed out. Sign in again, then save.';
+    if (status === 401 || status === 403) return 'This account is not allowed to change products. Sign in with the shop account.';
+    if (err && /^upload/.test(err.message || '')) return 'A photo could not be uploaded. Try a smaller photo or check the internet.';
+    if (live()) return 'Could not save. Check the internet and try again.';
+    return 'Could not save. This browser blocked storage.';
   }
 
   function openBulk() {
@@ -2021,17 +2103,18 @@ var Admin = (function () {
       }
       if (!updates.length) return showError('Those products are no longer in the list.');
     }
-    try {
-      Data.saveEdits(updates);
-    } catch (err) {
-      showError('Could not save. This browser blocked storage.');
-      return;
-    }
-    closeDialog();
-    fillCategories();
-    render();
-    field('admin-note').hidden = false;
-    field('admin-note').textContent = 'Saved.';
+    if (cannotSave()) return showError(cannotSave());
+    showError('Saving…');
+    Data.saveEdits(updates).then(function () {
+      showError('');
+      closeDialog();
+      fillCategories();
+      render();
+      field('admin-note').hidden = false;
+      field('admin-note').textContent = live() ? 'Saved. Live on the site now.' : 'Saved.';
+    }, function (err) {
+      showError(saveProblem(err));
+    });
   }
 
   function resetFilters() {
@@ -2057,7 +2140,12 @@ var Admin = (function () {
     }).then(function () {
       loaded = true;
       loading = false;
-      if (!signedIn()) return;
+      /* An old browser-only login is not a database login: ask for email and password. */
+      if (!signedIn()) {
+        try { sessionStorage.removeItem(SESSION_KEY); } catch (err) { /* nothing to clear */ }
+        show(false);
+        return;
+      }
       fillCategories();
       render();
     }).catch(function () {
@@ -2126,23 +2214,24 @@ var Admin = (function () {
       note('That file could not be read.');
     };
     reader.onload = function () {
-      var count;
       input.value = '';
-      try {
-        count = Data.importCsv(String(reader.result || ''));
-      } catch (err) {
-        note('This browser could not store that sheet. Try a smaller file.');
-        return;
-      }
-      if (!count) {
-        note('That file has no products. The first row needs Product Id and Product Name (English).');
-        return;
-      }
-      page = 1;
-      selected = {};
-      fillCategories();
-      render();
-      note('Uploaded ' + count + ' products. This browser now uses that list.');
+      if (cannotSave()) return note(cannotSave());
+      note('Uploading products…');
+      Data.importCsv(String(reader.result || '')).then(function (count) {
+        if (!count) {
+          note('That file has no products. The first row needs Product Id and Product Name (English).');
+          return;
+        }
+        page = 1;
+        selected = {};
+        fillCategories();
+        render();
+        note(live()
+          ? 'Uploaded ' + count + ' products. New item numbers were added, existing ones updated. Live on the site now.'
+          : 'Uploaded ' + count + ' products. This browser now uses that list.');
+      }, function (err) {
+        note(live() ? saveProblem(err) : 'This browser could not store that sheet. Try a smaller file.');
+      });
     };
     reader.readAsText(file);
   }
@@ -3102,24 +3191,68 @@ var Admin = (function () {
       showSiteNote(bad + ' needs a full image address starting with http, or a photo from this device.');
       return;
     }
+    if (live()) {
+      saveSiteLive(map);
+      return;
+    }
     try {
       Site.save(map);
-      if (window.Config) Site.patchConfig(Config.get());
-      if (Site.applyColors) Site.applyColors();
-      Site.fields().forEach(function (item) {
-        var input = siteInput(item.id);
-        if (input) input.setAttribute('data-base', input.value.trim());
-      });
-      siteHold = '';
-      refreshDirty();
-      showSiteNote('Saved in this browser. Refresh the shop page to see it.');
+      afterSiteSave('Saved in this browser. Refresh the shop page to see it.');
     } catch (err) {
       showSiteNote('This browser could not store that. Try a smaller photo.');
     }
   }
 
+  function afterSiteSave(message) {
+    if (window.Config) Site.patchConfig(Config.get());
+    if (Site.applyColors) Site.applyColors();
+    Site.fields().forEach(function (item) {
+      var input = siteInput(item.id);
+      if (input) input.setAttribute('data-base', input.value.trim());
+    });
+    siteHold = '';
+    refreshDirty();
+    showSiteNote(message);
+  }
+
+  /* Photos from the device go to Supabase Storage first, then the settings row is saved. */
+  function saveSiteLive(map) {
+    var ids = Object.keys(map);
+    showSiteNote('Saving…');
+    Promise.all(ids.map(function (id) {
+      var value = String(map[id] || '');
+      if (value.indexOf('data:image/') !== 0) return null;
+      return Db.uploadImage(value, 'site-' + id.replace(/[^a-zA-Z0-9]/g, '-')).then(function (url) {
+        map[id] = url;
+        var input = siteInput(id);
+        if (input) input.value = url;
+      });
+    })).then(function () {
+      var next = Site.save(map);
+      return Db.saveSettings(next);
+    }).then(function () {
+      afterSiteSave('Saved. Live for every visitor now.');
+    }, function (err) {
+      showSiteNote(saveProblem(err));
+    });
+  }
+
   function clearSite() {
     if (!window.Site) return;
+    if (live()) {
+      if (!window.confirm('Reset every site text, colour and photo to the original for all visitors?')) return;
+      showSiteNote('Resetting…');
+      Db.saveSettings({}).then(function () {
+        Site.clear();
+        siteHold = '';
+        if (Site.applyColors) Site.applyColors();
+        paintSite();
+        showSiteNote('Reset for every visitor.');
+      }, function (err) {
+        showSiteNote(saveProblem(err));
+      });
+      return;
+    }
     try {
       Site.clear();
     } catch (err) {
@@ -3140,13 +3273,38 @@ var Admin = (function () {
     var panel = document.getElementById('admin-panel');
     var dialog = document.getElementById('admin-dialog');
 
-    if (signedIn()) openPanel();
-    else show(false);
+    /* Read config.json first: it says whether logins go to Supabase. */
+    var ready = Config.load().catch(function () { /* defaults */ });
+    show(false);
+    ready.then(function () {
+      if (signedIn()) openPanel();
+    });
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
+      ready.then(function () { submitLogin(); });
+    });
+
+    function submitLogin() {
       var name = user.value.trim();
-      var secret = pass.value.trim();
+      var secret = pass.value;
+      if (live()) {
+        error.hidden = true;
+        Db.signIn(name, secret).then(function () {
+          pass.value = '';
+          openPanel();
+        }, function (err) {
+          error.textContent = (err && err.status === 400
+            ? 'Email or password is wrong.'
+            : 'Could not reach the server. Check the internet and try again.')
+            + ' [' + ((err && err.status) || 'no status') + ': ' + ((err && err.message) || 'no message') + ']';
+          error.hidden = false;
+          pass.value = '';
+          pass.focus();
+        });
+        return;
+      }
+      secret = secret.trim();
       if (name === USERNAME && secret === PASSWORD) {
         error.hidden = true;
         pass.value = '';
@@ -3157,7 +3315,7 @@ var Admin = (function () {
       error.hidden = false;
       pass.value = '';
       pass.focus();
-    });
+    }
 
     panel.addEventListener('input', function (event) {
       if (event.target.id === 'admin-search') {
@@ -3301,6 +3459,11 @@ var Admin = (function () {
       }
       if (event.target.id === 'admin-clear') resetFilters();
       if (event.target.id === 'admin-bulk') openBulk();
+      if (event.target.id === 'admin-add') openNew();
+      if (event.target.id === 'admin-delete-selected') deleteKeys(selectedIds());
+      if (event.target.id === 'admin-edit-delete' && editingIds.length === 1 && editingIds[0] !== NEW_KEY) {
+        deleteKeys([editingIds[0]], closeDialog);
+      }
       if (action === 'edit') openSingle(event.target.getAttribute('data-source-id'));
       if (event.target.id === 'admin-edit-cancel' || event.target.id === 'admin-edit-dismiss' || event.target.id === 'admin-drawer-scrim') closeDialog();
       if (event.target.id !== 'admin-signout') return;

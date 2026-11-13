@@ -28,6 +28,8 @@ var Config = (function () {
     }).catch(function () {
       data.whatsappNumber = '';
     }).then(function () {
+      return window.Site && Site.sync ? Site.sync(data) : null;
+    }).then(function () {
       if (window.Site) Site.patchConfig(data);
     });
   }

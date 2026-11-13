@@ -1,11 +1,25 @@
 {
   "shopName": "BAZARIYAA",
   "tagline": "Ghar ka bazaar",
-  "whatsappNumber": "+1 647 409 6236",
+  "whatsappNumber": "+91 95375 91980",
   "freeDeliveryAbove": 499,
   "currencySymbol": "₹",
   "city": "Surat",
-  "areas": ["Adajan", "Vesu", "Pal", "Piplod", "Athwa", "Varachha", "Katargam", "Udhna", "Althan", "City Light", "Rander"],
+  "supabaseUrl": "https://pmsvermvhnfcnizwokrm.supabase.co",
+  "supabaseKey": "sb_publishable_GGXgwCZkJzx5Qljvv3PnWw_x7o_kC2S",
+  "areas": [
+    "Adajan",
+    "Vesu",
+    "Pal",
+    "Piplod",
+    "Athwa",
+    "Varachha",
+    "Katargam",
+    "Udhna",
+    "Althan",
+    "City Light",
+    "Rander"
+  ],
   "sheetCsvUrl": "",
   "fallbackCsv": "Bazariya Real Product List - 22nd Oct List.csv",
   "popularCount": 10,
@@ -13,5 +27,9 @@
   "maxQtyPerItem": 99,
   "noteMaxLength": 120,
   "defaultLanguage": "en",
-  "languages": ["en", "hi", "gu"]
+  "languages": [
+    "en",
+    "hi",
+    "gu"
+  ]
 }

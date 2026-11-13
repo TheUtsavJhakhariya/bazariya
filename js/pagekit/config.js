@@ -80,10 +80,13 @@
         return res.json();
       })
       .then(function (json) {
-        var c = clean(json);
-        if (window.Site) Site.patchConfig(c);
-        c.loadedFromFile = true;
-        return c;
+        var synced = window.Site && Site.sync ? Site.sync(json) : Promise.resolve();
+        return synced.then(function () {
+          var c = clean(json);
+          if (window.Site) Site.patchConfig(c);
+          c.loadedFromFile = true;
+          return c;
+        });
       })
       .catch(function (err) {
         console.warn("config.json could not be loaded, using defaults:", err.message);

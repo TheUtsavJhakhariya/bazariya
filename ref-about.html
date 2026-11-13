@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About us – BAZARIYAA</title>
+  <meta name="description" content="About BAZARIYAA – Ghar Ka Bazaar: a household shop in Surat. Order the same list on WhatsApp.">
+  <meta name="theme-color" content="#EDE8E0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/config.js"></script>
+  <script defer src="js/shell.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/language.js"></script>
+  <script defer src="js/page.js"></script>
+</head>
+<body class="about-page">
+  <a class="skip-link" href="#main" data-i18n="skipToMain">Skip to main content</a>
+
+  <div class="config-banner" id="config-banner" role="status" hidden>
+    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+    <span data-i18n="bannerNoNumber">Shop number is not set. Orders can't be sent.</span>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="BAZARIYAA home">
+      <span class="brand__mark" aria-hidden="true">b</span>
+      <span class="brand__text">
+        <span class="brand__name">bazariyaa</span>
+        <span class="brand__tagline" data-bz="tagline">Ghar ka bazaar</span>
+      </span>
+    </a>
+    <p class="deliver-pill"><span class="deliver-pill__dot" aria-hidden="true"></span>Delivering across Surat</p>
+    <div class="site-header__actions">
+      <a class="icon-button" href="./#search-input">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        <span class="visually-hidden" data-i18n="searchLabel">Search products</span>
+      </a>
+      <button type="button" class="pill-button" id="language-button" aria-haspopup="dialog">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+        <span id="language-code">EN</span>
+        <span class="visually-hidden" data-i18n="changeLanguage">Change language</span>
+      </button>
+      <a class="cart-button" id="cart-button" href="./#cart">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="visually-hidden" data-i18n="openCart">Open cart</span>
+        <span class="cart-button__badge" id="cart-count" hidden>0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="./" data-i18n="home">Home</a></li>
+        <li aria-current="page" data-i18n="aboutUs">About us</li>
+      </ol>
+    </nav>
+
+    <!-- Story copy is the wording printed on Page Reference Images/03-about.png.
+         The phone number is not taken from that picture; shell.js fills it from config.json. -->
+    <article class="about-wrap" lang="en">
+      <section class="about-letter" aria-labelledby="about-quote">
+        <p class="about-kicker">A letter from the family</p>
+        <div class="about-letter__top">
+          <h1 class="about-quote" id="about-quote">“We started Bazariyaa because buying a ₹50 brush shouldn’t need an app, a card or a trip across Surat.”</h1>
+          <p class="about-sign">— <em>with love</em></p>
+        </div>
+        <div class="about-founder">
+          <!-- "Your name" is the placeholder written on the design. Replace it when the owner gives the real name. -->
+          <img src="images/about-founder.jpg" alt="" width="64" height="64">
+          <p><strong>Your name</strong><span>Founder, Bazariyaa</span></p>
+        </div>
+
+        <div class="about-photos">
+          <figure class="about-photo about-photo--shop">
+            <img src="images/about-shop.jpg" alt="">
+            <figcaption>Our shop, Surat</figcaption>
+          </figure>
+          <figure class="about-photo about-photo--pack">
+            <img src="images/about-pack.jpg" alt="">
+            <figcaption>Pack no. 001-01</figcaption>
+          </figure>
+          <p class="about-check">Checked by hand <em>before it leaves.</em></p>
+        </div>
+      </section>
+
+      <section class="about-journey" aria-labelledby="journey-title">
+        <h2 id="journey-title">Our journey</h2>
+        <ol class="journey">
+          <li>
+            <span class="journey__year">2024</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>A stall in the market</h3>
+              <p>We started selling kitchen tools from a small stall.</p>
+            </div>
+          </li>
+          <li>
+            <span class="journey__year">2025</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>Orders on WhatsApp</h3>
+              <p>Regulars began messaging us lists. We delivered on our scooter.</p>
+            </div>
+          </li>
+          <li class="is-current">
+            <span class="journey__year">2026</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>Bazariyaa online</h3>
+              <p>412 items in one catalogue, still ordered the same simple way.</p>
+            </div>
+          </li>
+          <li>
+            <span class="journey__year">Next</span>
+            <span class="journey__mark" aria-hidden="true"></span>
+            <div>
+              <h3>More of Surat</h3>
+              <p>Faster delivery to every area of the city before we go further.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="about-surat" aria-labelledby="surat-title">
+        <div>
+          <p class="about-kicker">More of delivery</p>
+          <h2 id="surat-title">All of Surat.</h2>
+          <p>Only Surat for now, so we can deliver quickly and take care of the shop.</p>
+        </div>
+        <ul class="area-list">
+          <li>Adajan</li>
+          <li>Vesu</li>
+          <li>Pal</li>
+          <li>Piplod</li>
+          <li>Athwa</li>
+          <li>Varachha</li>
+          <li>Katargam</li>
+          <li>Udhna</li>
+          <li>Althan</li>
+          <li>City light</li>
+        </ul>
+      </section>
+
+      <section class="about-hello" aria-labelledby="hello-title">
+        <h2 class="about-hello__title" id="hello-title">Say namaste</h2>
+        <a class="about-chat" data-bz="needs-number" href="#" data-cta-link target="_blank" rel="noopener">
+          <span class="about-chat__dot" aria-hidden="true"></span>
+          <span>Chat with us<span data-bz="number-text"></span></span>
+        </a>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__card">
+      <div class="site-footer__top">
+        <p class="site-footer__mark"><span>Ghar ka</span> <em>bazaar.</em></p>
+        <ul class="site-footer__facts">
+          <li data-i18n="cashOnDelivery">Cash on delivery</li>
+          <li data-bz="free-delivery">Free delivery</li>
+          <li>Surat, Gujarat</li>
+        </ul>
+      </div>
+      <nav class="site-footer__nav" aria-label="Footer">
+        <ul>
+          <li><a href="about.html" aria-current="page" data-i18n="aboutUs">About us</a></li>
+          <li><a href="return-policy.html" data-i18n="returnPolicy">Return policy</a></li>
+          <li><a href="terms.html" data-i18n="terms">Terms</a></li>
+        </ul>
+      </nav>
+      <div class="site-footer__bottom">
+        <p class="site-footer__copy">© <span data-bz="year"></span> <span data-bz="shop-name">BAZARIYAA</span></p>
+        <div class="lang-quick" role="group" data-i18n-attr="aria-label:changeLanguage" aria-label="Change language">
+          <button type="button" data-lang="en" lang="en">EN</button>
+          <button type="button" data-lang="hi" lang="hi">हि</button>
+          <button type="button" data-lang="gu" lang="gu">ગુ</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

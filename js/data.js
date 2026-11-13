@@ -1,5 +1,7 @@
 /* Loads the catalogue.
-   Order: Google Sheet (8 seconds) → the CSV in config.json → products.js → last saved copy → error. */
+   Order: Supabase (when set in config.json) → Google Sheet (8 seconds) → the CSV in config.json
+   → products.js → last saved copy → error.
+   With Supabase on, admin saves go to the database, so every visitor sees them. */
 
 var Data = (function () {
   var CACHE_KEY = 'bazariyaa-products';
@@ -7,6 +9,7 @@ var Data = (function () {
   var SHEET_KEY = 'bazariyaa-uploaded-sheet';
   var list = [];
   var base = [];
+  var dbMode = false;
 
   /* Labels for the categories used in products.js.
      A category that is not listed here still appears, using its own name. */
@@ -273,14 +276,18 @@ var Data = (function () {
       popular: flagged(mapped.popular, ['popular']),
       mostOrdered: rankValue(mapped.most_ordered),
       nameHi: String(mapped.name_hi || '').trim(),
-      nameGu: String(mapped.name_gu || '').trim()
+      nameGu: String(mapped.name_gu || '').trim(),
+      basePrice: money(mapped.base_price)
     };
   }
 
   function parse(text) {
     if (!window.Papa) return [];
     var parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-    return (parsed.data || []).map(row).filter(Boolean);
+    return (parsed.data || []).map(row).filter(Boolean).map(function (product, index) {
+      product.position = index + 1;
+      return product;
+    });
   }
 
   function fetchText(url, timeoutMs) {
@@ -308,11 +315,14 @@ var Data = (function () {
       popular: !!product.popular,
       mostOrdered: product.mostOrdered == null ? null : product.mostOrdered,
       nameHi: product.nameHi || '',
-      nameGu: product.nameGu || ''
+      nameGu: product.nameGu || '',
+      basePrice: product.basePrice == null ? null : product.basePrice,
+      position: product.position == null ? null : product.position
     };
   }
 
-  /* Keep the file copy separate, then lay saved edits on top. */
+  /* Keep the file copy separate, then lay saved edits on top.
+     With Supabase the database already holds the edits, so nothing is laid on top. */
   function remember(products) {
     base = products.map(copyProduct);
     try {
@@ -320,7 +330,147 @@ var Data = (function () {
     } catch (err) {
       /* Cache is a backup. Missing it only matters when the network fails. */
     }
+    if (dbMode) {
+      list = base.map(function (product) {
+        var next = copyProduct(product);
+        next.sourceId = String(product.id);
+        return next;
+      });
+      return;
+    }
     list = applyEdits(base);
+  }
+
+  /* ---------- Supabase rows ---------- */
+
+  function fromDb(r) {
+    if (!r || r.id == null || !String(r.name || '').trim()) return null;
+    return {
+      id: String(r.id),
+      name: String(r.name).trim(),
+      description: String(r.description || '').trim(),
+      price: Number(r.price) || 0,
+      category: String(r.category || '').trim(),
+      images: (r.images || []).map(function (u) { return safeUrl(String(u || '').trim()); }).filter(Boolean),
+      inStock: r.in_stock !== false,
+      popular: r.popular === true,
+      mostOrdered: r.most_ordered == null ? null : Number(r.most_ordered),
+      nameHi: String(r.name_hi || '').trim(),
+      nameGu: String(r.name_gu || '').trim(),
+      basePrice: r.base_price == null ? null : Number(r.base_price),
+      position: r.position == null ? null : Number(r.position)
+    };
+  }
+
+  function toDb(product) {
+    return {
+      id: String(product.id),
+      position: product.position == null ? null : product.position,
+      name: product.name,
+      name_hi: product.nameHi || '',
+      name_gu: product.nameGu || '',
+      description: product.description || '',
+      category: product.category || '',
+      base_price: product.basePrice == null ? null : product.basePrice,
+      price: Number(product.price) || 0,
+      images: (product.images || []).slice(),
+      in_stock: !!product.inStock,
+      popular: !!product.popular,
+      most_ordered: product.mostOrdered == null ? null : Math.round(Number(product.mostOrdered))
+    };
+  }
+
+  function fromDatabase() {
+    return Db.allProducts(15000).then(function (rows) {
+      var products = (rows || []).map(fromDb).filter(Boolean);
+      if (!products.length) throw new Error('empty');
+      dbMode = true;
+      remember(products);
+      return { products: list, source: 'db' };
+    });
+  }
+
+  /* Photos picked from the device arrive as data: text. Store them in Supabase and keep the link. */
+  function uploadPhotos(product) {
+    var images = product.images || [];
+    return Promise.all(images.map(function (src) {
+      return String(src).indexOf('data:image/') === 0 ? Db.uploadImage(src, product.id) : src;
+    })).then(function (urls) {
+      product.images = urls;
+      return product;
+    });
+  }
+
+  function baseById(key) {
+    var i;
+    for (i = 0; i < base.length; i += 1) {
+      if (String(base[i].id) === String(key)) return base[i];
+    }
+    return null;
+  }
+
+  function saveToDatabase(updates) {
+    var prepared = updates.map(function (u) {
+      var key = String(u.sourceId);
+      var old = baseById(key);
+      var product = cleanSaved(u.product, key);
+      product.basePrice = old ? old.basePrice : null;
+      product.position = old ? old.position : nextPosition();
+      return { key: key, product: product };
+    });
+    return Promise.all(prepared.map(function (item) {
+      return uploadPhotos(item.product);
+    })).then(function () {
+      var same = [];
+      var renamed = [];
+      prepared.forEach(function (item) {
+        if (String(item.product.id) === item.key || !baseById(item.key)) same.push(toDb(item.product));
+        else renamed.push(item);
+      });
+      return Db.upsertProducts(same).then(function () {
+        return renamed.reduce(function (p, item) {
+          return p.then(function () { return Db.updateProduct(item.key, toDb(item.product)); });
+        }, Promise.resolve());
+      });
+    }).then(function () {
+      var byKey = {};
+      var added = [];
+      prepared.forEach(function (item) {
+        if (baseById(item.key)) byKey[item.key] = item.product;
+        else added.push(item.product);
+      });
+      remember(base.map(function (product) {
+        return byKey[String(product.id)] || product;
+      }).concat(added));
+    });
+  }
+
+  function nextPosition() {
+    var top = 0;
+    base.forEach(function (product) {
+      if (product.position != null && product.position > top) top = product.position;
+    });
+    return top + 1;
+  }
+
+  /* The next free whole item number, for a new product. */
+  function nextId() {
+    var top = 0;
+    base.forEach(function (product) {
+      var n = Number(product.id);
+      if (isFinite(n) && n > top) top = n;
+    });
+    return String(Math.floor(top) + 1);
+  }
+
+  /* Delete for good. Only works with Supabase. */
+  function deleteProducts(ids) {
+    if (!dbMode) return Promise.reject(new Error('no-db'));
+    var gone = {};
+    ids.forEach(function (id) { gone[String(id)] = true; });
+    return Db.deleteProducts(ids).then(function () {
+      remember(base.filter(function (product) { return !gone[String(product.id)]; }));
+    });
   }
 
   function readEdits() {
@@ -403,16 +553,22 @@ var Data = (function () {
     });
   }
 
-  /* updates: [{ sourceId, product }, ...] */
+  /* updates: [{ sourceId, product }, ...]. Returns a promise. */
   function saveEdits(updates) {
-    var edits = readEdits();
-    var i;
-    for (i = 0; i < updates.length; i += 1) {
-      var key = String(updates[i].sourceId);
-      edits[key] = cleanSaved(updates[i].product, key);
+    if (dbMode) return saveToDatabase(updates);
+    try {
+      var edits = readEdits();
+      var i;
+      for (i = 0; i < updates.length; i += 1) {
+        var key = String(updates[i].sourceId);
+        edits[key] = cleanSaved(updates[i].product, key);
+      }
+      writeEdits(edits);
+      list = applyEdits(base);
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(err);
     }
-    writeEdits(edits);
-    list = applyEdits(base);
   }
 
   function readCache() {
@@ -456,22 +612,58 @@ var Data = (function () {
     return readCache();
   }
 
-  /* Replace the catalogue in this browser. Old edits are cleared so they do not land on the new rows. */
+  /* With Supabase: add new products and update matching item numbers in the database.
+     Products missing from the file are kept. Without Supabase: replace the list in this browser.
+     Returns a promise with the number of products in the file. */
   function importCsv(text) {
     var products = parse(text);
     var stored;
-    if (!products.length) return 0;
-    stored = products.map(copyProduct);
-    localStorage.setItem(CACHE_KEY, JSON.stringify(stored));
-    localStorage.setItem(SHEET_KEY, '1');
-    writeEdits({});
-    remember(stored);
-    return list.length;
+    if (!products.length) return Promise.resolve(0);
+    /* Supabase is set up: the upload always goes there, even if the first load failed. */
+    if (dbMode || (window.Db && Db.enabled())) {
+      dbMode = true;
+      return Db.upsertProducts(products.map(toDb)).then(function () {
+        return fromDatabase();
+      }).then(function () {
+        return products.length;
+      });
+    }
+    try {
+      stored = products.map(copyProduct);
+      localStorage.setItem(CACHE_KEY, JSON.stringify(stored));
+      localStorage.setItem(SHEET_KEY, '1');
+      writeEdits({});
+      remember(stored);
+      return Promise.resolve(list.length);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   function load() {
+    if (window.Db && Db.enabled()) {
+      return fromDatabase().catch(function (err) {
+        /* An empty table while setting up: let the admin load the file and upload it. */
+        dbMode = !!(err && err.message === 'empty');
+        /* Database unreachable: the last copy this phone got from it beats the old CSV. */
+        var cached = dbMode ? null : readCache();
+        if (cached) {
+          remember(cached);
+          return { products: list, source: 'cache' };
+        }
+        return loadFiles();
+      });
+    }
+    return loadFiles();
+  }
+
+  function usingDatabase() {
+    return dbMode;
+  }
+
+  function loadFiles() {
     var cfg = Config.get();
-    var uploaded = uploadedSheet();
+    var uploaded = dbMode ? null : uploadedSheet();
     var sheet;
     if (uploaded) {
       remember(uploaded);
@@ -520,6 +712,9 @@ var Data = (function () {
     padId: padId,
     matchesQuery: matchesQuery,
     saveEdits: saveEdits,
-    importCsv: importCsv
+    importCsv: importCsv,
+    usingDatabase: usingDatabase,
+    deleteProducts: deleteProducts,
+    nextId: nextId
   };
 })();

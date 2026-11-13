@@ -17,17 +17,17 @@
     <section class="admin-card" aria-labelledby="admin-login-title">
       <p class="admin-kicker">BAZARIYAA</p>
       <h1 id="admin-login-title">Admin panel</h1>
-      <p class="admin-lead">Enter the shop username and password to open this page.</p>
+      <p class="admin-lead">Sign in with the shop's admin email and password.</p>
       <form id="admin-form">
         <label class="admin-field">
-          <span>Username</span>
-          <input id="admin-user" name="username" type="text" autocomplete="username" required>
+          <span>Email</span>
+          <input id="admin-user" name="username" type="text" inputmode="email" autocomplete="username" required>
         </label>
         <label class="admin-field">
           <span>Password</span>
           <input id="admin-pass" name="password" type="password" autocomplete="current-password" required>
         </label>
-        <p class="admin-error" id="admin-error" role="alert" hidden>Username or password is wrong.</p>
+        <p class="admin-error" id="admin-error" role="alert" hidden>Email or password is wrong.</p>
         <button class="admin-enter" type="submit">Enter</button>
       </form>
     </section>
@@ -38,7 +38,7 @@
       <div>
         <p class="admin-kicker">Signed in</p>
         <h1 id="admin-panel-title">Products</h1>
-        <p class="admin-hint">Saves stay in this browser.</p>
+        <p class="admin-hint">Saves go live on the site.</p>
       </div>
       <div class="admin-top-actions">
         <div class="admin-csv" role="group" aria-label="Product sheet">
@@ -105,7 +105,9 @@
           <input id="admin-select-all" type="checkbox">
           <span>Select this page</span>
         </label>
+        <button class="admin-enter" id="admin-add" type="button">+ Add product</button>
         <button class="admin-enter" id="admin-bulk" type="button">Bulk edit</button>
+        <button class="admin-link" id="admin-delete-selected" type="button" hidden>Delete selected</button>
         <button class="admin-link" id="admin-clear" type="button">Clear filters</button>
       </div>
     </div>
@@ -247,6 +249,7 @@
           <p class="admin-error" id="admin-edit-error" role="alert" hidden></p>
         </div>
         <footer class="admin-sheet-foot">
+          <button class="admin-cancel" id="admin-edit-delete" type="button" style="color:var(--danger,#B42318)">Delete</button>
           <button class="admin-cancel" id="admin-edit-dismiss" type="button">Cancel</button>
           <button class="admin-save" type="submit"><span class="admin-save-dot" aria-hidden="true"></span> Save changes</button>
         </footer>
@@ -283,7 +286,7 @@
         <header class="site-top">
           <div class="site-top-copy">
             <h2 id="admin-site-title">Site config</h2>
-            <p>An empty box keeps the original. Saves stay in this browser.</p>
+            <p>An empty box keeps the original. Saves go live for every visitor.</p>
           </div>
           <label class="site-search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
@@ -308,7 +311,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/site.js"></script>
-  <script src="products.js"></script>
+  <script src="js/db.js"></script>
   <script src="js/data.js"></script>
   <script src="js/admin.js"></script>
 </body>
