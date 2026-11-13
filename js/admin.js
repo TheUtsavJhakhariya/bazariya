@@ -16,6 +16,8 @@ var Admin = (function () {
   var editingIds = [];
   var bulkRows = [];
   var bulkCategory = 'all';
+  /* Products ticked in the list when Bulk edit opened. null = no ticks, so all products. */
+  var bulkOnly = null;
   var bulkPrice = 'any';
   var bulkStock = 'any';
   var bulkRule = 'up-pct';
@@ -347,12 +349,17 @@ var Admin = (function () {
     nav.hidden = pages < 2;
     if (pages < 2) return;
     nav.appendChild(pageButton('Previous', 'admin-prev', page === 1));
-    nav.appendChild(text('p', '', 'Page ' + page + ' of ' + pages));
+    /* Short list: first 3, the pages around the current one, last 3. Gaps show as "…". */
+    var last = 0;
     for (n = 1; n <= pages; n += 1) {
+      if (n > 3 && n < pages - 2 && Math.abs(n - page) > 1) continue;
+      if (last && n - last > 1) nav.appendChild(text('span', 'admin-pages-gap', '…'));
       button = pageButton(String(n), '', false);
       button.setAttribute('data-page', String(n));
+      button.setAttribute('aria-label', 'Page ' + n + ' of ' + pages);
       if (n === page) button.setAttribute('aria-current', 'page');
       nav.appendChild(button);
+      last = n;
     }
     nav.appendChild(pageButton('Next', 'admin-next', page === pages));
   }
@@ -1351,6 +1358,7 @@ var Admin = (function () {
   }
 
   function bulkPass(product, category) {
+    if (bulkOnly && !bulkOnly[sourceId(product)]) return false;
     if (category && category !== 'all' && product.category !== category) return false;
     if (!bulkInBand(bulkPriceOf(product))) return false;
     if (bulkStock === 'in' && !product.inStock) return false;
@@ -1481,7 +1489,7 @@ var Admin = (function () {
     var changes = 0;
     var sample = null;
     var exampleProduct;
-    var total = Data.products().length;
+    var total = bulkOnly ? Object.keys(bulkOnly).length : Data.products().length;
     var line = field('bulk-example-text');
     var avg = field('bulk-avg');
     var note = field('bulk-preview-note');
@@ -1983,7 +1991,15 @@ var Admin = (function () {
     bulkOut = {};
     bulkShowAll = false;
     bulkError('');
-    field('admin-bulk-title').textContent = 'Bulk edit';
+    var ticked = selectedIds();
+    bulkOnly = null;
+    if (ticked.length) {
+      bulkOnly = {};
+      ticked.forEach(function (key) { bulkOnly[key] = true; });
+    }
+    field('admin-bulk-title').textContent = ticked.length
+      ? 'Bulk edit · ' + ticked.length + ' selected'
+      : 'Bulk edit';
     paintBulkScreen();
     document.body.classList.add('admin-noscroll');
     field('admin-bulk-modal').hidden = false;

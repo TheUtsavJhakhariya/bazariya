@@ -93,7 +93,7 @@ var Quantity = (function () {
     var addClass = mode === 'add' ? 'btn-primary' : 'btn-outline';
     var addBtn = choice(addClass, 'cart', I18n.t('addToCart'), I18n.t('addKeep'), 'add');
     var orderBtn = choice('btn-accent', 'chat', I18n.t('orderNow'), I18n.t('onlyThis'), 'order');
-    var name = UI.el('h2', 'qty-name', product.name);
+    var name = UI.el('h2', 'qty-name', Data.nameOf(product));
     dialog.id = 'qty-dialog';
     name.id = 'qty-name';
     close.type = 'button';

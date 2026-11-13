@@ -94,7 +94,7 @@ var Home = (function () {
   function buyBtn(product, className, label) {
     var node = button(className, label || I18n.t('buyNow'), 'buy');
     node.setAttribute('data-id', String(product.id));
-    node.setAttribute('aria-label', I18n.t('buyNow') + ', ' + product.name);
+    node.setAttribute('aria-label', I18n.t('buyNow') + ', ' + Data.nameOf(product));
     if (!product.inStock || !Config.phoneOk()) node.disabled = true;
     return node;
   }
@@ -102,7 +102,7 @@ var Home = (function () {
   function addBtn(product, className, label) {
     var node = button(className, label || I18n.t('addToCart'), 'add');
     node.setAttribute('data-id', String(product.id));
-    node.setAttribute('aria-label', I18n.t('addToCart') + ', ' + product.name);
+    node.setAttribute('aria-label', I18n.t('addToCart') + ', ' + Data.nameOf(product));
     return node;
   }
 
@@ -453,7 +453,7 @@ var Home = (function () {
     var meta = Data.meta(product.category);
     var catLabel = meta ? meta.filter : String(product.category || '').trim();
     row.appendChild(UI.el('p', 'small-price', Config.money(product.price)));
-    copy.appendChild(UI.el('p', 'small-name', product.name));
+    copy.appendChild(UI.el('p', 'small-name', Data.nameOf(product)));
     copy.appendChild(UI.el('p', 'small-meta', catLabel ? 'No. ' + Data.padId(product.id) + ' · ' + catLabel : 'No. ' + Data.padId(product.id)));
     row.appendChild(copy);
     actions.appendChild(addBtn(product, featured ? 'btn btn-ghost' : 'btn btn-outline'));
@@ -499,7 +499,7 @@ var Home = (function () {
     var add = addBtn(product, 'btn btn-outline btn-mono most-add', I18n.t('addMono'));
     var buy = buyBtn(product, 'btn btn-primary btn-round btn-mono most-buy', I18n.t('buyMono'));
     var tag = Data.tagFor(product.category);
-    row.appendChild(UI.el('p', 'most-name', product.name));
+    row.appendChild(UI.el('p', 'most-name', Data.nameOf(product)));
     meta.appendChild(UI.el('span', 'most-id', Data.padId(product.id)));
     if (tag) meta.appendChild(UI.el('span', 'most-tag', tag));
     row.appendChild(meta);
@@ -522,10 +522,15 @@ var Home = (function () {
 
   function marqueeHalf() {
     var half = UI.el('div', 'marquee-half');
-    half.appendChild(UI.el('span', null, I18n.t('marqueeCash')));
-    half.appendChild(UI.el('span', 'marquee-dot'));
-    half.appendChild(UI.el('span', null, fill('marqueeFree', { city: city().toUpperCase() })));
-    half.appendChild(UI.el('span', 'marquee-dot'));
+    var i;
+    /* Repeat the two phrases so each half is wider than any screen.
+       Then the second half always fills the gap and the loop never shows an empty end. */
+    for (i = 0; i < 4; i += 1) {
+      half.appendChild(UI.el('span', null, I18n.t('marqueeCash')));
+      half.appendChild(UI.el('span', 'marquee-dot'));
+      half.appendChild(UI.el('span', null, fill('marqueeFree', { city: city().toUpperCase() })));
+      half.appendChild(UI.el('span', 'marquee-dot'));
+    }
     return half;
   }
 
@@ -629,10 +634,10 @@ var Home = (function () {
     if (!big || !match || !go) return;
     big.textContent = 'No.' + Data.padId(digits || '154');
     if (product && (!query || findByNumber(query))) {
-      match.textContent = product.name + ' · ' + Config.money(product.price);
+      match.textContent = Data.nameOf(product) + ' · ' + Config.money(product.price);
       go.disabled = !product.inStock || !Config.phoneOk();
       go.setAttribute('data-id', product.id);
-      go.setAttribute('aria-label', I18n.t('buyNow') + ', ' + product.name);
+      go.setAttribute('aria-label', I18n.t('buyNow') + ', ' + Data.nameOf(product));
     } else {
       match.textContent = I18n.t('noItemNumber');
       go.disabled = true;

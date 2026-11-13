@@ -119,7 +119,7 @@ var Search = (function () {
       var button = UI.el('button', 'search-row');
       var copy = UI.el('span', 'search-row-copy');
       button.type = 'button';
-      copy.appendChild(UI.el('span', 'search-row-name', product.name));
+      copy.appendChild(UI.el('span', 'search-row-name', Data.nameOf(product)));
       copy.appendChild(UI.el('span', 'search-row-meta', 'No. ' + Data.padId(product.id)));
       button.appendChild(photo(product));
       button.appendChild(copy);
@@ -146,7 +146,7 @@ var Search = (function () {
       buy.disabled = !product.inStock || !Config.phoneOk();
       buy.addEventListener('click', function () { openItem(product, 'buy'); });
       copy.appendChild(UI.el('p', 'search-hit-no', 'NO. ' + Data.padId(product.id)));
-      copy.appendChild(UI.el('p', 'search-hit-name', product.name));
+      copy.appendChild(UI.el('p', 'search-hit-name', Data.nameOf(product)));
       copy.appendChild(UI.el('p', 'search-hit-cat', meta ? meta.filter : product.category));
       copy.appendChild(UI.el('p', 'search-hit-price', Config.money(product.price)));
       card.appendChild(photo(product));

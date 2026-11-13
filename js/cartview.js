@@ -165,7 +165,7 @@ var CartView = (function () {
     var remove = UI.el('button', 'btn btn-danger', I18n.t('remove'));
     card.setAttribute('data-id', line.id);
     top.appendChild(thumb(line));
-    copy.appendChild(UI.el('p', 'cart-name', line.name));
+    copy.appendChild(UI.el('p', 'cart-name', line.label || line.name));
     copy.appendChild(UI.el('p', 'cart-meta', I18n.format('lineMeta', {
       id: Data.padId(line.id),
       price: Config.money(line.price),
@@ -212,7 +212,7 @@ var CartView = (function () {
     field.value = draft;
     field.maxLength = max;
     field.placeholder = I18n.t('notePlaceholder');
-    field.setAttribute('aria-label', I18n.format('noteFor', { name: line.name }));
+    field.setAttribute('aria-label', I18n.format('noteFor', { name: line.label || line.name }));
     field.addEventListener('input', function () {
       draft = field.value.slice(0, max);
       counter.textContent = draft.length + ' / ' + max;
@@ -303,7 +303,7 @@ var CartView = (function () {
       tone: 'sage',
       icon: 'check',
       title: I18n.t('noteSaved'),
-      body: I18n.format('noteSavedBody', { name: line.name, note: text }),
+      body: I18n.format('noteSavedBody', { name: line.label || line.name, note: text }),
       action: I18n.t('undo'),
       actionClass: 'btn-light',
       timeout: 5000,
@@ -332,7 +332,7 @@ var CartView = (function () {
       price: Config.money(line.price),
       qty: String(line.qty)
     })));
-    copy.appendChild(UI.el('p', 'cart-name', line.name));
+    copy.appendChild(UI.el('p', 'cart-name', line.label || line.name));
     top.appendChild(thumb(line));
     top.appendChild(copy);
     keep.type = 'button';
@@ -390,7 +390,7 @@ var CartView = (function () {
     UI.toast({
       tone: 'dark',
       icon: 'check',
-      title: I18n.format('addedToast', { name: product.name }),
+      title: I18n.format('addedToast', { name: Data.nameOf(product) }),
       body: I18n.format('addedToastBody', { qty: String(qty), price: Config.money(product.price) }),
       action: I18n.t('undo'),
       actionClass: 'btn-light',
@@ -418,7 +418,7 @@ var CartView = (function () {
     head.appendChild(mark);
     head.appendChild(UI.el('strong', null, I18n.t('addedTitle')));
     item.appendChild(thumb({ id: product.id }));
-    copy.appendChild(UI.el('p', 'cart-name', product.name));
+    copy.appendChild(UI.el('p', 'cart-name', Data.nameOf(product)));
     copy.appendChild(UI.el('p', 'cart-meta', I18n.format('addedTimes', {
       qty: String(qty),
       price: Config.money(product.price)

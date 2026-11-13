@@ -702,8 +702,19 @@ var Data = (function () {
     return null;
   }
 
+  /* The product name in the language the customer picked. Falls back to English
+     when that language is missing. Orders sent on WhatsApp keep the English name. */
+  function nameOf(product) {
+    if (!product) return '';
+    var lang = window.I18n && I18n.get ? I18n.get() : 'en';
+    if (lang === 'hi' && product.nameHi) return product.nameHi;
+    if (lang === 'gu' && product.nameGu) return product.nameGu;
+    return product.name;
+  }
+
   return {
     load: load,
+    nameOf: nameOf,
     products: products,
     byId: byId,
     categories: categories,

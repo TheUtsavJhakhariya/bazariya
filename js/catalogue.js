@@ -28,7 +28,7 @@ var Catalogue = (function () {
     photoBtn.type = 'button';
     photoBtn.setAttribute('data-action', 'photo');
     photoBtn.setAttribute('data-id', String(product.id));
-    photoBtn.setAttribute('aria-label', product.name + ' ' + I18n.t('photo'));
+    photoBtn.setAttribute('aria-label', Data.nameOf(product) + ' ' + I18n.t('photo'));
 
     var media = UI.el('div', 'card-media');
     if (!product.inStock) media.classList.add('is-oos');
@@ -54,9 +54,9 @@ var Catalogue = (function () {
     sticker.appendChild(UI.el('span', 'card-sticker-num', Data.padId(product.id)));
 
     var posterName = UI.el('span', 'card-poster-name');
-    posterName.appendChild(UI.el('span', null, product.name));
-    if (product.name.length > 32) posterName.classList.add('is-xlong');
-    else if (product.name.length > 18) posterName.classList.add('is-long');
+    posterName.appendChild(UI.el('span', null, Data.nameOf(product)));
+    if (Data.nameOf(product).length > 32) posterName.classList.add('is-xlong');
+    else if (Data.nameOf(product).length > 18) posterName.classList.add('is-long');
 
     media.appendChild(UI.el('span', 'card-tag', 'No. ' + Data.padId(product.id)));
     media.appendChild(UI.el('span', 'card-poster-cat', Data.tagFor(product.category)));
@@ -77,14 +77,14 @@ var Catalogue = (function () {
       buy.type = 'button';
       buy.setAttribute('data-action', 'buy');
       buy.setAttribute('data-id', String(product.id));
-      buy.setAttribute('aria-label', I18n.t('buyNow') + ', ' + product.name);
+      buy.setAttribute('aria-label', I18n.t('buyNow') + ', ' + Data.nameOf(product));
       if (!Config.phoneOk()) buy.disabled = true;
 
       var add = UI.el('button', 'btn btn-sunken', I18n.t('addToCart'));
       add.type = 'button';
       add.setAttribute('data-action', 'add');
       add.setAttribute('data-id', String(product.id));
-      add.setAttribute('aria-label', I18n.t('addToCart') + ', ' + product.name);
+      add.setAttribute('aria-label', I18n.t('addToCart') + ', ' + Data.nameOf(product));
 
       actions.appendChild(buy);
       actions.appendChild(add);
@@ -92,13 +92,13 @@ var Catalogue = (function () {
 
     article.appendChild(photoBtn);
     if (!product.inStock) {
-      var nameBtn = UI.el('button', 'card-name', product.name);
+      var nameBtn = UI.el('button', 'card-name', Data.nameOf(product));
       nameBtn.type = 'button';
       nameBtn.setAttribute('data-action', 'photo');
       nameBtn.setAttribute('data-id', String(product.id));
       article.appendChild(nameBtn);
     } else {
-      article.appendChild(UI.el('p', 'card-name', product.name));
+      article.appendChild(UI.el('p', 'card-name', Data.nameOf(product)));
     }
     article.appendChild(UI.el('p', 'card-price', Config.money(product.price)));
     article.appendChild(actions);

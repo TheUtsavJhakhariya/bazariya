@@ -272,7 +272,8 @@
   margin-top: var(--space-16);
 }
 
-.admin-pages p {
+.admin-pages p,
+.admin-pages .admin-pages-gap {
   margin: 0;
   min-height: var(--tap-min);
   display: inline-flex;

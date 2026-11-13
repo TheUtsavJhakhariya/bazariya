@@ -131,7 +131,8 @@ var Cart = (function () {
         qty: item.qty,
         note: item.note,
         price: product.price,
-        name: product.name
+        name: product.name,
+        label: Data.nameOf(product)
       });
     });
     return rows;

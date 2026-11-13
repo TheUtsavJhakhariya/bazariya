@@ -785,11 +785,12 @@
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-move 28s linear infinite;
+  animation: marquee-move 110s linear infinite; /* 4 repeats per half, same speed as before */
 }
 
 .marquee-half {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 18px;
   padding-right: 18px;
